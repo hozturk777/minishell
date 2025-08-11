@@ -6,7 +6,7 @@
 /*   By: huozturk <huozturk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/07 18:03:28 by huozturk          #+#    #+#             */
-/*   Updated: 2025/08/09 21:24:27 by huozturk         ###   ########.fr       */
+/*   Updated: 2025/08/11 16:43:22 by huozturk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,48 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 #include <stdlib.h>
+
+void print_welcome(void)
+{
+    printf("\033[2J\033[H"); // Ekranı temizle
+    printf("\033[1;36m"); // Cyan bold
+    printf("╔═══════════════════════════════════════════════════════════════════════════════════════════╗\n");
+	usleep(15000);
+    printf("║                                                                                           ║\n");
+	usleep(15000);
+    printf("║             \033[1;35m███╗   ███╗██╗███╗   ██╗██╗███████╗██╗  ██╗███████╗██╗     ██╗\033[1;36m                ║\n");
+	usleep(15000);
+    printf("║             \033[1;35m████╗ ████║██║████╗  ██║██║██╔════╝██║  ██║██╔════╝██║     ██║\033[1;36m                ║\n");
+	usleep(15000);
+    printf("║             \033[1;35m██╔████╔██║██║██╔██╗ ██║██║███████╗███████║█████╗  ██║     ██║\033[1;36m                ║\n");
+	usleep(15000);
+    printf("║             \033[1;35m██║╚██╔╝██║██║██║╚██╗██║██║╚════██║██╔══██║██╔══╝  ██║     ██║\033[1;36m                ║\n");
+	usleep(15000);
+    printf("║             \033[1;35m██║ ╚═╝ ██║██║██║ ╚████║██║███████║██║  ██║███████╗███████╗███████╗\033[1;36m           ║\n");
+	usleep(15000);
+    printf("║             \033[1;35m╚═╝     ╚═╝╚═╝╚═╝  ╚═══╝╚═╝╚══════╝╚═╝  ╚═╝╚══════╝╚══════╝╚══════╝\033[1;36m           ║\n");
+	usleep(15000);
+    printf("║                                                                                           ║\n");
+	usleep(15000);
+    printf("║                                    \033[1;33mCreated by: huozturk\033[1;36m                                   ║\n");
+	usleep(15000);
+    printf("║                                     \033[1;32m42 School Project\033[1;36m                                     ║\n");
+	usleep(15000);
+    printf("║                                                                                           ║\n");
+	usleep(15000);
+    printf("║                            \033[1;31m🚀 Welcome to your custom shell! 🚀\033[1;36m                            ║\n");
+	usleep(15000);
+    printf("║                                                                                           ║\n");
+	usleep(15000);
+    printf("╚═══════════════════════════════════════════════════════════════════════════════════════════╝\033[0m\n");
+	usleep(15000);
+    printf("\n");
+	usleep(15000);
+    printf("\033[1;32mType 'exit' to quit the shell.\033[0m\n");
+	usleep(15000);
+    printf("\033[1;34mEnjoy coding! 💻\033[0m\n\n");
+	usleep(15000);
+}
 
 int main(int ac, char *av[], char **env)
 {
@@ -25,7 +67,8 @@ int main(int ac, char *av[], char **env)
 	(void)env;
 	while (1)
 	{
-		input = readline(PROMPT);
+		print_welcome();
+		input = readline(GREEN PROMPT RESET);
 		if (!input)
 		{
 			printf("exit\n");
@@ -34,7 +77,6 @@ int main(int ac, char *av[], char **env)
 		if (*input)
 			add_history(input);
 		
-		printf("Girilen input: %s\n", input);
 		free(input);
 	}
 	return (0);	
