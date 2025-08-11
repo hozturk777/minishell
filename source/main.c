@@ -6,7 +6,7 @@
 /*   By: huozturk <huozturk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/07 18:03:28 by huozturk          #+#    #+#             */
-/*   Updated: 2025/08/11 17:25:33 by huozturk         ###   ########.fr       */
+/*   Updated: 2025/08/11 18:44:30 by huozturk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 #include <stdlib.h>
+#include "../lib/minishell.h"
 
 void print_welcome(void)
 {
@@ -44,7 +45,7 @@ void print_welcome(void)
 	usleep(20000);
     printf("║                                                                                           ║\n");
 	usleep(20000);
-    printf("║                            \033[1;31m🚀 Welcome to your custom shell! 🚀\033[1;36m                            ║\n");
+    printf("║                                   \033[1;31m🚀 SelamunAleyküm! 🚀\033[1;36m                                   ║\n");
 	usleep(20000);
     printf("║                                                                                           ║\n");
 	usleep(20000);
@@ -57,6 +58,11 @@ void print_welcome(void)
     printf("\033[1;34mEnjoy coding! 💻\033[0m\n\n");
 	usleep(20000);
 }
+
+
+t_token	*tokenize(char *input);
+t_lexer	*init_lexer(char *input);
+
 
 int main(int ac, char *av[], char **env)
 {
@@ -80,4 +86,23 @@ int main(int ac, char *av[], char **env)
 		free(input);
 	}
 	return (0);	
+}
+
+t_token	*tokenize(char *input)
+{
+	t_lexer	*lexer = init_lexer(input); // BURADA NE YAPILACAK ?
+}
+
+t_lexer	*init_lexer(char *input)
+{
+	t_lexer *lexer;
+
+	lexer = malloc(sizeof(t_lexer));
+	if (!lexer)	// ERROR_HANDLE YAZILACAK
+		return (NULL);
+	lexer->input = input;
+	lexer->input_current_char = input[0];
+	lexer->input_len = ft_strlen(input); // LIBFT EKLENECEK
+	lexer->input_pos = 0;
+	return (lexer);
 }
