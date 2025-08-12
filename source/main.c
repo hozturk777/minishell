@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: huozturk <huozturk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hasivaci <hasivaci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/07 18:03:28 by huozturk          #+#    #+#             */
-/*   Updated: 2025/08/11 18:44:30 by huozturk         ###   ########.fr       */
+/*   Updated: 2025/08/12 14:08:41 by hasivaci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ void print_welcome(void)
 	usleep(20000);
     printf("║                                                                                           ║\n");
 	usleep(20000);
-    printf("║                                    \033[1;33mCreated by: huozturk\033[1;36m                                   ║\n");
+    printf("║                             \033[1;33mCreated by: hasivaci && huozturk\033[1;36m                              ║\n");
 	usleep(20000);
     printf("║                                     \033[1;32m42 School Project\033[1;36m                                     ║\n");
 	usleep(20000);
@@ -88,21 +88,21 @@ int main(int ac, char *av[], char **env)
 	return (0);	
 }
 
-t_token	*tokenize(char *input)
-{
-	t_lexer	*lexer = init_lexer(input); // BURADA NE YAPILACAK ?
-}
+// t_token	*tokenize(char *input)
+// {
+// 	t_lexer	*lexer = init_lexer(input); // BURADA NE YAPILACAK ?
+// }
 
-t_lexer	*init_lexer(char *input)
-{
-	t_lexer *lexer;
+// t_lexer	*init_lexer(char *input)
+// {
+// 	t_lexer *lexer;
 
-	lexer = malloc(sizeof(t_lexer));
-	if (!lexer)	// ERROR_HANDLE YAZILACAK
-		return (NULL);
-	lexer->input = input;
-	lexer->input_current_char = input[0];
-	lexer->input_len = ft_strlen(input); // LIBFT EKLENECEK
-	lexer->input_pos = 0;
-	return (lexer);
-}
+// 	lexer = malloc(sizeof(t_lexer));
+// 	if (!lexer)	// ERROR_HANDLE YAZILACAK
+// 		return (NULL);
+// 	lexer->input = input;
+// 	lexer->input_current_char = input[0];
+// 	lexer->input_len = ft_strlen(input); // LIBFT EKLENECEK
+// 	lexer->input_pos = 0;
+// 	return (lexer);
+// }
