@@ -5,12 +5,14 @@ EXPA_DIR			= expander/
 LEX_DIR				= lexer/
 PAR_DIR				= parser/
 SRC_DIR				= source/
+UTL_DIR				= utils/
 LRDR				= -lreadline
 CC					= @cc
 CFLAGS				= -Wall -Wextra -Werror -pthread
 RM					= rm -rf
 
 MINISHELL_SRCS			=	$(SRC_DIR)main.c \
+								$(UTL_DIR)starting.c \
 
 SRCS 				= $(MINISHELL_SRCS)
 OBJ					= $(addprefix $(OBJ_DIR), $(notdir $(SRCS:.c=.o)))

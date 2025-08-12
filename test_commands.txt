@@ -1,0 +1,10 @@
+echo hello
+ls | grep main
+echo "hello world"
+echo 'single quotes'
+cat > file.txt
+cat < input.txt
+ls >> output.txt
+cat << EOF
+ls -la | grep test | head -5
+exit
