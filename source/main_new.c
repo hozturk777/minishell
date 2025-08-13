@@ -13,8 +13,15 @@
 #include "../lib/minishell.h"
 #include "../include/libft/libft.h"
 
-static void	print_test_info(void)
+int	main(int ac, char *av[], char **env)
 {
+	char	*input;
+	t_token	*tokens;
+
+	(void)ac;
+	(void)av;
+	(void)env;
+	print_welcome();
 	printf("\n=== LEXER TEST MODE ===\n");
 	printf("Test komutları:\n");
 	printf("- echo hello\n");
@@ -22,36 +29,6 @@ static void	print_test_info(void)
 	printf("- echo \"hello world\"\n");
 	printf("- cat > file.txt\n");
 	printf("- exit (çıkmak için)\n\n");
-}
-
-static int	process_input(char *input)
-{
-	t_token	*tokens;
-
-	if (*input)
-	{
-		add_history(input);
-		tokens = tokenize(input);
-		print_tokens(tokens);
-		free_tokens(tokens);
-	}
-	if (ft_strncmp(input, "exit", 4) == 0 && ft_strlen(input) == 4)
-	{
-		free(input);
-		return (1);
-	}
-	return (0);
-}
-
-int	main(int ac, char *av[], char **env)
-{
-	char	*input;
-
-	(void)ac;
-	(void)av;
-	(void)env;
-	print_welcome();
-	print_test_infa();
 	while (1)
 	{
 		input = readline(GREEN PROMPT RESET);
@@ -60,8 +37,18 @@ int	main(int ac, char *av[], char **env)
 			printf("exit\n");
 			break ;
 		}
-		if (process_input(input))
+		if (*input)
+		{
+			add_history(input);
+			tokens = tokenize(input);
+			print_tokens(tokens);
+			free_tokens(tokens);
+		}
+		if (ft_strncmp(input, "exit", 4) == 0 && ft_strlen(input) == 4)
+		{
+			free(input);
 			break ;
+		}
 		free(input);
 	}
 	return (0);

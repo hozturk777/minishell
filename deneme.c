@@ -1,1 +1,0 @@
-//burası diğer deneme kısmı burayı hasivaci içinde açtım sadece
