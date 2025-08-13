@@ -1,1 +1,1 @@
-//burası hasivaci için oluşturulan branch için deneme dosyası
+//burası diğer deneme kısmı burayı hasivaci içinde açtım sadece
