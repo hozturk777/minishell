@@ -1,73 +1,92 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   token_handlers.c                                   :+:      :+:    :+:   */
+/*   token_handlers_advanced.c                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: huozturk <huozturk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/13 21:00:00 by huozturk          #+#    #+#             */
-/*   Updated: 2025/08/13 21:00:00 by huozturk         ###   ########.fr       */
+/*   Created: 2025/01/08 12:00:00 by huozturk          #+#    #+#             */
+/*   Updated: 2025/01/08 12:00:00 by huozturk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../lib/minishell.h"
-#include "../include/libft/libft.h"
 
-t_token	*handle_pipe(t_lexer *lexer)
+t_token_new	*handle_pipe_advanced(t_lexer_new *lexer)
 {
-	t_token	*token;
-
-	token = create_token(TOKEN_PIPE, "|");
-	advance(lexer);
-	return (token);
+	advance_lexer(lexer);
+	return (create_token_advanced(T_PIPE, "|"));
 }
 
-t_token	*handle_redirect_out(t_lexer *lexer)
+t_token_new	*handle_redirect_advanced(t_lexer_new *lexer)
 {
-	t_token	*token;
-
-	advance(lexer);
-	if (lexer->current_char == '>')
-	{
-		token = create_token(TOKEN_APPEND, ">>");
-		advance(lexer);
-	}
-	else
-		token = create_token(TOKEN_REDIRECT_OUT, ">");
-	return (token);
-}
-
-t_token	*handle_redirect_in(t_lexer *lexer)
-{
-	t_token	*token;
-
-	advance(lexer);
-	if (lexer->current_char == '<')
-	{
-		token = create_token(TOKEN_HEREDOC, "<<");
-		advance(lexer);
-	}
-	else
-		token = create_token(TOKEN_REDIRECT_IN, "<");
-	return (token);
-}
-
-t_token	*handle_word(t_lexer *lexer)
-{
-	char	*value;
 	int		start_pos;
-	int		len;
-	t_token	*token;
 
 	start_pos = lexer->pos;
+	if (lexer->current_char == '<')
+	{
+		advance_lexer(lexer);
+		if (lexer->current_char == '<')
+		{
+			advance_lexer(lexer);
+			return (create_token_advanced(T_HEREDOC, "<<"));
+		}
+		return (create_token_advanced(T_REDIRECT_IN, "<"));
+	}
+	else if (lexer->current_char == '>')
+	{
+		advance_lexer(lexer);
+		if (lexer->current_char == '>')
+		{
+			advance_lexer(lexer);
+			return (create_token_advanced(T_APPEND, ">>"));
+		}
+		return (create_token_advanced(T_REDIRECT_OUT, ">"));
+	}
+	return (NULL);
+}
+
+t_token_new	*handle_word_advanced(t_lexer_new *lexer)
+{
+	int		start;
+	int		len;
+	char	*word;
+
+	start = lexer->pos;
 	while (lexer->current_char != '\0' && lexer->current_char != ' '
-		&& lexer->current_char != '\t' && lexer->current_char != '|'
-		&& lexer->current_char != '>' && lexer->current_char != '<'
-		&& lexer->current_char != '"' && lexer->current_char != '\'')
-		advance(lexer);
-	len = lexer->pos - start_pos;
-	value = ft_strndup(lexer->input + start_pos, len);
-	token = create_token(TOKEN_WORD, value);
-	free(value);
-	return (token);
+		&& lexer->current_char != '\t' && lexer->current_char != '\n'
+		&& lexer->current_char != '|' && lexer->current_char != '<'
+		&& lexer->current_char != '>' && lexer->current_char != '\''
+		&& lexer->current_char != '"')
+		advance_lexer(lexer);
+	len = lexer->pos - start;
+	word = ft_substr(lexer->input, start, len);
+	if (!word)
+		return (NULL);
+	return (create_token_advanced(T_WORD, word));
+}
+
+t_token_new	*handle_quotes_advanced(t_lexer_new *lexer)
+{
+	char	quote_char;
+	int		start;
+	int		len;
+	char	*quoted_str;
+
+	quote_char = lexer->current_char;
+	advance_lexer(lexer);
+	start = lexer->pos;
+	while (lexer->current_char != '\0' && lexer->current_char != quote_char)
+		advance_lexer(lexer);
+	if (lexer->current_char == quote_char)
+	{
+		len = lexer->pos - start;
+		quoted_str = ft_substr(lexer->input, start, len);
+		advance_lexer(lexer);
+		if (quote_char == '\'')
+			return (create_token_advanced(T_SINGLE_QUOTE, quoted_str));
+		else
+			return (create_token_advanced(T_DOUBLE_QUOTE, quoted_str));
+	}
+	return (NULL);
 }

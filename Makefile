@@ -14,12 +14,13 @@ RM					= rm -rf
 OBJ_DIR				= objects/
 
 MINISHELL_SRCS		= $(SRC_DIR)main.c \
-					  $(SRC_DIR)lexer_utils.c \
-					  $(SRC_DIR)token_handlers.c \
-					  $(SRC_DIR)quote_handlers.c \
+					  $(SRC_DIR)lexer.c \
 					  $(SRC_DIR)tokenizer.c \
-					  $(SRC_DIR)debug_utils.c \
-					  $(UTL_DIR)starting.c \
+					  $(SRC_DIR)token_handlers.c \
+					  $(SRC_DIR)global_state.c \
+					  $(SRC_DIR)environment.c \
+					  $(SRC_DIR)env_utils.c \
+					  $(SRC_DIR)debug.c \
 
 SRCS				= $(MINISHELL_SRCS)
 OBJ					= $(addprefix $(OBJ_DIR), $(notdir $(SRCS:.c=.o)))

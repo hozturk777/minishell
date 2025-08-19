@@ -1,89 +1,57 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   tokenizer.c                                        :+:      :+:    :+:   */
+/*   tokenizer_advanced.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: huozturk <huozturk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/13 21:00:00 by huozturk          #+#    #+#             */
-/*   Updated: 2025/08/13 21:00:00 by huozturk         ###   ########.fr       */
+/*   Created: 2025/01/08 12:00:00 by huozturk          #+#    #+#             */
+/*   Updated: 2025/01/08 12:00:00 by huozturk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../lib/minishell.h"
-#include "../include/libft/libft.h"
 
-void	add_token_to_list(t_token **tokens, t_token *new_token)
+static void	skip_whitespace_advanced(t_lexer_new *lexer)
 {
-	t_token	*current;
-
-	if (!new_token)
-		return ;
-	if (*tokens == NULL)
-		*tokens = new_token;
-	else
-	{
-		current = *tokens;
-		while (current->next)
-			current = current->next;
-		current->next = new_token;
-	}
+	while (lexer->current_char == ' ' || lexer->current_char == '\t'
+		|| lexer->current_char == '\n')
+		advance_lexer(lexer);
 }
 
-static t_token	*get_next_token(t_lexer *lexer)
+static t_token_new	*get_next_token(t_lexer_new *lexer)
 {
+	skip_whitespace_advanced(lexer);
+	if (lexer->current_char == '\0')
+		return (NULL);
 	if (lexer->current_char == '|')
-		return (handle_pipe(lexer));
-	else if (lexer->current_char == '>')
-		return (handle_redirect_out(lexer));
-	else if (lexer->current_char == '<')
-		return (handle_redirect_in(lexer));
-	else if (lexer->current_char == '"')
-		return (handle_double_quote(lexer));
-	else if (lexer->current_char == '\'')
-		return (handle_single_quote(lexer));
+		return (handle_pipe_advanced(lexer));
+	else if (lexer->current_char == '<' || lexer->current_char == '>')
+		return (handle_redirect_advanced(lexer));
+	else if (lexer->current_char == '\'' || lexer->current_char == '"')
+		return (handle_quotes_advanced(lexer));
 	else
-		return (handle_word(lexer));
+		return (handle_word_advanced(lexer));
 }
 
-t_token	*tokenize(char *input)
+t_list	*tokenize_advanced(char *input, t_global *global)
 {
-	t_lexer	*lexer;
-	t_token	*tokens;
-	t_token	*current_token;
+	t_lexer_new	*lexer;
+	t_list		*tokens;
+	t_token_new	*token;
 
-	lexer = init_lexer(input);
+	lexer = init_lexer_advanced(input, global);
 	if (!lexer)
 		return (NULL);
 	tokens = NULL;
 	while (lexer->current_char != '\0')
 	{
-		skip_whitespace(lexer);
-		if (lexer->current_char == '\0')
+		token = get_next_token(lexer);
+		if (token)
+			ft_lstadd_back(&tokens, ft_lstnew(token));
+		else
 			break ;
-		current_token = get_next_token(lexer);
-		if (current_token)
-			add_token_to_list(&tokens, current_token);
 	}
-	free_lexer(lexer);
+	free_lexer_advanced(lexer);
 	return (tokens);
-}
-
-t_lexer	*init_lexer(char *input)
-{
-	t_lexer	*lexer;
-
-	if (!input)
-		return (NULL);
-	lexer = malloc(sizeof(t_lexer));
-	if (!lexer)
-		return (NULL);
-	lexer->input = input;
-	lexer->pos = 0;
-	lexer->len = ft_strlen(input);
-	if (lexer->len > 0)
-		lexer->current_char = input[0];
-	else
-		lexer->current_char = '\0';
-	return (lexer);
 }
