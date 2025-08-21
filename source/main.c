@@ -98,7 +98,7 @@ static void	run_shell_loop(t_global *global)
 	}
 }
 
-int	main(int argc, char **argv, char **envp) // ac sayısı check
+int	main(int argc, char **argv, char **envp) // argc sayısı check
 {
 	t_global	*global;
 

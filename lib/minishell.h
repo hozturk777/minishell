@@ -42,6 +42,8 @@
 /*                               ENUM'LAR                                     */
 /* ************************************************************************** */
 
+typedef struct s_global t_global;
+
 // Leksikal analiz için token türleri
 typedef enum e_token_types
 {
@@ -99,18 +101,6 @@ typedef struct s_command
 	struct s_command	*next;		/* Pipeline'daki sonraki komut */
 }	t_command;
 
-// Global durum yapısı
-typedef struct s_global
-{
-	t_list		*tokens;		/* Ayrıştırılan token'lar listesi */
-	t_list		*commands;		/* Ayrıştırılan komutlar listesi */
-	t_env		*env_list;		/* Çevre değişkenleri bağlı listesi */
-	int			exit_status;	/* Son komutun çıkış durumu */
-	int			pipe_count;		/* Mevcut komuttaki pipe sayısı */
-	int			heredoc_count;	/* Mevcut komuttaki heredoc sayısı */
-	char		*input_line;	/* İşlenmekte olan mevcut girdi satırı */
-	int			interactive;	/* Etkileşimli mod bayrağı (1=evet, 0=hayır) */
-}	t_global;
 
 // Lexer yapısı (gelişmiş)
 typedef struct s_lexer_new
@@ -121,6 +111,19 @@ typedef struct s_lexer_new
 	char		current_char;	/* İşlenmekte olan mevcut karakter */
 	t_global	*global;		/* Global duruma referans */
 }	t_lexer_new;
+
+// Global durum yapısı
+typedef struct s_global
+{
+	t_list		*tokens;		/* Ayrıştırılan token'lar listesi */
+	t_command	*commands;		/* Ayrıştırılan komutlar listesi */
+	t_env		*env_list;		/* Çevre değişkenleri bağlı listesi */
+	int			exit_status;	/* Son komutun çıkış durumu */
+	int			pipe_count;		/* Mevcut komuttaki pipe sayısı */
+	int			heredoc_count;	/* Mevcut komuttaki heredoc sayısı */
+	char		*input_line;	/* İşlenmekte olan mevcut girdi satırı */
+	int			interactive;	/* Etkileşimli mod bayrağı (1=evet, 0=hayır) */
+}	t_global;
 
 /* ************************************************************************** */
 /*                            FONKSIYON PROTOTIPLERI                         */
