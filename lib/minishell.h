@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: huozturk <huozturk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hsyn <hsyn@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 12:00:00 by huozturk          #+#    #+#             */
-/*   Updated: 2025/01/08 12:00:00 by huozturk         ###   ########.fr       */
+/*   Updated: 2025/08/22 05:32:34 by hsyn             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -155,7 +155,7 @@ t_token_new		*handle_quotes_advanced(t_lexer_new *lexer);			/* Tırnaklı metinl
 t_command		*create_command(void);									/* Yeni komut yapısı oluştur */
 void			free_command(t_command *cmd);							/* Tek komut serbest bırak */
 void			free_commands(t_list **commands);						/* Komut listesini serbest bırak */
-t_list			*parse_tokens_to_commands(t_list *tokens, t_global *global);	/* Token'ları komutlara ayrıştır */
+t_command		*parse_tokens_to_commands(t_list *tokens, t_global *global);	/* Token'ları komutlara ayrıştır */
 
 // ========== GLOBAL DURUM FONKSIYONLARI ==========
 t_global		*init_global(char **envp);								/* Global durumu başlat */
@@ -168,5 +168,21 @@ void			print_commands(t_list *commands);						/* Komutları debug yazdır */
 char			*expand_env_var(char *var_name, t_global *global);		/* Çevre değişkenini genişlet */
 int				is_special_char(char c);								/* Karakter özel mi kontrol et */
 void			debug_print(char *msg);									/* Debug mesajı yazdır */
+
+// ========== PARSER FONKSIYONLARI ==========
+t_command		*parse_single_command(t_list **token_node, t_global *global);
+void			parse_redirection(t_command *cmd, t_list **token_node, t_global *global);
+int				is_command_start(t_list *token_node);
+int				is_pipe_token(t_list *token_node);
+int				is_redirect_token(t_list *token_node);
+int				is_word_token(t_list *token_node);
+void			collect_command_arg(t_list **args_list, t_list *token_node);
+char			**convert_list_to_array(t_list *args_list);
+void			append_command_to_chain(t_command *head, t_command *new_cmd);
+void			add_redirect_to_command(t_command *cmd, t_redirect *redirect);
+
+// ========== DEBUG FONKSIYONLARI ==========
+void			print_commands_debug(t_command *commands);				/* Komutları debug yazdır */
+void			free_commands_list(t_command *commands);				/* Komut listesini serbest bırak */
 
 #endif

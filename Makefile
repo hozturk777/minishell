@@ -21,6 +21,8 @@ MINISHELL_SRCS		= $(SRC_DIR)main.c \
 					  $(SRC_DIR)environment.c \
 					  $(SRC_DIR)env_utils.c \
 					  $(SRC_DIR)debug.c \
+					  $(SRC_DIR)debug_utils.c \
+					  loop_dir/parser.c \
 
 SRCS				= $(MINISHELL_SRCS)
 OBJ					= $(addprefix $(OBJ_DIR), $(notdir $(SRCS:.c=.o)))
@@ -44,6 +46,10 @@ $(OBJ_DIR)%.o: $(SRC_DIR)%.c
 					@$(CC) $(CFLAGS) -c $< -o $@
 
 $(OBJ_DIR)%.o: $(UTL_DIR)%.c
+					@mkdir -p $(OBJ_DIR)
+					@$(CC) $(CFLAGS) -c $< -o $@
+
+$(OBJ_DIR)%.o: loop_dir/%.c
 					@mkdir -p $(OBJ_DIR)
 					@$(CC) $(CFLAGS) -c $< -o $@
 

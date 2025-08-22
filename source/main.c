@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main_advanced.c                                    :+:      :+:    :+:   */
+/*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: huozturk <huozturk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hsyn <hsyn@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 12:00:00 by huozturk          #+#    #+#             */
-/*   Updated: 2025/01/08 12:00:00 by huozturk         ###   ########.fr       */
+/*   Updated: 2025/08/22 05:32:34 by hsyn             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,24 +56,54 @@ static void	print_welcome_advanced(void)
 
 static int	process_input(char *input, t_global *global)
 {
-	t_list	*tokens;
+	t_list		*tokens;
+	t_command	*commands;
 
 	if (!input || ft_strlen(input) == 0)
 		return (0);
 	add_history(input);
 	global->input_line = ft_strdup(input);
+	
+	// 1. LEXER: Input'u token'lara çevir
 	tokens = tokenize_advanced(input, global);
-	if (tokens)
+	if (!tokens)
 	{
-		global->tokens = tokens;
-		print_tokens_advanced(tokens);
-		free_tokens_advanced(&global->tokens);
+		printf("Error: Tokenization failed\n");
+		return (0);
 	}
+	
+	// 2. PARSER: Token'ları komut yapılarına çevir
+	commands = parse_tokens_to_commands(tokens, global);
+	if (!commands)
+	{
+		printf("Error: Parsing failed\n");
+		free_tokens_advanced(&tokens);
+		return (0);
+	}
+	
+	// 3. DEBUG: Token'ları ve komutları yazdır
+	printf("\n=== TOKENS ===\n");
+	print_tokens_advanced(tokens);
+	printf("\n=== PARSED COMMANDS ===\n");
+	print_commands_debug(commands);
+	printf("\n==================\n\n");
+	
+	// 4. EXECUTION: Burada executor çağrılacak (henüz yok)
+	// execute_commands(commands, global);
+	
+	// 5. CLEANUP: Memory'yi temizle
+	global->tokens = tokens;
+	global->commands = commands;
+	free_tokens_advanced(&global->tokens);
+	free_commands_list(global->commands);
+	global->commands = NULL;
+	
 	if (global->input_line)
 	{
 		free(global->input_line);
 		global->input_line = NULL;
 	}
+	
 	if (ft_strncmp(input, "exit", 4) == 0)
 		return (1);
 	return (0);
