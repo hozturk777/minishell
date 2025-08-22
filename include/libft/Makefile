@@ -1,5 +1,6 @@
 NAME = libft.a
 CFLAGS = -Wall -Wextra -Werror
+CC = cc
 
 SRC = ft_atoi.c \
 		ft_bzero.c \
@@ -39,20 +40,26 @@ SRC = ft_atoi.c \
 		ft_lstutils.c \
 		ft_lstclear.c
 
-OBJ = $(SRC:.c=.o)
+OBJDIR = obj
+OBJ = $(addprefix $(OBJDIR)/, $(SRC:.c=.o))
 
 all: $(NAME)
 
 $(NAME): $(OBJ)
-	ar rcs $(NAME) $(OBJ)
+	@ar rcs $(NAME) $(OBJ)
 
-$(OBJ) : libft.h
+# obj klasörü yoksa oluştur, .o dosyalarını oraya koy
+$(OBJDIR)/%.o: %.c libft.h | $(OBJDIR)
+	@$(CC) $(CFLAGS) -c $< -o $@
+
+$(OBJDIR):
+	@mkdir -p $(OBJDIR)
 
 clean:
-	rm -rf $(OBJ)
+	@rm -rf $(OBJDIR)
 
 fclean: clean
-	rm -rf $(NAME)
+	@rm -rf $(NAME)
 
 re: fclean all
 
