@@ -143,7 +143,7 @@ t_command	*create_command(void)
 {
 	t_command	*cmd;
 
-	cmd = malloc(sizeof(t_command));
+	cmd = halloc(sizeof(t_command));
 	if (!cmd)
 		return (NULL);
 	

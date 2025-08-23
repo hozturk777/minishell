@@ -28,7 +28,7 @@
 // # include "token_enum.h"
 # include "../include/libft/libft.h"	/* Libft fonksiyonları */
 # include <stdio.h>						/* printf, perror fonksiyonları */
-# include <stdlib.h>					/* malloc, free, exit fonksiyonları */
+# include <stdlib.h>					/* halloc, free, exit fonksiyonları */
 # include <unistd.h>					/* write, read, access, fork fonksiyonları */
 # include <readline/readline.h>			/* readline fonksiyonu */
 # include <readline/history.h>			/* add_history, rl_clear_history fonksiyonları */

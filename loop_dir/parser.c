@@ -70,7 +70,7 @@ void	parse_redirection(t_command *cmd, t_list **token_node, t_global *global)
 
     (void)global;  // Unused parameter for now
     token = (t_token_new *)(*token_node)->content;
-    redirect = malloc(sizeof(t_redirect));
+    redirect = halloc(sizeof(t_redirect));
     if (!redirect)
         return ;
     redirect->type = token->type;
@@ -80,7 +80,7 @@ void	parse_redirection(t_command *cmd, t_list **token_node, t_global *global)
     if (*token_node)
     {
         file_token = (t_token_new *)(*token_node)->content;
-        redirect->filename = ft_strdup(file_token->value);
+        redirect->filename = ft_strdup(file_token->value); // burada strdup da garbage collector lazım;
     }
     add_redirect_to_command(cmd, redirect);
 }
@@ -144,7 +144,7 @@ char	**convert_list_to_array(t_list *args_list)
     t_list	*current;
 
     size = ft_lstsize(args_list);
-    args_array = malloc(sizeof(char *) * (size + 1));
+    args_array = halloc(sizeof(char *) * (size + 1));
     if (!args_array)
         return (NULL);
     i = 0;

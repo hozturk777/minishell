@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include <stdlib.h>
+#include "libft.h"
 
 static int	ft_lennum(int n, int sign)
 {
@@ -42,7 +43,7 @@ char	*ft_itoa(int n)
 		sign = -1;
 	num *= sign;
 	lennum = ft_lennum(n, sign);
-	result = (char *)malloc((lennum + 1) * sizeof(char));
+	result = (char *)halloc((lennum + 1) * sizeof(char));
 	if (!result)
 		return (NULL);
 	*(result + lennum) = '\0';

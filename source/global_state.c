@@ -16,7 +16,7 @@ t_global	*init_global(char **envp) // bzero YAPILCAK
 {
 	t_global	*global;
 
-	global = (t_global *)malloc(sizeof(t_global));
+	global = (t_global *)halloc(sizeof(t_global));
 	if (!global)
 		return (NULL);
 	global->tokens = NULL;

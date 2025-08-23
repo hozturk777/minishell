@@ -16,7 +16,7 @@ t_env	*create_env_node(char *key, char *value)
 {
 	t_env	*node;
 
-	node = (t_env *)malloc(sizeof(t_env));
+	node = (t_env *)halloc(sizeof(t_env));
 	if (!node)
 		return (NULL);
 	node->key = ft_strdup(key);
