@@ -191,6 +191,7 @@ int				execute_builtin(t_command *cmd, t_global *global);		/* Built-in komut ça
 int				builtin_pwd(void);										/* pwd built-in */
 int				builtin_pwd_global(t_global *global);					/* pwd built-in with global env */
 int				builtin_echo(char **args);								/* echo built-in */
+char			*remove_quotes(char *str);								/* Remove surrounding quotes */
 int				builtin_env(t_env *env_list);							/* env built-in */
 int				builtin_exit(char **args, t_global *global);			/* exit built-in */
 int				builtin_cd(char **args, t_global *global);				/* cd built-in */

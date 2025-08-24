@@ -123,7 +123,8 @@ int	is_word_token(t_list *token_node)
     if (!token_node)
         return (0);
     token = (t_token_new *)token_node->content;
-    return (token->type == T_WORD);
+    return (token->type == T_WORD || token->type == T_SINGLE_QUOTE || 
+            token->type == T_DOUBLE_QUOTE);
 }
 
 void	collect_command_arg(t_list **args_list, t_list *token_node)

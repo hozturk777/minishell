@@ -105,13 +105,39 @@ int	builtin_pwd_global(t_global *global)
 }
 
 /* ************************************************************************** */
+/*                            QUOTE PROCESSING HELPER                        */
+/* ************************************************************************** */
+
+char	*remove_quotes(char *str)
+{
+	int		len;
+	char	*result;
+	char	quote_char;
+
+	if (!str)
+		return (NULL);
+	len = ft_strlen(str);
+	if (len < 2)
+		return (ft_strdup(str));
+	if ((str[0] == '"' && str[len - 1] == '"') ||
+		(str[0] == '\'' && str[len - 1] == '\''))
+	{
+		quote_char = str[0];
+		result = ft_substr(str, 1, len - 2);
+		return (result);
+	}
+	return (ft_strdup(str));
+}
+
+/* ************************************************************************** */
 /*                            ECHO BUILT-IN                                  */
 /* ************************************************************************** */
 
 int	builtin_echo(char **args)
 {
-	int	i;
-	int	newline;
+	int		i;
+	int		newline;
+	char	*processed_arg;
 
 	i = 1;
 	newline = 1;
@@ -122,7 +148,12 @@ int	builtin_echo(char **args)
 	}
 	while (args[i])
 	{
-		printf("%s", args[i]);
+		processed_arg = remove_quotes(args[i]);
+		if (processed_arg)
+		{
+			printf("%s", processed_arg);
+			free(processed_arg);
+		}
 		if (args[i + 1])
 			printf(" ");
 		i++;
