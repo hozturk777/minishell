@@ -82,14 +82,18 @@ static int	process_input(char *input, t_global *global)
 	}
 	
 	// 3. DEBUG: Token'ları ve komutları yazdır
-	printf("\n=== TOKENS ===\n");
-	print_tokens_advanced(tokens);
-	printf("\n=== PARSED COMMANDS ===\n");
-	print_commands_debug(commands);
-	printf("\n==================\n\n");
+	// printf("\n=== TOKENS ===\n");
+	// print_tokens_advanced(tokens);
+	// printf("\n=== PARSED COMMANDS ===\n");
+	// print_commands_debug(commands);
+	// printf("\n==================\n\n");
 	
-	// 4. EXECUTION: Burada executor çağrılacak (henüz yok)
-	// execute_commands(commands, global);
+	// 4. EXECUTION: Komutları çalıştır
+	if (commands)
+	{
+		global->exit_status = execute_commands(commands, global);
+		debug_print("Commands executed successfully");
+	}
 	
 	// 5. CLEANUP: Memory'yi temizle
 	global->tokens = tokens;

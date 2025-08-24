@@ -185,4 +185,44 @@ void			add_redirect_to_command(t_command *cmd, t_redirect *redirect);
 void			print_commands_debug(t_command *commands);				/* Komutları debug yazdır */
 void			free_commands_list(t_command *commands);				/* Komut listesini serbest bırak */
 
+// ========== BUILT-IN FONKSIYONLARI ==========
+int				is_builtin(char *command);								/* Built-in komut mu kontrol et */
+int				execute_builtin(t_command *cmd, t_global *global);		/* Built-in komut çalıştır */
+int				builtin_pwd(void);										/* pwd built-in */
+int				builtin_pwd_global(t_global *global);					/* pwd built-in with global env */
+int				builtin_echo(char **args);								/* echo built-in */
+int				builtin_env(t_env *env_list);							/* env built-in */
+int				builtin_exit(char **args, t_global *global);			/* exit built-in */
+int				builtin_cd(char **args, t_global *global);				/* cd built-in */
+int				builtin_export(char **args, t_global *global);			/* export built-in */
+int				builtin_unset(char **args, t_global *global);			/* unset built-in */
+
+// ========== ENVIRONMENT HELPER FONKSIYONLARI ==========
+void			update_pwd_env(t_global *global);						/* PWD çevre değişkenini güncelle */
+void			print_export_env(t_env *env_list);						/* Export formatında çevre değişkenlerini yazdır */
+void			set_env_var(t_global *global, char *key, char *value);	/* Çevre değişkeni ayarla */
+void			unset_env_var(t_global *global, char *key);			/* Çevre değişkeni sil */
+char			*resolve_logical_path(char *current_pwd, char *path);	/* Logical path çözümle */
+char			*find_existing_parent(char *path);					/* Var olan en yakın parent bul */
+char			*try_parent_fallback(char *failed_path);			/* Parent fallback helper */
+
+// ========== EXECUTOR FONKSIYONLARI ==========
+int				execute_commands(t_command *commands, t_global *global);	/* Ana execution fonksiyonu */
+int				execute_single_command(t_command *cmd, t_global *global);	/* Tek komut çalıştır */
+int				execute_external_command(t_command *cmd, t_global *global);	/* External komut çalıştır */
+int				execute_pipeline(t_command *commands, t_global *global);	/* Pipeline çalıştır */
+int				execute_pipeline_command(t_command *cmd, t_global *global, int prev_fd, int *pipe_fd);
+
+// ========== PATH UTILITIES ==========
+char			*find_command_path(char *command, t_env *env_list);		/* Komut path'ini bul */
+char			*build_full_path(char *dir, char *command);			/* Tam path oluştur */
+char			*get_env_value(t_env *env_list, char *key);				/* Çevre değişkeni değerini al */
+void			free_string_array(char **array);						/* String array'ini serbest bırak */
+char			**env_list_to_array(t_env *env_list);					/* Çevre listesini array'e çevir */
+int				count_env_nodes(t_env *env_list);						/* Çevre düğümlerini say */
+
+// ========== REDIRECTION FONKSIYONLARI ==========
+void			setup_redirections(t_command *cmd);					/* Yönlendirmeleri ayarla */
+void			handle_single_redirection(t_redirect *redirect);		/* Tek yönlendirme işle */
+void			setup_pipeline_fds(t_command *cmd, int prev_fd, int *pipe_fd);	/* Pipeline fd ayarla */
 #endif

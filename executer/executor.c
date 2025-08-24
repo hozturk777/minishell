@@ -1,0 +1,155 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   executor.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: huozturk <huozturk@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/08/24 12:00:00 by huozturk          #+#    #+#             */
+/*   Updated: 2025/08/24 12:00:00 by huozturk         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../lib/minishell.h"
+
+/* ************************************************************************** */
+/*                            MAIN EXECUTOR FUNCTION                         */
+/* ************************************************************************** */
+
+int	execute_commands(t_command *commands, t_global *global)
+{
+	if (!commands)
+		return (0);
+	if (commands->next)
+		return (execute_pipeline(commands, global));
+	else
+		return (execute_single_command(commands, global));
+}
+
+/* ************************************************************************** */
+/*                            SINGLE COMMAND EXECUTION                       */
+/* ************************************************************************** */
+
+int	execute_single_command(t_command *cmd, t_global *global)
+{
+	if (!cmd || !cmd->args || !cmd->args[0])
+		return (1);
+	if (is_builtin(cmd->args[0]))
+		return (execute_builtin(cmd, global));
+	return (execute_external_command(cmd, global));
+}
+
+/* ************************************************************************** */
+/*                            EXTERNAL COMMAND EXECUTION                     */
+/* ************************************************************************** */
+
+int	execute_external_command(t_command *cmd, t_global *global)
+{
+	pid_t	pid;
+	int		status;
+	char	*path;
+
+	path = find_command_path(cmd->args[0], global->env_list);
+	if (!path)
+	{
+		printf("minishell: %s: command not found\n", cmd->args[0]);
+		return (127);
+	}
+	pid = fork();
+	if (pid == 0)
+	{
+		setup_redirections(cmd);
+		execve(path, cmd->args, env_list_to_array(global->env_list));
+		perror("execve");
+		exit(127);
+	}
+	else if (pid > 0)
+	{
+		waitpid(pid, &status, 0);
+		free(path);
+		return (WEXITSTATUS(status));
+	}
+	else
+	{
+		perror("fork");
+		free(path);
+		return (1);
+	}
+}
+
+/* ************************************************************************** */
+/*                            PIPELINE EXECUTION                             */
+/* ************************************************************************** */
+
+int	execute_pipeline(t_command *commands, t_global *global)
+{
+	t_command	*current;
+	int			pipe_fd[2];
+	int			prev_fd;
+	int			last_status;
+
+	current = commands;
+	prev_fd = 0;
+	last_status = 0;
+	while (current)
+	{
+		if (current->next && pipe(pipe_fd) == -1)
+		{
+			perror("pipe");
+			return (1);
+		}
+		last_status = execute_pipeline_command(current, global, prev_fd, pipe_fd);
+		if (prev_fd != 0)
+			close(prev_fd);
+		if (current->next)
+		{
+			close(pipe_fd[1]);
+			prev_fd = pipe_fd[0];
+		}
+		current = current->next;
+	}
+	return (last_status);
+}
+
+/* ************************************************************************** */
+/*                            PIPELINE COMMAND EXECUTION                     */
+/* ************************************************************************** */
+
+int	execute_pipeline_command(t_command *cmd, t_global *global, int prev_fd, int *pipe_fd)
+{
+	pid_t	pid;
+	int		status;
+	char	*path;
+
+	if (is_builtin(cmd->args[0]) && !cmd->next && prev_fd == 0)
+		return (execute_builtin(cmd, global));
+	path = find_command_path(cmd->args[0], global->env_list);
+	if (!path)
+		return (127);
+	pid = fork();
+	if (pid == 0)
+	{
+		setup_pipeline_fds(cmd, prev_fd, pipe_fd);
+		setup_redirections(cmd);
+		if (is_builtin(cmd->args[0]))
+		{
+			execute_builtin(cmd, global);
+			exit(global->exit_status);
+		}
+		execve(path, cmd->args, env_list_to_array(global->env_list));
+		perror("execve");
+		exit(127);
+	}
+	else if (pid > 0)
+	{
+		waitpid(pid, &status, 0);
+		free(path);
+		return (WEXITSTATUS(status));
+	}
+	else
+	{
+		perror("fork");
+		free(path);
+		return (1);
+	}
+}

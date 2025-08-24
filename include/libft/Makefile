@@ -39,7 +39,8 @@ SRC = ft_atoi.c \
 		ft_lstnew.c \
 		ft_lstutils.c \
 		garbage_collector.c \
-		ft_lstclear.c
+		ft_lstclear.c \
+		ft_strcmp.c
 
 OBJDIR = obj
 OBJ = $(addprefix $(OBJDIR)/, $(SRC:.c=.o))
