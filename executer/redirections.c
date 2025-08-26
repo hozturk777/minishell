@@ -74,6 +74,17 @@ void	handle_single_redirection(t_redirect *redirect)
 		dup2(fd, STDOUT_FILENO);
 		close(fd);
 	}
+	else if (redirect->type == T_HEREDOC)
+	{
+		fd = handle_heredoc(redirect->filename);
+		if (fd == -1)
+		{
+			perror("heredoc");
+			exit(1);
+		}
+		dup2(fd, STDIN_FILENO);
+		close(fd);
+	}
 }
 
 /* ************************************************************************** */
@@ -94,3 +105,65 @@ void	setup_pipeline_fds(t_command *cmd, int prev_fd, int *pipe_fd)
 		close(pipe_fd[1]);
 	}
 }
+
+/* ************************************************************************** */
+/*                            HEREDOC IMPLEMENTATION                         */
+/* ************************************************************************** */
+
+char	*generate_temp_filename(void)
+{
+	static int	counter = 0;
+	char		*num_str;
+	char		*temp_name;
+	char		*final_name;
+
+	num_str = ft_itoa(counter++);
+	if (!num_str)
+		return (NULL);
+	temp_name = ft_strjoin("/tmp/minishell_heredoc_", num_str);
+	free(num_str);
+	if (!temp_name)
+		return (NULL);
+	final_name = ft_strjoin(temp_name, ".tmp");
+	free(temp_name);
+	return (final_name);
+}
+
+int	handle_heredoc(char *delimiter)
+{
+	char	*temp_filename;
+	char	*line;
+	int		temp_fd;
+
+	temp_filename = generate_temp_filename();
+	if (!temp_filename)
+		return (-1);
+	temp_fd = open(temp_filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	if (temp_fd == -1)
+	{
+		free(temp_filename);
+		return (-1);
+	}
+	printf("> ");
+	fflush(stdout);
+	while ((line = readline("")) != NULL)
+	{
+		if (ft_strcmp(line, delimiter) == 0)
+		{
+			free(line);
+			break ;
+		}
+		write(temp_fd, line, ft_strlen(line));
+		write(temp_fd, "\n", 1);
+		free(line);
+		printf("> ");
+		fflush(stdout);
+	}
+	close(temp_fd);
+	temp_fd = open(temp_filename, O_RDONLY);
+	unlink(temp_filename);
+	free(temp_filename);
+	return (temp_fd);
+}
+
+/* ************************************************************************** */
