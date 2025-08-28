@@ -1,14 +1,14 @@
-/* ***************************************************************************************** */
-/*                                                                                           */
-/*                                                                       :::      ::::::::   */
-/*   lexer.c                                                           :+:      :+:    :+:   */
-/*                                                                   +:+ +:+         +:+     */
-/*   By: hasivaci <hasivaci@student.42kocaeli.com.tr>              +#+  +:+       +#+        */
-/*                                                               +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/23 21:11:04 by hasivaci                         #+#    #+#             */
-/*   Updated: 2025/08/23 22:59:57 by hasivaci                        ###   ########.tr       */
-/*                                                                                           */
-/* ***************************************************************************************** */
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   lexer.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: hasivaci <hasivaci@student.42kocaeli.co    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/08/28 17:38:04 by hasivaci          #+#    #+#             */
+/*   Updated: 2025/08/28 17:38:13 by hasivaci         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "../lib/minishell.h"
 
@@ -56,7 +56,7 @@ t_token_new	*create_token_advanced(t_token_types type, char *value)
 	token->value = ft_strdup(value);
 	if (!token->value)
 	{
-		free(token);// büyük ihtimalle bunlar silinecek
+		free(token); // büyük ihtimalle bunlar silinecek
 		return (NULL);
 	}
 	token->len = ft_strlen(value);

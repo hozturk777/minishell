@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   debug_advanced.c                                   :+:      :+:    :+:   */
+/*   debug.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: huozturk <huozturk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hasivaci <hasivaci@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 12:00:00 by huozturk          #+#    #+#             */
-/*   Updated: 2025/01/08 12:00:00 by huozturk         ###   ########.fr       */
+/*   Updated: 2025/08/28 17:37:40 by hasivaci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,8 +49,8 @@ void	print_tokens_advanced(t_list *tokens)
 	while (current)
 	{
 		token = (t_token_new *)current->content;
-		printf("Token[%d]: Type=%-12s Value='%s' Len=%d\n",
-			i, get_token_type_name(token->type), token->value, token->len);
+		printf("Token[%d]: Type=%-12s Value='%s' Len=%d\n", i,
+			get_token_type_name(token->type), token->value, token->len);
 		current = current->next;
 		i++;
 	}
@@ -64,8 +64,8 @@ void	debug_print(char *msg)
 
 int	is_special_char(char c)
 {
-	if (c == '|' || c == '<' || c == '>' || c == '\'' || c == '"'
-		|| c == ' ' || c == '\t' || c == '\n')
+	if (c == '|' || c == '<' || c == '>' || c == '\'' || c == '"' || c == ' '
+		|| c == '\t' || c == '\n')
 		return (1);
 	return (0);
 }

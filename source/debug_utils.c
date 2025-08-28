@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   debug_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hsyn <hsyn@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: hasivaci <hasivaci@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/22 05:15:00 by hsyn              #+#    #+#             */
-/*   Updated: 2025/08/22 05:32:34 by hsyn             ###   ########.fr       */
+/*   Created: 2025/08/28 17:37:10 by hasivaci          #+#    #+#             */
+/*   Updated: 2025/08/28 17:37:19 by hasivaci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,11 +22,9 @@ void	print_commands_debug(t_command *commands)
 
 	current = commands;
 	cmd_count = 1;
-	
 	while (current)
 	{
 		printf("Command %d:\n", cmd_count);
-		
 		// Print arguments
 		printf("  Args: ");
 		if (current->args)
@@ -45,7 +43,6 @@ void	print_commands_debug(t_command *commands)
 			printf("(none)");
 		}
 		printf("\n");
-		
 		// Print redirections
 		printf("  Redirections: ");
 		redirect_node = current->redirections;
@@ -56,23 +53,22 @@ void	print_commands_debug(t_command *commands)
 			{
 				redirect = (t_redirect *)redirect_node->content;
 				printf("    ");
-				
 				switch (redirect->type)
 				{
-					case T_REDIRECT_IN:
-						printf("< '%s'", redirect->filename);
-						break;
-					case T_REDIRECT_OUT:
-						printf("> '%s'", redirect->filename);
-						break;
-					case T_APPEND:
-						printf(">> '%s'", redirect->filename);
-						break;
-					case T_HEREDOC:
-						printf("<< '%s'", redirect->filename);
-						break;
-					default:
-						printf("Unknown redirect");
+				case T_REDIRECT_IN:
+					printf("< '%s'", redirect->filename);
+					break ;
+				case T_REDIRECT_OUT:
+					printf("> '%s'", redirect->filename);
+					break ;
+				case T_APPEND:
+					printf(">> '%s'", redirect->filename);
+					break ;
+				case T_HEREDOC:
+					printf("<< '%s'", redirect->filename);
+					break ;
+				default:
+					printf("Unknown redirect");
 				}
 				printf("\n");
 				redirect_node = redirect_node->next;
@@ -82,10 +78,8 @@ void	print_commands_debug(t_command *commands)
 		{
 			printf("(none)\n");
 		}
-		
 		printf("  Pipe: %s\n", current->next ? "YES" : "NO");
 		printf("\n");
-		
 		current = current->next;
 		cmd_count++;
 	}
@@ -104,7 +98,6 @@ void	free_commands_list(t_command *commands)
 	while (current)
 	{
 		next = current->next;
-		
 		// Free arguments array
 		if (current->args)
 		{
@@ -116,7 +109,6 @@ void	free_commands_list(t_command *commands)
 			}
 			free(current->args);
 		}
-		
 		// Free redirections list
 		redirect_node = current->redirections;
 		while (redirect_node)
@@ -132,7 +124,6 @@ void	free_commands_list(t_command *commands)
 			free(redirect_node);
 			redirect_node = next_redirect;
 		}
-		
 		// Free command structure
 		free(current);
 		current = next;
@@ -146,13 +137,11 @@ t_command	*create_command(void)
 	cmd = halloc(sizeof(t_command));
 	if (!cmd)
 		return (NULL);
-	
 	cmd->args = NULL;
 	cmd->redirections = NULL;
 	cmd->pipe_fd[0] = -1;
 	cmd->pipe_fd[1] = -1;
 	cmd->pid = -1;
 	cmd->next = NULL;
-	
 	return (cmd);
 }
