@@ -41,25 +41,59 @@ int	is_builtin(char *command) // Define olarak ya da enum olarak eklenecek her b
 /*                            BUILT-IN EXECUTOR                              */
 /* ************************************************************************** */
 
-int	execute_builtin(t_command *cmd, t_global *global) // Define olarak ya da enum olarak eklenecek her biri
+int	execute_builtin(t_command *cmd, t_global *global)
 {
+	int	original_stdout;
+	int	original_stdin;
+	int	result;
+
 	if (!cmd || !cmd->args || !cmd->args[0])
 		return (1);
+	
+	// Redirection varsa file descriptor'ları kaydet ve setup et
+	original_stdout = -1;
+	original_stdin = -1;
+	if (cmd->redirections)
+	{
+		original_stdout = dup(STDOUT_FILENO);
+		original_stdin = dup(STDIN_FILENO);
+		setup_redirections(cmd);
+	}
+	
+	// Built-in komutunu çalıştır
 	if (ft_strcmp(cmd->args[0], "pwd") == 0)
-		return (builtin_pwd_global(global));
-	if (ft_strcmp(cmd->args[0], "echo") == 0)
-		return (builtin_echo(cmd->args));
-	if (ft_strcmp(cmd->args[0], "env") == 0)
-		return (builtin_env(global->env_list));
-	if (ft_strcmp(cmd->args[0], "exit") == 0)
-		return (builtin_exit(cmd->args, global));
-	if (ft_strcmp(cmd->args[0], "cd") == 0)
-		return (builtin_cd(cmd->args, global));
-	if (ft_strcmp(cmd->args[0], "export") == 0)
-		return (builtin_export(cmd->args, global));
-	if (ft_strcmp(cmd->args[0], "unset") == 0)
-		return (builtin_unset(cmd->args, global));
-	return (1);
+		result = builtin_pwd_global(global);
+	else if (ft_strcmp(cmd->args[0], "echo") == 0)
+		result = builtin_echo(cmd->args);
+	else if (ft_strcmp(cmd->args[0], "env") == 0)
+		result = builtin_env(global->env_list);
+	else if (ft_strcmp(cmd->args[0], "exit") == 0)
+		result = builtin_exit(cmd->args, global);
+	else if (ft_strcmp(cmd->args[0], "cd") == 0)
+		result = builtin_cd(cmd->args, global);
+	else if (ft_strcmp(cmd->args[0], "export") == 0)
+		result = builtin_export(cmd->args, global);
+	else if (ft_strcmp(cmd->args[0], "unset") == 0)
+		result = builtin_unset(cmd->args, global);
+	else
+		result = 1;
+	
+	// File descriptor'ları eski haline getir
+	if (cmd->redirections)
+	{
+		if (original_stdout != -1)
+		{
+			dup2(original_stdout, STDOUT_FILENO);
+			close(original_stdout);
+		}
+		if (original_stdin != -1)
+		{
+			dup2(original_stdin, STDIN_FILENO);
+			close(original_stdin);
+		}
+	}
+	
+	return (result);
 }
 
 /* ************************************************************************** */
