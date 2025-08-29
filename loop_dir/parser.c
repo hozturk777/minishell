@@ -59,6 +59,10 @@ t_command	*parse_single_command(t_list **token_node, t_global *global)
     cmd->args = convert_list_to_array(args_list);
     *token_node = current;
     ft_lstclear(&args_list, free);
+    
+    // Variable expansion işlemi
+    expand_command_args(cmd, global);
+    
     return (cmd);
 }
 

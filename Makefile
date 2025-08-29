@@ -22,6 +22,8 @@ MINISHELL_SRCS		= $(SRC_DIR)main.c \
 					  $(SRC_DIR)env_utils.c \
 					  $(SRC_DIR)debug.c \
 					  $(SRC_DIR)debug_utils.c \
+					  $(SRC_DIR)variable_expansion.c \
+					  $(SRC_DIR)quote_expansion.c \
 					  $(EXEC_DIR)builtins.c \
 					  $(EXEC_DIR)builtins2.c \
 					  $(EXEC_DIR)executor.c \

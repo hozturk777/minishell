@@ -185,6 +185,19 @@ void			add_redirect_to_command(t_command *cmd, t_redirect *redirect);
 void			print_commands_debug(t_command *commands);				/* Komutları debug yazdır */
 void			free_commands_list(t_command *commands);				/* Komut listesini serbest bırak */
 
+// ========== VARIABLE EXPANSION FONKSIYONLARI ==========
+char			*expand_variables(char *input, t_global *global);		/* Değişken genişletme ana fonksiyon */
+char			*handle_dollar_expansion(char *input, int *i, t_global *global);	/* $VAR genişletme */
+char			*handle_regular_char(char *input, int *i);				/* Normal karakter işleme */
+char			*join_and_free(char *s1, char *s2);					/* İki string birleştir ve bellekten serbest bırak */
+
+// ========== QUOTE & EXPANSION FONKSIYONLARI ==========
+char			*expand_with_quotes(char *input, t_global *global);		/* Tırnakla genişletme */
+void			update_quote_state(char c, int *quote_state);			/* Tırnak durumunu güncelle */
+char			*remove_outer_quotes(char *input);						/* Dış tırnakları kaldır */
+int				needs_expansion(char *str);								/* Genişletme gerekli mi kontrol et */
+void			expand_command_args(t_command *cmd, t_global *global);	/* Komut argümanlarını genişlet */
+
 // ========== BUILT-IN FONKSIYONLARI ==========
 int				is_builtin(char *command);								/* Built-in komut mu kontrol et */
 int				execute_builtin(t_command *cmd, t_global *global);		/* Built-in komut çalıştır */
