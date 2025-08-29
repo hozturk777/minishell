@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hasivaci <hasivaci@student.42kocaeli.co    +#+  +:+       +#+        */
+/*   By: hsyn <hsyn@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/28 17:39:03 by hasivaci          #+#    #+#             */
-/*   Updated: 2025/08/28 17:39:07 by hasivaci         ###   ########.fr       */
+/*   Updated: 2025/08/29 19:37:53 by hsyn             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,7 +112,7 @@ char	*remove_quotes(char *str)
 {
 	int		len;
 	char	*result;
-	char	quote_char;
+	//char	quote_char;
 
 	if (!str)
 		return (NULL);
@@ -122,7 +122,7 @@ char	*remove_quotes(char *str)
 	if ((str[0] == '"' && str[len - 1] == '"') ||
 		(str[0] == '\'' && str[len - 1] == '\''))
 	{
-		quote_char = str[0];
+		//quote_char = str[0];
 		result = ft_substr(str, 1, len - 2);
 		return (result);
 	}
