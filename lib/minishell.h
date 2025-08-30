@@ -123,6 +123,8 @@ typedef struct s_global
 	int			heredoc_count;	/* Mevcut komuttaki heredoc sayısı */
 	char		*input_line;	/* İşlenmekte olan mevcut girdi satırı */
 	int			interactive;	/* Etkileşimli mod bayrağı (1=evet, 0=hayır) */
+	int			in_child;		/* Child process'te mi (1=evet, 0=hayır) */
+	int			should_exit;	/* Çıkış yapılması gerekiyor mu */
 }	t_global;
 
 /* ************************************************************************** */
@@ -241,4 +243,13 @@ void			handle_single_redirection(t_redirect *redirect);		/* Tek yönlendirme iş
 void			setup_pipeline_fds(t_command *cmd, int prev_fd, int *pipe_fd);	/* Pipeline fd ayarla */
 int				handle_heredoc(char *delimiter);						/* Heredoc işle */
 char			*generate_temp_filename(void);							/* Geçici dosya adı oluştur */
+
+// ========== SIGNAL HANDLING FONKSIYONLARI ==========
+void			setup_signals(void);									/* Sinyalleri ayarla */
+void			sigint_handler(int sig);								/* SIGINT (Ctrl+C) handler */
+void			sigquit_handler(int sig);								/* SIGQUIT (Ctrl+\) handler */
+void			restore_signals(void);									/* Default sinyalleri geri yükle */
+void			setup_child_signals(void);								/* Child process sinyalleri */
+void			handle_eof(void);										/* EOF (Ctrl+D) işleme */
+
 #endif

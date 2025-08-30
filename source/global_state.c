@@ -12,6 +12,9 @@
 
 #include "../lib/minishell.h"
 
+// Global değişken - sinyal handler'lar için
+t_global	*g_global = NULL;
+
 t_global	*init_global(char **envp) // bzero YAPILCAK
 {
 	t_global	*global;
@@ -27,6 +30,12 @@ t_global	*init_global(char **envp) // bzero YAPILCAK
 	global->heredoc_count = 0;
 	global->input_line = NULL;
 	global->interactive = 1;
+	global->in_child = 0;
+	global->should_exit = 0;
+	
+	// Global değişkeni ayarla
+	g_global = global;
+	
 	return (global);
 }
 
@@ -40,6 +49,11 @@ void	free_global(t_global *global)
 		free_env_list(global->env_list);
 	if (global->input_line)
 		free(global->input_line);
+	
+	// Global değişkeni temizle
+	if (g_global == global)
+		g_global = NULL;
+		
 	free(global);
 }
 

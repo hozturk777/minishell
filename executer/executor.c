@@ -58,6 +58,10 @@ int	execute_external_command(t_command *cmd, t_global *global)
 	pid = fork();
 	if (pid == 0)
 	{
+		// Child process - sinyalleri default davranışa çevir
+		setup_child_signals();
+		global->in_child = 1;
+		
 		setup_redirections(cmd);
 		execve(path, cmd->args, env_list_to_array(global->env_list));
 		perror("execve");
@@ -129,6 +133,10 @@ int	execute_pipeline_command(t_command *cmd, t_global *global, int prev_fd, int 
 	pid = fork();
 	if (pid == 0)
 	{
+		// Child process - sinyalleri default davranışa çevir
+		setup_child_signals();
+		global->in_child = 1;
+		
 		setup_pipeline_fds(cmd, prev_fd, pipe_fd);
 		setup_redirections(cmd);
 		if (is_builtin(cmd->args[0]))

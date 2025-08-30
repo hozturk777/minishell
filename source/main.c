@@ -119,12 +119,13 @@ static void	run_shell_loop(t_global *global)
 	int		should_exit;
 
 	should_exit = 0;
-	while (!should_exit)
+	while (!should_exit && !global->should_exit)
 	{
 		input = readline(PROMPT);
 		if (!input)
 		{
-			printf("\n");
+			// EOF (Ctrl+D) algılandı
+			handle_eof();
 			break ;
 		}
 		should_exit = process_input(input, global);
@@ -144,9 +145,16 @@ int	main(int argc, char **argv, char **envp) // argc sayısı check
 		printf("Error: Failed to initialize global state\n");
 		return (1);
 	}
+	
+	// Sinyalleri ayarla
+	setup_signals();
+	
 	print_welcome_advanced();
 	debug_print("Global state initialized successfully");
+	debug_print("Signal handlers set up successfully");
+	
 	run_shell_loop(global);
+	
 	printf(GREEN "Goodbye!" RESET "\n");
 	free_global(global);
 	return (0);
