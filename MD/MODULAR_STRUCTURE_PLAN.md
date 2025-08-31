@@ -287,7 +287,7 @@ environment/
 ### **📂 Dosyalar:**
 ```
 signals/
-├── signal_handler.c           [MEVCUT: source/signal_handler.c]
+├── signal_handler.c           [MEVCUT: source/signal_handler.c]s
 ├── signal_utils.c             [YENİ: Sinyal yardımcı fonksiyonlar]
 └── signals.h                  [YENİ: Header dosyası]
 ```

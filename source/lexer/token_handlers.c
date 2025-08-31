@@ -6,11 +6,11 @@
 /*   By: hsyn <hsyn@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 12:00:00 by huozturk          #+#    #+#             */
-/*   Updated: 2025/08/22 02:36:17 by hsyn             ###   ########.fr       */
+/*   Updated: 2025/08/31 23:25:57 by hsyn             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../lib/minishell.h"
+#include "../../lib/minishell.h"
 
 t_token_new	*handle_pipe_advanced(t_lexer_new *lexer)
 {

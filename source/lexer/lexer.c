@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   lexer.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hasivaci <hasivaci@student.42kocaeli.co    +#+  +:+       +#+        */
+/*   By: hsyn <hsyn@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/28 17:38:04 by hasivaci          #+#    #+#             */
-/*   Updated: 2025/08/28 17:38:13 by hasivaci         ###   ########.fr       */
+/*   Updated: 2025/08/31 23:26:08 by hsyn             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../lib/minishell.h"
+#include "../../lib/minishell.h"
 
 t_lexer_new	*init_lexer_advanced(char *input, t_global *global)
 {

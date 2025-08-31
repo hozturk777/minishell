@@ -6,11 +6,11 @@
 /*   By: hsyn <hsyn@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 12:00:00 by hsyn              #+#    #+#             */
-/*   Updated: 2025/08/22 12:00:00 by hsyn             ###   ########.fr       */
+/*   Updated: 2025/08/31 23:38:14 by hsyn             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../lib/minishell.h"
+#include "../../lib/minishell.h"
 
 char	*expand_with_quotes(char *input, t_global *global)
 {

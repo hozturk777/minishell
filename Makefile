@@ -1,11 +1,15 @@
 MAKEFLAGS			+= --no-print-directory
 NAME				= minishell
-EXEC_DIR			= executer/
-EXPA_DIR			= expander/
-LEX_DIR				= lexer/
-PAR_DIR				= parser/
-SRC_DIR				= source/
-UTL_DIR				= utils/
+EXEC_DIR			= source/executer/
+EXPA_DIR			= source/expander/
+PAR_DIR				= source/parser/
+LXR_DIR				= source/lexer/
+BUILD_DIR			= source/builtins/
+REDIRECT_DIR		= source/redirection/
+ENV_DIR				= source/environment/
+SIG_DIR				= source/signal/
+UTL_DIR				= source/utils/
+SRC_DIR				= source/core/
 LIBFT_DIR			= include/libft/
 LRDR				= -lreadline
 CC					= @cc
@@ -14,23 +18,23 @@ RM					= rm -rf
 OBJ_DIR				= objects/
 
 MINISHELL_SRCS		= $(SRC_DIR)main.c \
-					  $(SRC_DIR)lexer.c \
-					  $(SRC_DIR)tokenizer.c \
-					  $(SRC_DIR)token_handlers.c \
-					  $(SRC_DIR)global_state.c \
-					  $(SRC_DIR)environment.c \
-					  $(SRC_DIR)env_utils.c \
-					  $(SRC_DIR)debug.c \
-					  $(SRC_DIR)debug_utils.c \
-					  $(SRC_DIR)variable_expansion.c \
-					  $(SRC_DIR)quote_expansion.c \
-					  $(SRC_DIR)signal_handler.c \
-					  $(EXEC_DIR)builtins.c \
-					  $(EXEC_DIR)builtins2.c \
+					  $(LXR_DIR)lexer.c \
+					  $(LXR_DIR)tokenizer.c \
+					  $(LXR_DIR)token_handlers.c \
+					  $(UTL_DIR)global_state.c \
+					  $(ENV_DIR)environment.c \
+					  $(ENV_DIR)env_utils.c \
+					  $(UTL_DIR)debug.c \
+					  $(UTL_DIR)debug_utils.c \
+					  $(EXPA_DIR)variable_expansion.c \
+					  $(EXPA_DIR)quote_expansion.c \
+					  $(SIG_DIR)signal_handler.c \
+					  $(BUILD_DIR)builtins.c \
+					  $(BUILD_DIR)builtins2.c \
 					  $(EXEC_DIR)executor.c \
-					  $(EXEC_DIR)path_utils.c \
-					  $(EXEC_DIR)redirections.c \
-					  loop_dir/parser.c \
+					  $(ENV_DIR)path_utils.c \
+					  $(REDIRECT_DIR)redirections.c \
+					  $(PAR_DIR)parser.c \
 
 SRCS				= $(MINISHELL_SRCS)
 OBJ					= $(addprefix $(OBJ_DIR), $(notdir $(SRCS:.c=.o)))
@@ -49,21 +53,23 @@ $(NAME):			$(OBJ)
 					@$(CC) $(CFLAGS) $(OBJ) $(LIBFT_DIR)libft.a $(LRDR) -o $(NAME)
 					@echo "\n\e[1m$(COLOR_YELLOW)$(NAME)	$(COLOR_GREEN)[is ready!]\e[0m\n$(COLOR_END)"
 
-$(OBJ_DIR)%.o: $(SRC_DIR)%.c
+VPATH = $(SRC_DIR):$(UTL_DIR):$(LXR_DIR):$(EXEC_DIR)::$(EXPA_DIR):$(PAR_DIR):$(BUILD_DIR):$(REDIRECT_DIR):$(ENV_DIR):$(SIG_DIR):$(UTL_DIR)
+
+$(OBJ_DIR)%.o: %.c
 					@mkdir -p $(OBJ_DIR)
 					@$(CC) $(CFLAGS) -c $< -o $@
 
-$(OBJ_DIR)%.o: $(UTL_DIR)%.c
-					@mkdir -p $(OBJ_DIR)
-					@$(CC) $(CFLAGS) -c $< -o $@
+#$(OBJ_DIR)%.o: $(UTL_DIR)%.c
+#					@mkdir -p $(OBJ_DIR)
+#					@$(CC) $(CFLAGS) -c $< -o $@
 
-$(OBJ_DIR)%.o: loop_dir/%.c
-					@mkdir -p $(OBJ_DIR)
-					@$(CC) $(CFLAGS) -c $< -o $@
+#$(OBJ_DIR)%.o: loop_dir/%.c
+#					@mkdir -p $(OBJ_DIR)
+#					@$(CC) $(CFLAGS) -c $< -o $@
 
-$(OBJ_DIR)%.o: $(EXEC_DIR)%.c
-					@mkdir -p $(OBJ_DIR)
-					@$(CC) $(CFLAGS) -c $< -o $@
+#$(OBJ_DIR)%.o: $(EXEC_DIR)%.c
+#					@mkdir -p $(OBJ_DIR)
+#					@$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
 					@$(RM) $(OBJ_DIR)

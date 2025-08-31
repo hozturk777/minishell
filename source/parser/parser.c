@@ -6,11 +6,11 @@
 /*   By: hsyn <hsyn@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 02:50:00 by hsyn              #+#    #+#             */
-/*   Updated: 2025/08/22 05:32:34 by hsyn             ###   ########.fr       */
+/*   Updated: 2025/08/31 23:38:30 by hsyn             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../lib/minishell.h"
+#include "../../lib/minishell.h"
 
 t_command	*parse_tokens_to_commands(t_list *tokens, t_global *global)
 {
