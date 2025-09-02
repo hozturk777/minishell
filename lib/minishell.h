@@ -6,7 +6,7 @@
 /*   By: hsyn <hsyn@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 12:00:00 by huozturk          #+#    #+#             */
-/*   Updated: 2025/08/22 05:32:34 by hsyn             ###   ########.fr       */
+/*   Updated: 2025/09/02 22:15:57 by hsyn             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -251,5 +251,8 @@ void			sigquit_handler(int sig);								/* SIGQUIT (Ctrl+\) handler */
 void			restore_signals(void);									/* Default sinyalleri geri yükle */
 void			setup_child_signals(void);								/* Child process sinyalleri */
 void			handle_eof(void);										/* EOF (Ctrl+D) işleme */
+
+void			print_welcome_advanced(void);
+
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: hsyn <hsyn@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 12:00:00 by huozturk          #+#    #+#             */
-/*   Updated: 2025/08/31 23:45:44 by hsyn             ###   ########.fr       */
+/*   Updated: 2025/09/02 22:39:13 by hsyn             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ t_env	*init_env_from_envp(char **envp)
 	char	*value;
 	int		i;
 
-	env_list = NULL;
+	env_list = NULL; // new_node için de başlangıç değeri gerekebilir.
 	i = 0;
 	while (envp[i])
 	{

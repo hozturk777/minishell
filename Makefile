@@ -18,6 +18,7 @@ RM					= rm -rf
 OBJ_DIR				= objects/
 
 MINISHELL_SRCS		= $(SRC_DIR)main.c \
+					  $(SRC_DIR)print_welcome.c \
 					  $(LXR_DIR)lexer.c \
 					  $(LXR_DIR)tokenizer.c \
 					  $(LXR_DIR)token_handlers.c \
