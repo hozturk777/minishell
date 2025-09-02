@@ -6,7 +6,7 @@
 /*   By: hsyn <hsyn@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/24 12:00:00 by huozturk          #+#    #+#             */
-/*   Updated: 2025/08/31 23:38:50 by hsyn             ###   ########.fr       */
+/*   Updated: 2025/09/02 13:41:44 by hsyn             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,19 @@ int	execute_external_command(t_command *cmd, t_global *global)
 	{
 		waitpid(pid, &status, 0);
 		free(path);
+		
+		// Signal ile sonlandı mı kontrol et
+		if (WIFSIGNALED(status))
+		{
+			int signal_num = WTERMSIG(status);
+			if (signal_num == SIGINT)
+				return (130); // 128 + SIGINT
+			else if (signal_num == SIGQUIT)
+				return (131); // 128 + SIGQUIT
+			else
+				return (128 + signal_num);
+		}
+		
 		return (WEXITSTATUS(status));
 	}
 	else
@@ -152,6 +165,19 @@ int	execute_pipeline_command(t_command *cmd, t_global *global, int prev_fd, int 
 	{
 		waitpid(pid, &status, 0);
 		free(path);
+		
+		// Signal ile sonlandı mı kontrol et
+		if (WIFSIGNALED(status))
+		{
+			int signal_num = WTERMSIG(status);
+			if (signal_num == SIGINT)
+				return (130); // 128 + SIGINT
+			else if (signal_num == SIGQUIT)
+				return (131); // 128 + SIGQUIT
+			else
+				return (128 + signal_num);
+		}
+		
 		return (WEXITSTATUS(status));
 	}
 	else
