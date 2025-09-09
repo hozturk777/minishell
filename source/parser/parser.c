@@ -6,7 +6,7 @@
 /*   By: hsyn <hsyn@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 02:50:00 by hsyn              #+#    #+#             */
-/*   Updated: 2025/08/31 23:38:30 by hsyn             ###   ########.fr       */
+/*   Updated: 2025/09/08 22:10:05 by hsyn             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,9 +21,9 @@ t_command	*parse_tokens_to_commands(t_list *tokens, t_global *global)
     head = NULL;
     current = NULL;
     token_node = tokens;
-    while (token_node)
+    while (token_node) // Tüm tokenları gezecek
     {
-        if (is_command_start(token_node))
+        if (is_command_start(token_node)) // Token word ise
         {
             current = parse_single_command(&token_node, global);
             if (!head)
@@ -31,7 +31,7 @@ t_command	*parse_tokens_to_commands(t_list *tokens, t_global *global)
             else
                 append_command_to_chain(head, current);
         }
-        else
+        else // Token word değil ise diğer token'a geç
             token_node = token_node->next;
     }
     return (head);
@@ -43,25 +43,25 @@ t_command	*parse_single_command(t_list **token_node, t_global *global)
     t_list		*args_list;
     t_list		*current;
 
-    cmd = create_command();
-    if (!cmd)
+    cmd = create_command(); // Command list initialize
+    if (!cmd) // Buraya bizim error_check yapılabilir
         return (NULL);
     args_list = NULL;
     current = *token_node;
-    while (current && !is_pipe_token(current))
+    while (current && !is_pipe_token(current)) // Pipelar arasını word ve redirectleri ayırma işlemi
     {
-        if (is_redirect_token(current))
-            parse_redirection(cmd, &current, global);
-        else if (is_word_token(current))
-            collect_command_arg(&args_list, current);
+        if (is_redirect_token(current)) // Redirect var ise yönlendirmeyi yapıyor
+            parse_redirection(cmd, &current, global); // redirect var ise cmd.redirections'a ekler
+        else if (is_word_token(current)) // Wordlari de listeye ekliyor
+            collect_command_arg(&args_list, current); // Wordleri arg_list içerisine ekler
         current = current->next;
     }
-    cmd->args = convert_list_to_array(args_list);
-    *token_node = current;
+    cmd->args = convert_list_to_array(args_list); // oluşan arg_list'i cmd.args'e ekler
+    *token_node = current; // token_node'u eğer command line bittiyse NULL pipe'a denk geldiyse yeni command'a geçer
     ft_lstclear(&args_list, free);
     
     // Variable expansion işlemi
-    expand_command_args(cmd, global);
+    expand_command_args(cmd, global); // Dolar gelirse expand işlemi yapıyor ve tırnak işlemleri burada FİXlenecek ama!!
     
     return (cmd);
 }

@@ -6,7 +6,7 @@
 /*   By: hsyn <hsyn@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/28 17:38:23 by hasivaci          #+#    #+#             */
-/*   Updated: 2025/09/02 22:15:37 by hsyn             ###   ########.fr       */
+/*   Updated: 2025/09/09 19:23:38 by hsyn             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,7 +104,7 @@ int	main(int argc, char **argv, char **envp) // argc sayısı check
 		return (1);
 	}
 	
-	// Sinyalleri ayarla
+	// Sinyalleri ayarla (ARAŞTIRILACAK)
 	setup_signals();
 	
 	print_welcome_advanced();

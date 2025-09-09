@@ -62,7 +62,7 @@ char	*handle_dollar_expansion(char *input, int *i, t_global *global)
 	var_name = ft_substr(input, start, *i - start);
 	var_value = get_env_value(global->env_list, var_name);
 	free(var_name);
-	return (var_value ? ft_strdup(var_value) : ft_strdup(""));
+	return (var_value ? ft_strdup(var_value) : ft_strdup("")); // Burası yasak değişecek
 }
 
 char	*handle_regular_char(char *input, int *i)

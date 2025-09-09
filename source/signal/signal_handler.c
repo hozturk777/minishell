@@ -6,7 +6,7 @@
 /*   By: hsyn <hsyn@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/30 15:30:00 by hasivaci          #+#    #+#             */
-/*   Updated: 2025/08/31 23:48:11 by hsyn             ###   ########.fr       */
+/*   Updated: 2025/09/09 13:10:31 by hsyn             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,7 @@ void	setup_signals(void)
 /**
  * Child process'ler için sinyalleri default davranışa çevir
  */
-void	setup_child_signals(void)
+void	setup_child_signals(void) // Araştırılacak!!
 {
 	struct sigaction	sa;
 

@@ -6,7 +6,7 @@
 /*   By: hsyn <hsyn@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 12:00:00 by huozturk          #+#    #+#             */
-/*   Updated: 2025/09/02 22:15:57 by hsyn             ###   ########.fr       */
+/*   Updated: 2025/09/09 11:32:42 by hsyn             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,7 @@ typedef struct s_command
 	char				**args;		/* Komut ve argümanlar dizisi (["ls", "-l", NULL]) */
 	t_list				*redirections;	/* Bu komut için yönlendirmeler listesi */
 	int					pipe_fd[2];	/* Pipe dosya tanımlayıcıları [okuma_ucu, yazma_ucu] */
-	pid_t				pid;		/* Komut çalıştırıldığında süreç ID'si */
+	pid_t				pid;		/* Komut çalıştırıldığında süreç ID'si */ // LAZIM MI EMİN DEĞİLİM
 	struct s_command	*next;		/* Pipeline'daki sonraki komut */
 }	t_command;
 

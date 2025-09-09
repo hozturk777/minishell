@@ -6,7 +6,7 @@
 /*   By: hsyn <hsyn@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/24 12:00:00 by huozturk          #+#    #+#             */
-/*   Updated: 2025/09/02 13:41:44 by hsyn             ###   ########.fr       */
+/*   Updated: 2025/09/09 21:25:14 by hsyn             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,27 +49,27 @@ int	execute_external_command(t_command *cmd, t_global *global)
 	int		status;
 	char	*path;
 
-	path = find_command_path(cmd->args[0], global->env_list);
-	if (!path)
+	path = find_command_path(cmd->args[0], global->env_list); // Path içerisinde command arıyor bulduğu path'in yanına "/cmd->args[0]" ekliyor
+	if (!path) // Path içerisinde command bulunamazsa hata
 	{
 		printf("minishell: %s: command not found\n", cmd->args[0]);
 		return (127);
 	}
-	pid = fork();
+	pid = fork(); // child process açıyor ve child process kendi pid numarasını 0 olarak biliyor
 	if (pid == 0)
 	{
 		// Child process - sinyalleri default davranışa çevir
 		setup_child_signals();
 		global->in_child = 1;
 		
-		setup_redirections(cmd);
-		execve(path, cmd->args, env_list_to_array(global->env_list));
+		setup_redirections(cmd); // Öğrenilecek (dup ve dup2)
+		execve(path, cmd->args, env_list_to_array(global->env_list)); // Öğrenilecek!
 		perror("execve");
 		exit(127);
 	}
 	else if (pid > 0)
 	{
-		waitpid(pid, &status, 0);
+		waitpid(pid, &status, 0); // Burada status pid numaralı process'in döndürdüğü exit status
 		free(path);
 		
 		// Signal ile sonlandı mı kontrol et

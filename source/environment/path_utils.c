@@ -6,7 +6,7 @@
 /*   By: hsyn <hsyn@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/24 12:00:00 by huozturk          #+#    #+#             */
-/*   Updated: 2025/08/31 23:38:54 by hsyn             ###   ########.fr       */
+/*   Updated: 2025/09/09 19:25:17 by hsyn             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,21 +27,21 @@ char	*find_command_path(char *command, t_env *env_list)
 		return (NULL);
 	if (ft_strchr(command, '/'))
 	{
-		if (access(command, F_OK) == 0)
+		if (access(command, F_OK) == 0) // access dosya var mı check için 
 			return (ft_strdup(command));
 		return (NULL);
 	}
-	path_env = get_env_value(env_list, "PATH");
+	path_env = get_env_value(env_list, "PATH"); // PATH env buluyor
 	if (!path_env)
 		return (NULL);
-	paths = ft_split(path_env, ':');
+	paths = ft_split(path_env, ':'); // içeriğini ':''dan bölüyor
 	if (!paths)
 		return (NULL);
 	i = 0;
 	while (paths[i])
 	{
 		full_path = build_full_path(paths[i], command);
-		if (full_path && access(full_path, F_OK) == 0)
+		if (full_path && access(full_path, F_OK) == 0) // path'in yanına eklenen command var mı check?
 		{
 			free_string_array(paths);
 			return (full_path);
@@ -51,7 +51,7 @@ char	*find_command_path(char *command, t_env *env_list)
 		i++;
 	}
 	free_string_array(paths);
-	return (NULL);
+	return (NULL); // eğer path'de bulunmayan bir command girildiyse null dönüyor
 }
 
 /* ************************************************************************** */
@@ -65,10 +65,10 @@ char	*build_full_path(char *dir, char *command)
 
 	if (!dir || !command)
 		return (NULL);
-	temp = ft_strjoin(dir, "/");
+	temp = ft_strjoin(dir, "/"); // ':' ayrılan pathlerin yanına slash ekliyor
 	if (!temp)
 		return (NULL);
-	full_path = ft_strjoin(temp, command);
+	full_path = ft_strjoin(temp, command); // Slashden sonrasına gelen command'ı ekliyor
 	free(temp);
 	return (full_path);
 }

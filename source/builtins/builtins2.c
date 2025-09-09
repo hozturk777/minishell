@@ -6,7 +6,7 @@
 /*   By: hsyn <hsyn@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/24 12:00:00 by huozturk          #+#    #+#             */
-/*   Updated: 2025/08/31 23:38:44 by hsyn             ###   ########.fr       */
+/*   Updated: 2025/09/09 12:18:45 by hsyn             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ int	builtin_cd(char **args, t_global *global)
 	char	*existing_parent;
 
 	old_pwd = get_env_value(global->env_list, "PWD");
-	if (!args[1])
+	if (!args[1]) // cd girildiğinde home dizinine gitmek için
 	{
 		home = get_env_value(global->env_list, "HOME");
 		if (!home)
@@ -37,9 +37,9 @@ int	builtin_cd(char **args, t_global *global)
 	}
 	else
 		path = args[1];
-	if (chdir(path) != 0)
+	if (chdir(path) != 0) // chdir dizin değiştirmek için başarılı: 0 hata: -1
 	{
-		/* Special handling for ".." when parent is deleted */
+		/* Bi önceki dizin silindiğinde çalışacak olan func  HATALI!! */
 		if (ft_strcmp(path, "..") == 0 && old_pwd)
 		{
 			logical_path = resolve_logical_path(old_pwd, path);
@@ -66,10 +66,10 @@ int	builtin_cd(char **args, t_global *global)
 		perror("cd");
 		return (1);
 	}
-	if (old_pwd)
+	if (old_pwd) // old pwd güncellemek için
 		set_env_var(global, "OLDPWD", old_pwd);
 	logical_path = resolve_logical_path(old_pwd, path);
-	if (logical_path)
+	if (logical_path) // pwd güncellemek için
 	{
 		set_env_var(global, "PWD", logical_path);
 		free(logical_path);
@@ -258,7 +258,7 @@ char	*resolve_logical_path(char *current_pwd, char *path)
 
 	if (!path)
 		return (NULL);
-	if (path[0] == '/')
+	if (path[0] == '/') // Neden var ?
 		return (ft_strdup(path));
 	if (!current_pwd)
 		return (ft_strdup(path));
@@ -275,7 +275,7 @@ char	*resolve_logical_path(char *current_pwd, char *path)
 		
 	if (ft_strcmp(path, ".") == 0)
 		return (clean_pwd);
-	if (ft_strcmp(path, "..") == 0)
+	if (ft_strcmp(path, "..") == 0) // Bakılacak
 	{
 		last_slash = ft_strrchr(clean_pwd, '/');
 		if (last_slash && last_slash != clean_pwd)

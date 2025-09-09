@@ -6,7 +6,7 @@
 /*   By: hsyn <hsyn@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/28 17:37:10 by hasivaci          #+#    #+#             */
-/*   Updated: 2025/08/31 23:50:38 by hsyn             ###   ########.fr       */
+/*   Updated: 2025/09/09 11:30:56 by hsyn             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,7 @@ void	print_commands_debug(t_command *commands)
 			printf("(none)\n");
 		}
 		printf("  Pipe: %s\n", current->next ? "YES" : "NO");
+		printf("  Pid: %d\n", current->pid);
 		printf("\n");
 		current = current->next;
 		cmd_count++;

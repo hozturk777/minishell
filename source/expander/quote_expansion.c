@@ -6,7 +6,7 @@
 /*   By: hsyn <hsyn@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 12:00:00 by hsyn              #+#    #+#             */
-/*   Updated: 2025/08/31 23:38:14 by hsyn             ###   ########.fr       */
+/*   Updated: 2025/09/08 22:05:26 by hsyn             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ char	*expand_with_quotes(char *input, t_global *global)
 	int		i;
 	int		quote_state[2];
 
-	result = ft_strdup("");
+	result = ft_strdup(""); // Buna check eklenecek!
 	i = 0;
 	quote_state[0] = 0;  // single quote
 	quote_state[1] = 0;  // double quote
@@ -60,7 +60,7 @@ char	*remove_outer_quotes(char *input)
 	len = ft_strlen(input);
 	if (len < 2)
 		return (ft_strdup(input));
-	if ((input[0] == '\'' && input[len - 1] == '\'')
+	if ((input[0] == '\'' && input[len - 1] == '\'') // input hiç bir zaman tırnak içinde gelmiyor
 		|| (input[0] == '"' && input[len - 1] == '"'))
 	{
 		result = ft_substr(input, 1, len - 2);
@@ -69,7 +69,7 @@ char	*remove_outer_quotes(char *input)
 	return (ft_strdup(input));
 }
 
-int	needs_expansion(char *str)
+int	needs_expansion(char *str) // '$' var ise expanded için 1 dönecek
 {
 	int	i;
 	int	in_single_quote;
@@ -80,11 +80,11 @@ int	needs_expansion(char *str)
 	in_single_quote = 0;
 	while (str[i])
 	{
-		if (str[i] == '\'' && !in_single_quote)
+		if (str[i] == '\'' && !in_single_quote) // Tek tırnak açıldığında 1
 			in_single_quote = 1;
-		else if (str[i] == '\'' && in_single_quote)
+		else if (str[i] == '\'' && in_single_quote) // Tek tırnak kapandığında 0
 			in_single_quote = 0;
-		else if (str[i] == '$' && !in_single_quote)
+		else if (str[i] == '$' && !in_single_quote) // Eğer tek tırnak açık kalmadıysa ve $ geldiyse expanded işlemi için 1 döner
 			return (1);
 		i++;
 	}
@@ -101,7 +101,7 @@ void	expand_command_args(t_command *cmd, t_global *global)
 	i = 0;
 	while (cmd->args[i])
 	{
-		if (needs_expansion(cmd->args[i]))
+		if (needs_expansion(cmd->args[i])) // '$' var ise expanded için 1 dönecek (BURAYA BAKILACAK!)
 		{
 			expanded = expand_with_quotes(cmd->args[i], global);
 			if (expanded)
