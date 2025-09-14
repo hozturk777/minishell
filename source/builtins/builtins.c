@@ -6,7 +6,7 @@
 /*   By: hsyn <hsyn@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/28 17:39:03 by hasivaci          #+#    #+#             */
-/*   Updated: 2025/09/08 23:47:26 by hsyn             ###   ########.fr       */
+/*   Updated: 2025/09/09 23:06:41 by hsyn             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ int	execute_builtin(t_command *cmd, t_global *global)
 	else if (ft_strcmp(cmd->args[0], "exit") == 0)
 		result = builtin_exit(cmd->args, global);
 	else if (ft_strcmp(cmd->args[0], "cd") == 0)
-		result = builtin_cd(cmd->args, global); // BURADAYIZZ !!
+		result = builtin_cd(cmd->args, global);
 	else if (ft_strcmp(cmd->args[0], "export") == 0)
 		result = builtin_export(cmd->args, global);
 	else if (ft_strcmp(cmd->args[0], "unset") == 0)

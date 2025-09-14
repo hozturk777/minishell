@@ -6,7 +6,7 @@
 /*   By: hsyn <hsyn@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/24 12:00:00 by huozturk          #+#    #+#             */
-/*   Updated: 2025/09/09 21:25:14 by hsyn             ###   ########.fr       */
+/*   Updated: 2025/09/15 00:07:13 by hsyn             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ int	execute_commands(t_command *commands, t_global *global)
 	if (!commands)
 		return (0);
 	if (commands->next)
-		return (execute_pipeline(commands, global));
+		return (execute_pipeline(commands, global)); // BURADAYIZ
 	else
 		return (execute_single_command(commands, global));
 }
