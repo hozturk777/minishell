@@ -32,7 +32,7 @@ void	print_commands_debug(t_command *commands)
 			i = 0;
 			while (current->args[i])
 			{
-				printf("'%s'", current->args[i]);
+				printf("$%s$", current->args[i]);
 				if (current->args[i + 1])
 					printf(", ");
 				i++;
@@ -56,16 +56,16 @@ void	print_commands_debug(t_command *commands)
 				switch (redirect->type)
 				{
 				case T_REDIRECT_IN:
-					printf("< '%s'", redirect->filename);
+					printf("< $%s$", redirect->filename);
 					break ;
 				case T_REDIRECT_OUT:
-					printf("> '%s'", redirect->filename);
+					printf("> $%s$", redirect->filename);
 					break ;
 				case T_APPEND:
-					printf(">> '%s'", redirect->filename);
+					printf(">> $%s$", redirect->filename);
 					break ;
 				case T_HEREDOC:
-					printf("<< '%s'", redirect->filename);
+					printf("<< $%s$", redirect->filename);
 					break ;
 				default:
 					printf("Unknown redirect");

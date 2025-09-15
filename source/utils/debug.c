@@ -49,7 +49,7 @@ void	print_tokens_advanced(t_list *tokens)
 	while (current)
 	{
 		token = (t_token_new *)current->content;
-		printf("Token[%d]: Type=%-12s Value='%s' Len=%d\n", i,
+		printf("Token[%d]: Type=%-12s Value=$%s$ Len=%d\n", i,
 			get_token_type_name(token->type), token->value, token->len);
 		current = current->next;
 		i++;

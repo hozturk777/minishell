@@ -47,9 +47,10 @@ t_list	*tokenize_advanced(char *input, t_global *global)
 	while (lexer->current_char != '\0')
 	{
 		token = get_next_token(lexer);
-		if (token)
+		// if (token)
+		if (token && token->value[0])
 			ft_lstadd_back(&tokens, ft_lstnew(token));
-		else
+		else if (!token->value)
 			break ;
 	}
 	free_lexer_advanced(lexer);

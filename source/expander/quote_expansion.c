@@ -60,8 +60,8 @@ char	*remove_outer_quotes(char *input)
 	len = ft_strlen(input);
 	if (len < 2)
 		return (ft_strdup(input));
-	if ((input[0] == '\'' && input[len - 1] == '\'') // input hiç bir zaman tırnak içinde gelmiyor
-		|| (input[0] == '"' && input[len - 1] == '"'))
+	if ((input[0] == '\'' && input[len - 1] == '\'')
+		|| (input[0] == '"' && input[len - 1] == '"')) // tek tırnaktan sonra çift geliyorsa çifti al komutu çalıştırma
 	{
 		result = ft_substr(input, 1, len - 2);
 		return (result);
@@ -112,7 +112,7 @@ void	expand_command_args(t_command *cmd, t_global *global)
 		}
 		else
 		{
-			expanded = remove_outer_quotes(cmd->args[i]);
+			expanded = remove_outer_quotes(cmd->args[i]); // cd '"executer"' yazıldığında çift tırnakları almıyor alması gerek
 			if (expanded)
 			{
 				free(cmd->args[i]);

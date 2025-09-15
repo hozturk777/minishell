@@ -38,7 +38,6 @@ static int	process_input(char *input, t_global *global)
 		free_tokens_advanced(&tokens);
 		return (0);
 	}
-	
 	// 3. DEBUG: Token'ları ve komutları yazdır
 	// printf("\n=== TOKENS ===\n");
 	// print_tokens_advanced(tokens);

@@ -73,12 +73,12 @@ t_token_new	*handle_quotes_advanced(t_lexer_new *lexer)
 	int		len;
 	char	*quoted_str;
 
-	quote_char = lexer->current_char;
+	quote_char = lexer->current_char; 
 	advance_lexer(lexer);
 	start = lexer->pos;
 	while (lexer->current_char != '\0' && lexer->current_char != quote_char)
 		advance_lexer(lexer);
-	if (lexer->current_char == quote_char)
+	if (lexer->current_char == quote_char) // Tırnaklara bir baştan bir sondan bakarak gidilecek
 	{
 		len = lexer->pos - start;
 		quoted_str = ft_substr(lexer->input, start, len);
