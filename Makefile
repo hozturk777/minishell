@@ -13,7 +13,7 @@ SRC_DIR				= source/core/
 LIBFT_DIR			= include/libft/
 LRDR				= -lreadline
 CC					= @cc
-CFLAGS				= -Wall -Wextra -Werror
+CFLAGS				= -Wall -Wextra -Werror -g
 RM					= rm -rf
 OBJ_DIR				= objects/
 
