@@ -228,6 +228,7 @@ int				execute_single_command(t_command *cmd, t_global *global);	/* Tek komut ç
 int				execute_external_command(t_command *cmd, t_global *global);	/* External komut çalıştır */
 int				execute_pipeline(t_command *commands, t_global *global);	/* Pipeline çalıştır */
 int				execute_pipeline_command(t_command *cmd, t_global *global, int prev_fd, int *pipe_fd);
+pid_t			execute_pipeline_command_async(t_command *cmd, t_global *global, int prev_fd, int *pipe_fd);
 
 // ========== PATH UTILITIES ==========
 char			*find_command_path(char *command, t_env *env_list);		/* Komut path'ini bul */

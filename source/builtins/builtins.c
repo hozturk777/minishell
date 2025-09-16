@@ -167,24 +167,70 @@ char	*remove_quotes(char *str)
 /*                            ECHO BUILT-IN                                  */
 /* ************************************************************************** */
 
+static void	process_escape_sequences(char *str)
+{
+	int	i;
+	int	j;
+
+	i = 0;
+	j = 0;
+	while (str[i])
+	{
+		if (str[i] == '\\' && str[i + 1])
+		{
+			i++;
+			if (str[i] == 'n')
+				str[j++] = '\n';
+			else if (str[i] == 't')
+				str[j++] = '\t';
+			else if (str[i] == 'r')
+				str[j++] = '\r';
+			else if (str[i] == '\\')
+				str[j++] = '\\';
+			else if (str[i] == '"')
+				str[j++] = '"';
+			else
+			{
+				str[j++] = '\\';
+				str[j++] = str[i];
+			}
+		}
+		else
+			str[j++] = str[i];
+		i++;
+	}
+	str[j] = '\0';
+}
+
 int	builtin_echo(char **args)
 {
 	int		i;
 	int		newline;
+	int		enable_escape;
 	char	*processed_arg;
 
 	i = 1;
 	newline = 1;
-	if (args[1] && ft_strcmp(args[1], "-n") == 0)
+	enable_escape = 0;
+	while (args[i] && args[i][0] == '-')
 	{
-		newline = 0;
-		i = 2;
+		if (ft_strcmp(args[i], "-n") == 0)
+			newline = 0;
+		else if (ft_strcmp(args[i], "-e") == 0)
+			enable_escape = 1;
+		else if (ft_strcmp(args[i], "-E") == 0)
+			enable_escape = 0;
+		else
+			break;
+		i++;
 	}
 	while (args[i])
 	{
 		processed_arg = remove_quotes(args[i]);
 		if (processed_arg)
 		{
+			if (enable_escape)
+				process_escape_sequences(processed_arg);
 			printf("%s", processed_arg);
 			free(processed_arg);
 		}

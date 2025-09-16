@@ -15,21 +15,26 @@
 t_command	*parse_tokens_to_commands(t_list *tokens, t_global *global)
 {
     t_command	*head;
-    t_command	*current;
+    t_command	*current_cmd;
     t_list		*token_node;
 
     head = NULL;
-    current = NULL;
+    current_cmd = NULL;
     token_node = tokens;
     while (token_node)
     {
         if (is_command_start(token_node))
         {
-            current = parse_single_command(&token_node, global);
+            current_cmd = parse_single_command(&token_node, global);
             if (!head)
-                head = current;
+                head = current_cmd;
             else
-                append_command_to_chain(head, current);
+                append_command_to_chain(head, current_cmd);
+        }
+        else if (is_pipe_token(token_node))
+        {
+            token_node = token_node->next; // Skip pipe token
+            // Next token should be the start of new command
         }
         else
             token_node = token_node->next;
@@ -92,7 +97,8 @@ int	is_command_start(t_list *token_node)
     if (!token_node)
         return (0);
     token = (t_token_new *)token_node->content;
-    return (token->type == T_WORD);
+    return (token->type == T_WORD || token->type == T_SINGLE_QUOTE || 
+            token->type == T_DOUBLE_QUOTE);
 }
 
 int	is_pipe_token(t_list *token_node)

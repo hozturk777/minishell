@@ -104,18 +104,43 @@ int	execute_pipeline(t_command *commands, t_global *global)
 	int			pipe_fd[2];
 	int			prev_fd;
 	int			last_status;
+	pid_t		*pids;
+	int			cmd_count;
+	int			i;
 
+	// Count commands
+	current = commands;
+	cmd_count = 0;
+	while (current)
+	{
+		cmd_count++;
+		current = current->next;
+	}
+	
+	pids = malloc(sizeof(pid_t) * cmd_count);
+	if (!pids)
+		return (1);
+	
 	current = commands;
 	prev_fd = 0;
-	last_status = 0;
+	i = 0;
+	
 	while (current)
 	{
 		if (current->next && pipe(pipe_fd) == -1)
 		{
 			perror("pipe");
+			free(pids);
 			return (1);
 		}
-		last_status = execute_pipeline_command(current, global, prev_fd, pipe_fd);
+		
+		pids[i] = execute_pipeline_command_async(current, global, prev_fd, pipe_fd);
+		if (pids[i] == -1)
+		{
+			free(pids);
+			return (1);
+		}
+		
 		if (prev_fd != 0)
 			close(prev_fd);
 		if (current->next)
@@ -124,12 +149,86 @@ int	execute_pipeline(t_command *commands, t_global *global)
 			prev_fd = pipe_fd[0];
 		}
 		current = current->next;
+		i++;
 	}
+	
+	// Wait for all children
+	for (i = 0; i < cmd_count; i++)
+	{
+		int status;
+		if (pids[i] > 0)
+		{
+			waitpid(pids[i], &status, 0);
+			if (i == cmd_count - 1)  // Last command's exit status
+			{
+				if (WIFSIGNALED(status))
+				{
+					int signal_num = WTERMSIG(status);
+					if (signal_num == SIGINT)
+						last_status = 130;
+					else if (signal_num == SIGQUIT)
+						last_status = 131;
+					else
+						last_status = 128 + signal_num;
+				}
+				else
+					last_status = WEXITSTATUS(status);
+			}
+		}
+	}
+	
+	free(pids);
 	return (last_status);
 }
 
 /* ************************************************************************** */
-/*                            PIPELINE COMMAND EXECUTION                     */
+/*                            ASYNC PIPELINE COMMAND EXECUTION              */
+/* ************************************************************************** */
+
+pid_t	execute_pipeline_command_async(t_command *cmd, t_global *global, int prev_fd, int *pipe_fd)
+{
+	pid_t	pid;
+	char	*path;
+
+	// Pipeline'da tüm komutlar (built-in dahil) child process'te çalışmalı
+	pid = fork();
+	if (pid == 0)
+	{
+		// Child process - sinyalleri default davranışa çevir
+		setup_child_signals();
+		global->in_child = 1;
+		
+		setup_pipeline_fds(cmd, prev_fd, pipe_fd);
+		setup_redirections(cmd);
+		
+		if (is_builtin(cmd->args[0]))
+		{
+			execute_builtin(cmd, global);
+			exit(global->exit_status);
+		}
+		
+		path = find_command_path(cmd->args[0], global->env_list);
+		if (!path)
+		{
+			printf("minishell: %s: command not found\n", cmd->args[0]);
+			exit(127);
+		}
+		
+		execve(path, cmd->args, env_list_to_array(global->env_list));
+		perror("execve");
+		exit(127);
+	}
+	else if (pid > 0)
+	{
+		return (pid);
+	}
+	else
+	{
+		perror("fork");
+		return (-1);
+	}
+}
+
 /* ************************************************************************** */
 
 int	execute_pipeline_command(t_command *cmd, t_global *global, int prev_fd, int *pipe_fd)
