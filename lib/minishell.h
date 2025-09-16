@@ -241,7 +241,7 @@ int				count_env_nodes(t_env *env_list);						/* Çevre düğümlerini say */
 void			setup_redirections(t_command *cmd);					/* Yönlendirmeleri ayarla */
 void			handle_single_redirection(t_redirect *redirect);		/* Tek yönlendirme işle */
 void			setup_pipeline_fds(t_command *cmd, int prev_fd, int *pipe_fd);	/* Pipeline fd ayarla */
-int				handle_heredoc(char *delimiter);						/* Heredoc işle */
+int				handle_heredoc(t_redirect *delimiter);						/* Heredoc işle */
 char			*generate_temp_filename(void);							/* Geçici dosya adı oluştur */
 
 // ========== SIGNAL HANDLING FONKSIYONLARI ==========

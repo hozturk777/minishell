@@ -11,6 +11,38 @@
 /* ************************************************************************** */
 
 #include "../../lib/minishell.h"
+// kurtarma
+/* ************************************************************************** */
+/*                            MULTIPLE HEREDOC HANDLER                       */
+/* ************************************************************************** */
+
+static void	handle_multiple_heredocs(t_command *cmd)
+{
+	t_list		*current;
+	t_redirect	*redirect;
+	int			last_heredoc_fd;
+
+	last_heredoc_fd = -1;
+	if (!cmd->redirections)
+		return ;
+	current = cmd->redirections;
+	while (current)
+	{
+		redirect = (t_redirect *)current->content;
+		if (redirect && redirect->type == T_HEREDOC)
+		{
+			if (last_heredoc_fd != -1)
+				close(last_heredoc_fd);
+			last_heredoc_fd = handle_heredoc(redirect);
+		}
+		current = current->next;
+	}
+	if (last_heredoc_fd != -1)
+	{
+		dup2(last_heredoc_fd, STDIN_FILENO);
+		close(last_heredoc_fd);
+	}
+}
 
 /* ************************************************************************** */
 /*                            REDIRECTION SETUP                              */
@@ -23,11 +55,12 @@ void	setup_redirections(t_command *cmd)
 
 	if (!cmd || !cmd->redirections)
 		return ;
+	handle_multiple_heredocs(cmd);
 	current = cmd->redirections;
 	while (current)
 	{
 		redirect = (t_redirect *)current->content;
-		if (redirect)
+		if (redirect && redirect->type != T_HEREDOC)
 			handle_single_redirection(redirect);
 		current = current->next;
 	}
@@ -74,17 +107,6 @@ void	handle_single_redirection(t_redirect *redirect)
 		dup2(fd, STDOUT_FILENO);
 		close(fd);
 	}
-	else if (redirect->type == T_HEREDOC)
-	{
-		fd = handle_heredoc(redirect->filename);
-		if (fd == -1)
-		{
-			perror("heredoc");
-			exit(1);
-		}
-		dup2(fd, STDIN_FILENO);
-		close(fd);
-	}
 }
 
 /* ************************************************************************** */
@@ -110,60 +132,70 @@ void	setup_pipeline_fds(t_command *cmd, int prev_fd, int *pipe_fd)
 /*                            HEREDOC IMPLEMENTATION                         */
 /* ************************************************************************** */
 
-char	*generate_temp_filename(void)
+static char	*create_temp_filename(int heredoc_count)
 {
-	static int	counter = 0;
-	char		*num_str;
-	char		*temp_name;
-	char		*final_name;
+	char	*pid_str;
+	char	*count_str;
+	char	*temp1;
+	char	*temp2;
+	char	*result;
 
-	num_str = ft_itoa(counter++);
-	if (!num_str)
+	pid_str = ft_itoa(getpid());
+	count_str = ft_itoa(heredoc_count);
+	if (!pid_str || !count_str)
+	{
+		if (pid_str)
+			free(pid_str);
+		if (count_str)
+			free(count_str);
 		return (NULL);
-	temp_name = ft_strjoin("/tmp/minishell_heredoc_", num_str);
-	free(num_str);
-	if (!temp_name)
-		return (NULL);
-	final_name = ft_strjoin(temp_name, ".tmp");
-	free(temp_name);
-	return (final_name);
+	}
+	temp1 = ft_strjoin("/tmp/heredoc_", pid_str);
+	temp2 = ft_strjoin(temp1, "_");
+	result = ft_strjoin(temp2, count_str);
+	free(pid_str);
+	free(count_str);
+	free(temp1);
+	free(temp2);
+	return (result);
 }
 
-int	handle_heredoc(char *delimiter)
+int	handle_heredoc(t_redirect *redirect)
 {
-	char	*temp_filename;
-	char	*line;
-	int		temp_fd;
+	char			*line;
+	char			*temp_filename;
+	int				fd;
+	static int		heredoc_count = 0;
 
-	temp_filename = generate_temp_filename();
+	if (!redirect || redirect->type != T_HEREDOC)
+		return (-1);
+	temp_filename = create_temp_filename(heredoc_count++);
 	if (!temp_filename)
 		return (-1);
-	temp_fd = open(temp_filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-	if (temp_fd == -1)
+	fd = open(temp_filename, O_CREAT | O_WRONLY | O_TRUNC, 0600);
+	if (fd == -1)
 	{
 		free(temp_filename);
 		return (-1);
 	}
-	printf("> ");
-	fflush(stdout);
+	write(STDOUT_FILENO, "> ", 2);
 	while ((line = readline("")) != NULL)
 	{
-		if (ft_strcmp(line, delimiter) == 0)
+		if (ft_strcmp(line, redirect->filename) == 0)
 		{
 			free(line);
 			break ;
 		}
-		write(temp_fd, line, ft_strlen(line));
-		write(temp_fd, "\n", 1);
+		write(fd, line, ft_strlen(line));
+		write(fd, "\n", 1);
 		free(line);
-		printf("> ");
-		fflush(stdout);
+		write(STDOUT_FILENO, "> ", 2);
 	}
-	close(temp_fd);
-	temp_fd = open(temp_filename, O_RDONLY);
+	close(fd);
+	fd = open(temp_filename, O_RDONLY);
 	unlink(temp_filename);
 	free(temp_filename);
-	return (temp_fd);
+	return (fd);
 }
 
 /* ************************************************************************** */
