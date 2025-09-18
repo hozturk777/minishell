@@ -6,7 +6,7 @@
 /*   By: hsyn <hsyn@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 12:00:00 by hsyn              #+#    #+#             */
-/*   Updated: 2025/09/18 22:17:38 by hsyn             ###   ########.fr       */
+/*   Updated: 2025/09/18 22:54:17 by hsyn             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,10 @@ char	*expand_with_quotes(char *input, t_global *global)
 		update_quote_state(input[i], quote_state);
 		if (input[i] == '$' && !quote_state[0])
 			temp = handle_dollar_expansion(input, &i, global);
+		else if (input[i] == '\'' && quote_state[1]) // Single quote inside double quote - keep as literal
+			temp = handle_regular_char(input, &i);
+		else if (input[i] == '"' && quote_state[0]) // Double quote inside single quote - keep as literal  
+			temp = handle_regular_char(input, &i);
 		else if (input[i] != '\'' && input[i] != '"')
 			temp = handle_regular_char(input, &i);
 		else
