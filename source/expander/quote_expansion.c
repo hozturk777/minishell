@@ -6,7 +6,7 @@
 /*   By: hsyn <hsyn@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 12:00:00 by hsyn              #+#    #+#             */
-/*   Updated: 2025/09/18 21:50:55 by hsyn             ###   ########.fr       */
+/*   Updated: 2025/09/18 22:17:38 by hsyn             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,13 +95,22 @@ void	expand_command_args(t_command *cmd, t_global *global)
 {
 	int		i;
 	char	*expanded;
+	char	*clean_str;
 
 	if (!cmd || !cmd->args)
 		return ;
 	i = 0;
 	while (cmd->args[i])
 	{
-		if (needs_expansion(cmd->args[i]))
+		// Check if this is a single-quoted token (no expansion needed)
+		if (is_single_quoted_literal(cmd->args[i]))
+		{
+			// Remove the marker and keep content as-is (no expansion)
+			clean_str = extract_single_quote_content(cmd->args[i]);
+			free(cmd->args[i]);
+			cmd->args[i] = clean_str;
+		}
+		else if (needs_expansion(cmd->args[i]))
 		{
 			expanded = expand_with_quotes(cmd->args[i], global);
 			if (expanded)
@@ -171,4 +180,39 @@ int	count_non_empty_args(char **args)
 		i++;
 	}
 	return (count);
+}
+
+int	is_single_quoted_literal(char *str)
+{
+	// Check if string has single quote marker
+	if (!str)
+		return (0);
+	return (ft_strnstr(str, "__SINGLE_QUOTE__", ft_strlen(str)) != NULL);
+}
+
+char	*extract_single_quote_content(char *str)
+{
+	char	*start;
+	char	*end;
+	int		content_len;
+	char	*result;
+
+	if (!str)
+		return (NULL);
+	
+	// Find start marker
+	start = ft_strnstr(str, "__SINGLE_QUOTE__", ft_strlen(str));
+	if (!start)
+		return (ft_strdup(str));
+	
+	start += ft_strlen("__SINGLE_QUOTE__");
+	
+	// Find end marker
+	end = ft_strnstr(start, "__END_SINGLE_QUOTE__", ft_strlen(start));
+	if (!end)
+		return (ft_strdup(start));
+	
+	content_len = end - start;
+	result = ft_substr(start, 0, content_len);
+	return (result);
 }

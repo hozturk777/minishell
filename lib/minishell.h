@@ -6,7 +6,7 @@
 /*   By: hsyn <hsyn@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 12:00:00 by huozturk          #+#    #+#             */
-/*   Updated: 2025/09/18 21:50:55 by hsyn             ###   ########.fr       */
+/*   Updated: 2025/09/18 22:17:38 by hsyn             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -199,6 +199,10 @@ void			update_quote_state(char c, int *quote_state);			/* Tırnak durumunu günc
 char			*remove_outer_quotes(char *input);						/* Dış tırnakları kaldır */
 int				needs_expansion(char *str);								/* Genişletme gerekli mi kontrol et */
 void			expand_command_args(t_command *cmd, t_global *global);	/* Komut argümanlarını genişlet */
+void			filter_empty_args(t_command *cmd);						/* Boş argümanları filtrele */
+int				count_non_empty_args(char **args);						/* Boş olmayan argüman sayısı */
+int				is_single_quoted_literal(char *str);					/* Tek tırnaklı literal mi kontrol et */
+char			*extract_single_quote_content(char *str);				/* Tek tırnaklı içerik çıkart */
 void			filter_empty_args(t_command *cmd);						/* Boş argümanları filtrele */
 int				count_non_empty_args(char **args);						/* Boş olmayan argüman sayısı */
 
