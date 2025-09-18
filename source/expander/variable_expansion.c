@@ -54,6 +54,15 @@ char	*handle_dollar_expansion(char *input, int *i, t_global *global)
 		(*i)++;
 		return (ft_itoa(getpid()));
 	}
+	
+	// Digit check for positional parameters ($1, $2, etc.)
+	if (ft_isdigit(input[*i]))
+	{
+		(*i)++; // Skip the digit
+		// Positional parameters not supported in minishell, return empty
+		return (ft_strdup(""));
+	}
+	
 	if (!ft_isalpha(input[*i]) && input[*i] != '_')
 		return (ft_strdup("$"));
 	start = *i;
@@ -62,7 +71,7 @@ char	*handle_dollar_expansion(char *input, int *i, t_global *global)
 	var_name = ft_substr(input, start, *i - start);
 	var_value = get_env_value(global->env_list, var_name);
 	free(var_name);
-	return (var_value ? ft_strdup(var_value) : ft_strdup("")); // Burası yasak değişecek
+	return (var_value ? ft_strdup(var_value) : ft_strdup(""));
 }
 
 char	*handle_regular_char(char *input, int *i)
