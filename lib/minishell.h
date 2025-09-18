@@ -199,6 +199,8 @@ void			update_quote_state(char c, int *quote_state);			/* Tırnak durumunu günc
 char			*remove_outer_quotes(char *input);						/* Dış tırnakları kaldır */
 int				needs_expansion(char *str);								/* Genişletme gerekli mi kontrol et */
 void			expand_command_args(t_command *cmd, t_global *global);	/* Komut argümanlarını genişlet */
+void			filter_empty_args(t_command *cmd);						/* Boş argümanları filtrele */
+int				count_non_empty_args(char **args);						/* Boş olmayan argüman sayısı */
 
 // ========== BUILT-IN FONKSIYONLARI ==========
 int				is_builtin(char *command);								/* Built-in komut mu kontrol et */
