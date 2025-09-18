@@ -6,7 +6,7 @@
 /*   By: hsyn <hsyn@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 12:00:00 by huozturk          #+#    #+#             */
-/*   Updated: 2025/09/15 00:09:16 by hsyn             ###   ########.fr       */
+/*   Updated: 2025/09/18 21:58:31 by hsyn             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,24 @@ t_token_new	*handle_word_advanced(t_lexer_new *lexer)
 	char	*word;
 
 	start = lexer->pos;
+	
+	// Special case for $"..." pattern - treat as single word
+	if (lexer->current_char == '$' && lexer->input[lexer->pos + 1] == '"')
+	{
+		advance_lexer(lexer); // Skip $
+		advance_lexer(lexer); // Skip "
+		// Read until closing quote
+		while (lexer->current_char != '\0' && lexer->current_char != '"')
+			advance_lexer(lexer);
+		if (lexer->current_char == '"')
+			advance_lexer(lexer); // Skip closing "
+		len = lexer->pos - start;
+		word = ft_substr(lexer->input, start + 2, len - 3); // Skip $" and "
+		if (!word)
+			return (NULL);
+		return (create_token_advanced(T_WORD, word));
+	}
+	
 	while (lexer->current_char != '\0' && lexer->current_char != ' '
 		&& lexer->current_char != '\t' && lexer->current_char != '\n'
 		&& lexer->current_char != '|' && lexer->current_char != '<'
