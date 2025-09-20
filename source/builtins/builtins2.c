@@ -6,7 +6,7 @@
 /*   By: hsyn <hsyn@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/24 12:00:00 by huozturk          #+#    #+#             */
-/*   Updated: 2025/09/09 12:18:45 by hsyn             ###   ########.fr       */
+/*   Updated: 2025/09/21 00:13:46 by hsyn             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,21 +98,40 @@ int	builtin_export(char **args, t_global *global)
 	i = 1;
 	while (args[i])
 	{
-		equal_sign = ft_strchr(args[i], '=');
-		if (equal_sign)
+		// Handle case: test= "ho selam" -> test=ho selam
+		if (args[i][ft_strlen(args[i]) - 1] == '=' && args[i + 1])
 		{
-			*equal_sign = '\0';
-			key = args[i];
-			value = equal_sign + 1;
-			set_env_var(global, key, value);
-			*equal_sign = '=';
+			char *full_arg = ft_strjoin(args[i], args[i + 1]);
+			equal_sign = ft_strchr(full_arg, '=');
+			if (equal_sign)
+			{
+				*equal_sign = '\0';
+				key = full_arg;
+				value = equal_sign + 1;
+				set_env_var(global, key, value);
+				*equal_sign = '=';
+			}
+			free(full_arg);
+			i += 2; // Skip next arg since we processed it
 		}
 		else
 		{
-			key = args[i];
-			set_env_var(global, key, "");
+			equal_sign = ft_strchr(args[i], '=');
+			if (equal_sign)
+			{
+				*equal_sign = '\0';
+				key = args[i];
+				value = equal_sign + 1;
+				set_env_var(global, key, value);
+				*equal_sign = '=';
+			}
+			else
+			{
+				key = args[i];
+				set_env_var(global, key, "");
+			}
+			i++;
 		}
-		i++;
 	}
 	return (0);
 }
