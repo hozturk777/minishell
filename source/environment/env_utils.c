@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env_utils.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hsyn <hsyn@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: hasivaci <hasivaci@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 12:00:00 by huozturk          #+#    #+#             */
-/*   Updated: 2025/09/02 22:39:13 by hsyn             ###   ########.fr       */
+/*   Updated: 2025/09/19 21:37:36 by hasivaci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,10 +58,10 @@ t_env	*init_env_from_envp(char **envp)
 			if (new_node)
 				add_env_node(&env_list, new_node);
 		}
-		if (key)
-			free(key);
-		if (value)
-			free(value);
+		// if (key)
+		// 	free(key);
+		// if (value)
+		// 	free(value);
 		i++;
 	}
 	return (env_list);

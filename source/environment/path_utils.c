@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   path_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hsyn <hsyn@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: hasivaci <hasivaci@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/24 12:00:00 by huozturk          #+#    #+#             */
-/*   Updated: 2025/09/09 19:25:17 by hsyn             ###   ########.fr       */
+/*   Updated: 2025/09/20 19:05:05 by hasivaci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ char	*find_command_path(char *command, t_env *env_list)
 			return (full_path);
 		}
 		if (full_path)
-			free(full_path);
+			// free(full_path);
 		i++;
 	}
 	free_string_array(paths);
@@ -69,7 +69,7 @@ char	*build_full_path(char *dir, char *command)
 	if (!temp)
 		return (NULL);
 	full_path = ft_strjoin(temp, command); // Slashden sonrasına gelen command'ı ekliyor
-	free(temp);
+	// free(temp);
 	return (full_path);
 }
 
@@ -96,10 +96,10 @@ void	free_string_array(char **array)
 	i = 0;
 	while (array[i])
 	{
-		free(array[i]);
+		// free(array[i]);
 		i++;
 	}
-	free(array);
+	// free(array);
 }
 
 char	**env_list_to_array(t_env *env_list)
@@ -111,7 +111,7 @@ char	**env_list_to_array(t_env *env_list)
 	int		i;
 
 	count = count_env_nodes(env_list);
-	env_array = malloc(sizeof(char *) * (count + 1));
+	env_array = halloc(sizeof(char *) * (count + 1));
 	if (!env_array)
 		return (NULL);
 	current = env_list;

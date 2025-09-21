@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hsyn <hsyn@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: hasivaci <hasivaci@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/28 17:38:04 by hasivaci          #+#    #+#             */
-/*   Updated: 2025/08/31 23:26:08 by hsyn             ###   ########.fr       */
+/*   Updated: 2025/09/20 18:46:19 by hasivaci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,8 +32,9 @@ t_lexer_new	*init_lexer_advanced(char *input, t_global *global)
 
 void	free_lexer_advanced(t_lexer_new *lexer)
 {
-	if (lexer)
-		free(lexer);
+	// if (lexer)
+		// free(lexer);
+	(void)*lexer;
 }
 
 void	advance_lexer(t_lexer_new *lexer)
@@ -56,7 +57,7 @@ t_token_new	*create_token_advanced(t_token_types type, char *value)
 	token->value = ft_strdup(value);
 	if (!token->value)
 	{
-		free(token); // büyük ihtimalle bunlar silinecek
+		// free(token); // büyük ihtimalle bunlar silinecek
 		return (NULL);
 	}
 	token->len = ft_strlen(value);

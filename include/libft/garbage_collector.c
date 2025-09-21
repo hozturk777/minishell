@@ -6,7 +6,7 @@
 /*   By: hasivaci <hasivaci@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/28 17:39:25 by hasivaci          #+#    #+#             */
-/*   Updated: 2025/08/28 17:39:33 by hasivaci         ###   ########.fr       */
+/*   Updated: 2025/09/19 21:31:10 by hasivaci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,13 +73,20 @@ void	clear_garbage(void)
 	t_list *tmp;
 
 	collector = get_garbage();
+	if (!collector || !*collector)
+		return;
+		
 	total = *collector;
 	while (total)
 	{
-		free(total->content);
 		tmp = total->next;
+		if (total->content)
+		{
+			free(total->content);
+			total->content = NULL;  // Güvenlik için NULL yap
+		}
 		free(total);
 		total = tmp;
 	}
-	collector = 0;
+	*collector = NULL;  // ÖNEMLİ: Collector'ı NULL yap
 }

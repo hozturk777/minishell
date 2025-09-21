@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   quote_expansion.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hsyn <hsyn@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: hasivaci <hasivaci@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 12:00:00 by hsyn              #+#    #+#             */
-/*   Updated: 2025/09/18 22:54:17 by hsyn             ###   ########.fr       */
+/*   Updated: 2025/09/20 18:15:42 by hasivaci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,7 +111,7 @@ void	expand_command_args(t_command *cmd, t_global *global)
 		{
 			// Remove the marker and keep content as-is (no expansion)
 			clean_str = extract_single_quote_content(cmd->args[i]);
-			free(cmd->args[i]);
+			// free(cmd->args[i]);
 			cmd->args[i] = clean_str;
 		}
 		else if (needs_expansion(cmd->args[i]))
@@ -119,7 +119,7 @@ void	expand_command_args(t_command *cmd, t_global *global)
 			expanded = expand_with_quotes(cmd->args[i], global);
 			if (expanded)
 			{
-				free(cmd->args[i]);
+				// free(cmd->args[i]);
 				cmd->args[i] = expanded;
 			}
 		}
@@ -128,7 +128,7 @@ void	expand_command_args(t_command *cmd, t_global *global)
 			expanded = remove_outer_quotes(cmd->args[i]);
 			if (expanded)
 			{
-				free(cmd->args[i]);
+				// free(cmd->args[i]);
 				cmd->args[i] = expanded;
 			}
 		}
@@ -147,7 +147,7 @@ void	filter_empty_args(t_command *cmd)
 	if (!cmd || !cmd->args)
 		return ;
 	count = count_non_empty_args(cmd->args);
-	new_args = malloc(sizeof(char *) * (count + 1));
+	new_args = halloc(sizeof(char *) * (count + 1));
 	if (!new_args)
 		return ;
 	i = 0;
@@ -164,7 +164,7 @@ void	filter_empty_args(t_command *cmd)
 		i++;
 	}
 	new_args[j] = NULL;
-	free(cmd->args);
+	// free(cmd->args);
 	cmd->args = new_args;
 }
 

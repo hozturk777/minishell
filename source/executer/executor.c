@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hsyn <hsyn@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: hasivaci <hasivaci@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/24 12:00:00 by huozturk          #+#    #+#             */
-/*   Updated: 2025/09/15 00:07:13 by hsyn             ###   ########.fr       */
+/*   Updated: 2025/09/20 18:58:33 by hasivaci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,12 +65,13 @@ int	execute_external_command(t_command *cmd, t_global *global)
 		setup_redirections(cmd); // Öğrenilecek (dup ve dup2)
 		execve(path, cmd->args, env_list_to_array(global->env_list)); // Öğrenilecek!
 		perror("execve");
+		clear_garbage();
 		exit(127);
 	}
 	else if (pid > 0)
 	{
 		waitpid(pid, &status, 0); // Burada status pid numaralı process'in döndürdüğü exit status
-		free(path);
+		// free(path);
 		
 		// Signal ile sonlandı mı kontrol et
 		if (WIFSIGNALED(status))
@@ -90,6 +91,7 @@ int	execute_external_command(t_command *cmd, t_global *global)
 	{
 		perror("fork");
 		free(path);
+		clear_garbage();
 		return (1);
 	}
 }
@@ -117,7 +119,7 @@ int	execute_pipeline(t_command *commands, t_global *global)
 		current = current->next;
 	}
 	
-	pids = malloc(sizeof(pid_t) * cmd_count);
+	pids = halloc(sizeof(pid_t) * cmd_count);
 	if (!pids)
 		return (1);
 	
@@ -130,14 +132,14 @@ int	execute_pipeline(t_command *commands, t_global *global)
 		if (current->next && pipe(pipe_fd) == -1)
 		{
 			perror("pipe");
-			free(pids);
+			// free(pids);
 			return (1);
 		}
 		
 		pids[i] = execute_pipeline_command_async(current, global, prev_fd, pipe_fd);
 		if (pids[i] == -1)
 		{
-			free(pids);
+			// free(pids);
 			return (1);
 		}
 		
@@ -177,7 +179,7 @@ int	execute_pipeline(t_command *commands, t_global *global)
 		}
 	}
 	
-	free(pids);
+	// free(pids);
 	return (last_status);
 }
 

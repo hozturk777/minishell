@@ -6,7 +6,7 @@
 /*   By: hsyn <hsyn@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 12:00:00 by huozturk          #+#    #+#             */
-/*   Updated: 2025/09/02 22:28:17 by hsyn             ###   ########.fr       */
+/*   Updated: 2025/09/20 23:08:18 by hsyn             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,23 +39,23 @@ t_global	*init_global(char **envp) // bzero YAPILCAK
 	return (global);
 }
 
-void	free_global(t_global *global)
-{
-	if (!global)
-		return ;
-	if (global->tokens)
-		free_tokens_advanced(&global->tokens);
-	if (global->env_list)
-		free_env_list(global->env_list);
-	if (global->input_line)
-		free(global->input_line);
+// void	free_global(t_global *global)
+// {
+// 	if (!global)
+// 		return ;
+// 	if (global->tokens)
+// 		free_tokens_advanced(&global->tokens);
+// 	if (global->env_list)
+// 		free_env_list(global->env_list);
+// 	if (global->input_line)
+// 		free(global->input_line);
 	
-	// Global değişkeni temizle
-	if (g_global == global)
-		g_global = NULL;
+// 	// Global değişkeni temizle
+// 	if (g_global == global)
+// 		g_global = NULL;
 		
-	free(global);
-}
+// 	free(global);
+// }
 
 void	update_exit_status(t_global *global, int status)
 {
@@ -63,23 +63,23 @@ void	update_exit_status(t_global *global, int status)
 		global->exit_status = status;
 }
 
-void	free_token_advanced(void *token)
-{
-	t_token_new	*t;
+//void	free_token_advanced(void *token)
+//{
+//	t_token_new	*t;
 
-	if (!token)
-		return ;
-	t = (t_token_new *)token;
-	if (t->value)
-		free(t->value);
-	free(t);
-}
+//	if (!token)
+//		return ;
+//	t = (t_token_new *)token;
+//	// if (t->value)
+//		// free(t->value);
+//	// free(t);
+//}
 
-void	free_tokens_advanced(t_list **tokens)
-{
-	if (tokens && *tokens)
-	{
-		ft_lstclear(tokens, free_token_advanced);
-		*tokens = NULL;
-	}
-}
+//void	free_tokens_advanced(t_list **tokens)
+//{
+//	if (tokens && *tokens)
+//	{
+//		ft_lstclear(tokens, free_token_advanced);
+//		*tokens = NULL;
+//	}
+//}

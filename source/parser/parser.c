@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hsyn <hsyn@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: hasivaci <hasivaci@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 02:50:00 by hsyn              #+#    #+#             */
-/*   Updated: 2025/09/18 22:17:38 by hsyn             ###   ########.fr       */
+/*   Updated: 2025/09/20 19:06:20 by hasivaci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,14 +145,14 @@ void	collect_command_arg(t_list **args_list, t_list *token_node)
         // Mark single quoted strings with special prefix to prevent expansion
         temp = ft_strjoin("__SINGLE_QUOTE__", token->value);
         arg_copy = ft_strjoin(temp, "__END_SINGLE_QUOTE__");
-        free(temp);
+        // free(temp);
     }
     else if (token->type == T_DOUBLE_QUOTE)
     {
         // Double quoted strings should be marked for expansion by keeping quotes
         temp = ft_strjoin("\"", token->value);
         arg_copy = ft_strjoin(temp, "\"");
-        free(temp);
+        // free(temp);
     }
     else
     {

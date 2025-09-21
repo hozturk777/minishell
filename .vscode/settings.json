@@ -1,6 +1,7 @@
 {
 	"files.associations": {
 		"minishell.h": "c",
-		"token_enum.h": "c"
+		"token_enum.h": "c",
+		"stdlib.h": "c"
 	}
 }

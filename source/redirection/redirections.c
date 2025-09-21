@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirections.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hsyn <hsyn@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: hasivaci <hasivaci@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/24 12:00:00 by huozturk          #+#    #+#             */
-/*   Updated: 2025/08/31 23:38:59 by hsyn             ###   ########.fr       */
+/*   Updated: 2025/09/20 19:07:30 by hasivaci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,19 +144,19 @@ static char	*create_temp_filename(int heredoc_count)
 	count_str = ft_itoa(heredoc_count);
 	if (!pid_str || !count_str)
 	{
-		if (pid_str)
-			free(pid_str);
-		if (count_str)
-			free(count_str);
+		// if (pid_str)
+		//	free(pid_str);
+		// if (count_str)
+		// 	free(count_str);
 		return (NULL);
 	}
 	temp1 = ft_strjoin("/tmp/heredoc_", pid_str);
 	temp2 = ft_strjoin(temp1, "_");
 	result = ft_strjoin(temp2, count_str);
-	free(pid_str);
-	free(count_str);
-	free(temp1);
-	free(temp2);
+	// free(pid_str);
+	// free(count_str);
+	// free(temp1);
+	// free(temp2);
 	return (result);
 }
 
@@ -175,7 +175,7 @@ int	handle_heredoc(t_redirect *redirect)
 	fd = open(temp_filename, O_CREAT | O_WRONLY | O_TRUNC, 0600);
 	if (fd == -1)
 	{
-		free(temp_filename);
+		// free(temp_filename);
 		return (-1);
 	}
 	write(STDOUT_FILENO, "> ", 2);
@@ -183,18 +183,18 @@ int	handle_heredoc(t_redirect *redirect)
 	{
 		if (ft_strcmp(line, redirect->filename) == 0)
 		{
-			free(line);
+			// free(line);
 			break ;
 		}
 		write(fd, line, ft_strlen(line));
 		write(fd, "\n", 1);
-		free(line);
+		// free(line);
 		write(STDOUT_FILENO, "> ", 2);
 	}
 	close(fd);
 	fd = open(temp_filename, O_RDONLY);
 	unlink(temp_filename);
-	free(temp_filename);
+	// free(temp_filename);
 	return (fd);
 }
 

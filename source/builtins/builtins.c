@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hsyn <hsyn@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: hasivaci <hasivaci@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/28 17:39:03 by hasivaci          #+#    #+#             */
-/*   Updated: 2025/09/09 23:06:41 by hsyn             ###   ########.fr       */
+/*   Updated: 2025/09/20 18:38:56 by hasivaci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,6 +145,8 @@ int	builtin_pwd_global(t_global *global)
 char	*remove_quotes(char *str)
 {
 	int		len;
+	int		i;
+	int 	j;
 	char	*result;
 	//char	quote_char;
 
@@ -156,9 +158,22 @@ char	*remove_quotes(char *str)
 	if ((str[0] == '"' && str[len - 1] == '"') ||
 		(str[0] == '\'' && str[len - 1] == '\''))
 	{
-		//quote_char = str[0];
-		result = ft_substr(str, 1, len - 2);
-		return (result);
+		// //quote_char = str[0];
+		// result = ft_substr(str, 1, len - 2);
+		// return (result);
+		result = halloc(len - 1);  // halloc kullanıyor
+        if (!result)
+            return (NULL);
+        i = 1;
+        j = 0;
+        while (i < len - 1)
+        {
+            result[j] = str[i];
+            i++;
+            j++;
+        }
+        result[j] = '\0';
+        return (result);
 	}
 	return (ft_strdup(str));
 }
@@ -232,7 +247,7 @@ int	builtin_echo(char **args)
 			if (enable_escape)
 				process_escape_sequences(processed_arg);
 			printf("%s", processed_arg);
-			free(processed_arg);
+			// free(processed_arg);
 		}
 		if (args[i + 1])
 			printf(" ");
@@ -280,6 +295,8 @@ int	builtin_exit(char **args, t_global *global)
 			return (1);
 		}
 	}
-	free_global(global);
+	// free_global(global);
+	(void)*global;
+	clear_garbage();
 	exit(exit_code);
 }

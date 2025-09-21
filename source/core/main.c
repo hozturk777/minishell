@@ -6,7 +6,7 @@
 /*   By: hsyn <hsyn@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/28 17:38:23 by hasivaci          #+#    #+#             */
-/*   Updated: 2025/09/09 19:23:38 by hsyn             ###   ########.fr       */
+/*   Updated: 2025/09/20 23:09:17 by hsyn             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,10 @@ static int	process_input(char *input, t_global *global)
 	if (!commands)
 	{
 		printf("Error: Parsing failed\n");
-		free_tokens_advanced(&tokens);
+		//free_tokens_advanced(&tokens);
+		if (global->input_line)
+            free(global->input_line);
+        global->input_line = NULL;
 		return (0);
 	}
 	// 3. DEBUG: Token'ları ve komutları yazdır
@@ -56,18 +59,21 @@ static int	process_input(char *input, t_global *global)
 	// 5. CLEANUP: Memory'yi temizle
 	global->tokens = tokens;
 	global->commands = commands;
-	free_tokens_advanced(&global->tokens);
-	free_commands_list(global->commands);
+	//free_tokens_advanced(&global->tokens);
+	//free_commands_list(global->commands);
 	global->commands = NULL;
 	
 	if (global->input_line)
 	{
-		free(global->input_line);
+		// free(global->input_line);
 		global->input_line = NULL;
 	}
 	
 	if (ft_strncmp(input, "exit", 4) == 0)
+	{
+		clear_garbage();
 		return (1);
+	}
 	return (0);
 }
 
@@ -84,11 +90,13 @@ static void	run_shell_loop(t_global *global)
 		{
 			// EOF (Ctrl+D) algılandı
 			handle_eof();
+			//clear_garbage();
 			break ;
 		}
 		should_exit = process_input(input, global);
 		free(input);
 	}
+	//clear_garbage();
 }
 
 int	main(int argc, char **argv, char **envp) // argc sayısı check
@@ -101,6 +109,7 @@ int	main(int argc, char **argv, char **envp) // argc sayısı check
 	if (!global)
 	{
 		printf("Error: Failed to initialize global state\n");
+		clear_garbage();
 		return (1);
 	}
 	
@@ -114,6 +123,7 @@ int	main(int argc, char **argv, char **envp) // argc sayısı check
 	run_shell_loop(global);
 	
 	printf(GREEN "Goodbye!" RESET "\n");
-	free_global(global);
+	// free_global(global);
+	clear_garbage();
 	return (0);
 }

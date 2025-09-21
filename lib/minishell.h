@@ -6,7 +6,7 @@
 /*   By: hsyn <hsyn@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 12:00:00 by huozturk          #+#    #+#             */
-/*   Updated: 2025/09/18 22:17:38 by hsyn             ###   ########.fr       */
+/*   Updated: 2025/09/20 23:09:28 by hsyn             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,8 +134,8 @@ typedef struct s_global
 // ========== LEXER VE TOKENIZER FONKSIYONLARI ==========
 t_list			*tokenize_advanced(char *input, t_global *global);		/* Ana tokenize fonksiyonu */
 t_token_new		*create_token_advanced(t_token_types type, char *value);	/* Yeni token oluştur */
-void			free_token_advanced(void *token);						/* Tek token serbest bırak */
-void			free_tokens_advanced(t_list **tokens);					/* Token listesini serbest bırak */
+//void			free_token_advanced(void *token);						/* Tek token serbest bırak */
+//void			free_tokens_advanced(t_list **tokens);					/* Token listesini serbest bırak */
 t_lexer_new		*init_lexer_advanced(char *input, t_global *global);	/* Lexer başlat */
 void			free_lexer_advanced(t_lexer_new *lexer);				/* Lexer serbest bırak */
 void			advance_lexer(t_lexer_new *lexer);						/* Sonraki karaktere geç */
@@ -185,7 +185,7 @@ void			add_redirect_to_command(t_command *cmd, t_redirect *redirect);
 
 // ========== DEBUG FONKSIYONLARI ==========
 void			print_commands_debug(t_command *commands);				/* Komutları debug yazdır */
-void			free_commands_list(t_command *commands);				/* Komut listesini serbest bırak */
+//void			free_commands_list(t_command *commands);				/* Komut listesini serbest bırak */
 
 // ========== VARIABLE EXPANSION FONKSIYONLARI ==========
 char			*expand_variables(char *input, t_global *global);		/* Değişken genişletme ana fonksiyon */

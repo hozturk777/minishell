@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strdup.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: huozturk <huozturk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hasivaci <hasivaci@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 16:17:04 by huozturk          #+#    #+#             */
-/*   Updated: 2024/11/08 18:48:13 by huozturk         ###   ########.fr       */
+/*   Updated: 2025/09/19 21:30:45 by hasivaci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,16 +19,21 @@ char	*ft_strdup(const char *s1)
 	int		i;
 	char	*str;
 
+	if (!s1)
+		return (NULL);
 	slen = ft_strlen(s1);
 	i = 0;
 	str = (char *)halloc(slen + 1);
 	if (!str)
-		return (NULL);
-	while (*(s1 + i) != '\0')
 	{
-		*(str + i) = *(s1 + i);
+		clear_garbage();   // tüm garbage’ı serbest bırak
+		exit(1);           // güvenli çıkış
+	}
+	while (s1[i] != '\0')
+	{
+		str[i] = s1[i];
 		i++;
 	}
-	*(str + i) = '\0';
+	str[i] = '\0';
 	return (str);
 }

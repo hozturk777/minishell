@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   environment.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hsyn <hsyn@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: hasivaci <hasivaci@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 12:00:00 by huozturk          #+#    #+#             */
-/*   Updated: 2025/08/31 23:45:48 by hsyn             ###   ########.fr       */
+/*   Updated: 2025/09/20 19:04:53 by hasivaci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,11 +24,11 @@ t_env	*create_env_node(char *key, char *value)
 	node->next = NULL;
 	if (!node->key || !node->value)
 	{
-		if (node->key)
-			free(node->key);
-		if (node->value)
-			free(node->value);
-		free(node);
+		// if (node->key)
+		// 	free(node->key);
+		// if (node->value)
+		// 	free(node->value);
+		// free(node);
 		return (NULL);
 	}
 	return (node);
@@ -68,16 +68,17 @@ t_env	*find_env_node(t_env *env_list, char *key)
 
 void	free_env_list(t_env *env_list)
 {
-	t_env	*temp;
+	// t_env	*temp;
 
-	while (env_list)
-	{
-		temp = env_list->next;
-		if (env_list->key)
-			free(env_list->key);
-		if (env_list->value)
-			free(env_list->value);
-		free(env_list);
-		env_list = temp;
-	}
+	// while (env_list)
+	// {
+	// 	temp = env_list->next;
+	// 	if (env_list->key)
+	// 		free(env_list->key);
+	// 	if (env_list->value)
+	// 		free(env_list->value);
+	// 	free(env_list);
+	// 	env_list = temp;
+	// }
+	(void)env_list;
 }
