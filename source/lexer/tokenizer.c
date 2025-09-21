@@ -6,7 +6,7 @@
 /*   By: hsyn <hsyn@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 12:00:00 by huozturk          #+#    #+#             */
-/*   Updated: 2025/09/21 17:32:33 by hsyn             ###   ########.fr       */
+/*   Updated: 2025/09/21 22:37:30 by hsyn             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,33 +19,40 @@ static void	skip_whitespace_advanced(t_lexer_new *lexer)
 		advance_lexer(lexer);
 }
 
-static int	check_quote_balance(char *input)
+static int	check_quote_balance(char *input, int *single_quote_count)
 {
 	int	i;
 	int	single_quotes;
 	int	double_quotes;
+	int	dollar_flag;
 
 	i = 0;
 	single_quotes = 0;
 	double_quotes = 0;
+	dollar_flag = 1;
 	while (input[i])
 	{
 		if (input[i] == '\'')
 			single_quotes++;
 		else if (input[i] == '"')
 			double_quotes++;
+		if (input[i] == '\'' && dollar_flag)
+			(*single_quote_count)++;
+		if (input[i] == '$')
+			dollar_flag = 0;
 		i++;
 	}
 	// Both single and double quotes must be even
 	return (single_quotes % 2 == 0 && double_quotes % 2 == 0);
 }
 
-static t_token_new	*get_next_token(t_lexer_new *lexer)
+static t_token_new	*get_next_token(t_lexer_new *lexer, int single_quote_count)
 {
 	t_token_new *token;
 	t_token_new *next_token;
 	char *combined_value;
 	
+	//single_quote_count = 0;
 	skip_whitespace_advanced(lexer);
 	if (lexer->current_char == '\0')
 		return (NULL);
@@ -62,7 +69,7 @@ static t_token_new	*get_next_token(t_lexer_new *lexer)
 	
 	if (!token)
 		return (NULL);
-		
+	
 	// Adjacent token kontrolü - boşluk olmadan devam eden token'lar var mı?
 	while (lexer->current_char != '\0' && lexer->current_char != ' ' 
 		&& lexer->current_char != '\t' && lexer->current_char != '\n'
@@ -80,17 +87,17 @@ static t_token_new	*get_next_token(t_lexer_new *lexer)
 			break; // Tokenizable değilse dur
 			
 		if (!next_token)
-			break;
-			
+			break;		
+		
 		// İki token'ı birleştir
 		combined_value = ft_strjoin(token->value, next_token->value);
 		token->value = combined_value; // Halloc kullanıyoruz, eski value'yu free etme
 		token->len = ft_strlen(combined_value);
-		
-		// Mixed token type durumu - expansion için T_WORD yap
-		if (token->type != next_token->type)
-			token->type = T_WORD;
 	}
+
+	if (single_quote_count % 2 == 0)
+		// Tek sayıda single quote = literal (expansion yok)
+		token->type = T_WORD;
 	
 	return (token);
 }
@@ -100,9 +107,11 @@ t_list	*tokenize_advanced(char *input, t_global *global)
 	t_lexer_new	*lexer;
 	t_list		*tokens;
 	t_token_new	*token;
+	int			single_quote_count;
 
 	// Check quote balance before tokenizing
-	if (!check_quote_balance(input))
+	single_quote_count = 0;
+	if (!check_quote_balance(input, &single_quote_count))
 	{
 		printf("Error: Unbalanced quotes detected\n");
 		return (NULL);
@@ -114,7 +123,7 @@ t_list	*tokenize_advanced(char *input, t_global *global)
 	tokens = NULL;
 	while (lexer->current_char != '\0')
 	{
-		token = get_next_token(lexer);
+		token = get_next_token(lexer, single_quote_count);
 		if (token && token->value && token->value[0])
 			ft_lstadd_back(&tokens, ft_lstnew(token));
 		else if (!token)
