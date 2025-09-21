@@ -6,7 +6,7 @@
 /*   By: hsyn <hsyn@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 12:00:00 by huozturk          #+#    #+#             */
-/*   Updated: 2025/09/18 22:45:39 by hsyn             ###   ########.fr       */
+/*   Updated: 2025/09/21 17:32:33 by hsyn             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,17 +42,57 @@ static int	check_quote_balance(char *input)
 
 static t_token_new	*get_next_token(t_lexer_new *lexer)
 {
+	t_token_new *token;
+	t_token_new *next_token;
+	char *combined_value;
+	
 	skip_whitespace_advanced(lexer);
 	if (lexer->current_char == '\0')
 		return (NULL);
+		
+	// İlk token'ı oluştur
 	if (lexer->current_char == '|')
-		return (handle_pipe_advanced(lexer));
+		token = handle_pipe_advanced(lexer);
 	else if (lexer->current_char == '<' || lexer->current_char == '>')
-		return (handle_redirect_advanced(lexer));
+		token = handle_redirect_advanced(lexer);
 	else if (lexer->current_char == '\'' || lexer->current_char == '"')
-		return (handle_quotes_advanced(lexer));
+		token = handle_quotes_advanced(lexer);
 	else
-		return (handle_word_advanced(lexer));
+		token = handle_word_advanced(lexer);
+	
+	if (!token)
+		return (NULL);
+		
+	// Adjacent token kontrolü - boşluk olmadan devam eden token'lar var mı?
+	while (lexer->current_char != '\0' && lexer->current_char != ' ' 
+		&& lexer->current_char != '\t' && lexer->current_char != '\n'
+		&& lexer->current_char != '|' && lexer->current_char != '<' 
+		&& lexer->current_char != '>')
+	{
+		// Sonraki karakter tokenizable mı kontrol et
+		if (lexer->current_char == '\'' || lexer->current_char == '"')
+			next_token = handle_quotes_advanced(lexer);
+		else if (ft_isalnum(lexer->current_char) || lexer->current_char == '_' 
+			|| lexer->current_char == '$' || lexer->current_char == '/' 
+			|| lexer->current_char == '.')
+			next_token = handle_word_advanced(lexer);
+		else
+			break; // Tokenizable değilse dur
+			
+		if (!next_token)
+			break;
+			
+		// İki token'ı birleştir
+		combined_value = ft_strjoin(token->value, next_token->value);
+		token->value = combined_value; // Halloc kullanıyoruz, eski value'yu free etme
+		token->len = ft_strlen(combined_value);
+		
+		// Mixed token type durumu - expansion için T_WORD yap
+		if (token->type != next_token->type)
+			token->type = T_WORD;
+	}
+	
+	return (token);
 }
 
 t_list	*tokenize_advanced(char *input, t_global *global)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hasivaci <hasivaci@student.42kocaeli.co    +#+  +:+       +#+        */
+/*   By: hsyn <hsyn@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/24 12:00:00 by huozturk          #+#    #+#             */
-/*   Updated: 2025/09/20 18:58:33 by hasivaci         ###   ########.fr       */
+/*   Updated: 2025/09/21 16:22:21 by hsyn             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ int	execute_external_command(t_command *cmd, t_global *global)
 			else
 				return (128 + signal_num);
 		}
-		
+		//clear_garbage();
 		return (WEXITSTATUS(status));
 	}
 	else
@@ -250,7 +250,6 @@ int	execute_pipeline_command(t_command *cmd, t_global *global, int prev_fd, int 
 		// Child process - sinyalleri default davranışa çevir
 		setup_child_signals();
 		global->in_child = 1;
-		
 		setup_pipeline_fds(cmd, prev_fd, pipe_fd);
 		setup_redirections(cmd);
 		if (is_builtin(cmd->args[0]))

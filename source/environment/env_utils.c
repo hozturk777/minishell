@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env_utils.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hasivaci <hasivaci@student.42kocaeli.co    +#+  +:+       +#+        */
+/*   By: hsyn <hsyn@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 12:00:00 by huozturk          #+#    #+#             */
-/*   Updated: 2025/09/19 21:37:36 by hasivaci         ###   ########.fr       */
+/*   Updated: 2025/09/21 16:22:14 by hsyn             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ t_env	*init_env_from_envp(char **envp)
 			if (new_node)
 				add_env_node(&env_list, new_node);
 		}
-		// if (key)
+		// if (key) // eklemek gerekbilir
 		// 	free(key);
 		// if (value)
 		// 	free(value);

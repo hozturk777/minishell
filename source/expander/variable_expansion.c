@@ -70,6 +70,31 @@ char	*handle_dollar_expansion(char *input, int *i, t_global *global)
 		(*i)++;
 	var_name = ft_substr(input, start, *i - start);
 	var_value = get_env_value(global->env_list, var_name);
+	
+	// Eğer variable bulunamadı ama uzun bir name ise, kısa versiyonları dene
+	if (!var_value && ft_strlen(var_name) > 1) // Buraya bakılacak!!!!
+	{
+		int len = ft_strlen(var_name);
+		int j;
+		
+		// Sondan başlayarak kısalt ve dene
+		for (j = len - 1; j > 0; j--)
+		{
+			char *partial_name = ft_substr(var_name, 0, j);
+			char *partial_value = get_env_value(global->env_list, partial_name);
+			
+			if (partial_value)
+			{
+				// Partial match bulundu! Kalan kısmı geri döndür
+				*i = start + j; // Position'ı ayarla
+				free(var_name);
+				free(partial_name);
+				return (ft_strdup(partial_value));
+			}
+			free(partial_name);
+		}
+	}
+	
 	free(var_name);
 	return (var_value ? ft_strdup(var_value) : ft_strdup(""));
 }
