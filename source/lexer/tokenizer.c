@@ -12,12 +12,12 @@
 
 #include "../../lib/minishell.h"
 
-static void	skip_whitespace_advanced(t_lexer_new *lexer)
-{
-	while (lexer->current_char == ' ' || lexer->current_char == '\t'
-		|| lexer->current_char == '\n')
-		advance_lexer(lexer);
-}
+// static void	skip_whitespace_advanced(t_lexer_new *lexer)
+// {
+// 	while (lexer->current_char == ' ' || lexer->current_char == '\t'
+// 		|| lexer->current_char == '\n')
+// 		advance_lexer(lexer);
+// }
 
 static int	check_quote_balance(char *input, int *single_quote_count)
 {
@@ -53,13 +53,18 @@ static t_token_new	*get_next_token(t_lexer_new *lexer, int single_quote_count)
 	char *combined_value;
 	
 	//single_quote_count = 0;
-	skip_whitespace_advanced(lexer);
+	// skip_whitespace_advanced(lexer);
+	combined_value = 0;
+	single_quote_count = 0;
+	next_token = NULL;
 	if (lexer->current_char == '\0')
 		return (NULL);
 		
 	// İlk token'ı oluştur
 	if (lexer->current_char == '|')
 		token = handle_pipe_advanced(lexer);
+	else if (lexer->current_char == ' ' || lexer->current_char == '\t')
+		token = handle_whitespaces_advanced(lexer);
 	else if (lexer->current_char == '<' || lexer->current_char == '>')
 		token = handle_redirect_advanced(lexer);
 	else if (lexer->current_char == '\'' || lexer->current_char == '"')
@@ -70,39 +75,39 @@ static t_token_new	*get_next_token(t_lexer_new *lexer, int single_quote_count)
 	if (!token)
 		return (NULL);
 	
-	while (lexer->current_char != '\0' && lexer->current_char != ' ' 
-		&& lexer->current_char != '\t' && lexer->current_char != '\n'
-		&& lexer->current_char != '|' && lexer->current_char != '<' 
-		&& lexer->current_char != '>' && token->type != T_HEREDOC) // /!ft_isalnum(lexer->current_char) eklenebilir fakar echo 'hello'world düzgün çalışmıyo.
-	{
-		// Sonraki karakter tokenizable mı kontrol et
-		if (lexer->current_char == '\'' || lexer->current_char == '"')
-			next_token = handle_quotes_advanced(lexer);
-		// else if (ft_isalnum(lexer->current_char) || lexer->current_char == '_' 
-		// 	|| lexer->current_char == '$' || lexer->current_char == '/' 
-		// 	|| lexer->current_char == '.')
-		// 	next_token = handle_word_advanced(lexer);
-		else
-			next_token = handle_word_advanced(lexer);
+	// while (lexer->current_char != '\0' && lexer->current_char != ' ' 
+	// 	&& lexer->current_char != '\t' && lexer->current_char != '\n'
+	// 	&& lexer->current_char != '|' && lexer->current_char != '<' 
+	// 	&& lexer->current_char != '>' && token->type != T_HEREDOC) // /!ft_isalnum(lexer->current_char) eklenebilir fakar echo 'hello'world düzgün çalışmıyo.
+	// {
+	// 	// Sonraki karakter tokenizable mı kontrol et
+	// 	if (lexer->current_char == '\'' || lexer->current_char == '"')
+	// 		next_token = handle_quotes_advanced(lexer);
+	// 	// else if (ft_isalnum(lexer->current_char) || lexer->current_char == '_' 
+	// 	// 	|| lexer->current_char == '$' || lexer->current_char == '/' 
+	// 	// 	|| lexer->current_char == '.')
+	// 	// 	next_token = handle_word_advanced(lexer);
+	// 	else
+	// 		next_token = handle_word_advanced(lexer);
 
 			
-		if (!next_token)
-			break;		
+	// 	if (!next_token)
+	// 		break;		
 		
-		// İki token'ı birleştir
-		combined_value = ft_strjoin(token->value, next_token->value);
-		token->value = combined_value; // Halloc kullanıyoruz, eski value'yu free etme
-		token->len = ft_strlen(combined_value);
-	}
+	// 	// İki token'ı birleştir
+	// 	combined_value = ft_strjoin(token->value, next_token->value);
+	// 	token->value = combined_value; // Halloc kullanıyoruz, eski value'yu free etme
+	// 	token->len = ft_strlen(combined_value);
+	// }
 
 	// Pipe ve redirect operatörleri derhal return edilmeli
 	if (token->type == T_PIPE || token->type == T_REDIRECT_IN || 
 		token->type == T_REDIRECT_OUT || token->type == T_APPEND || 
 		token->type == T_HEREDOC)
 		return (token);
-	if (single_quote_count % 2 == 0)
-		// Tek sayıda single quote = literal (expansion yok)
-		token->type = T_WORD;
+	// if (single_quote_count % 2 == 0)
+	// 	// Tek sayıda single quote = literal (expansion yok)
+	// 	token->type = T_WORD;
 	
 	return (token);
 }
@@ -129,7 +134,7 @@ t_list	*tokenize_advanced(char *input, t_global *global)
 	while (lexer->current_char != '\0')
 	{
 		token = get_next_token(lexer, single_quote_count);
-		if (token && token->value && token->value[0])
+		if (token && token->value)
 			ft_lstadd_back(&tokens, ft_lstnew(token));
 		else if (!token)
 		{

@@ -96,15 +96,35 @@ t_token_new	*handle_quotes_advanced(t_lexer_new *lexer)
 	start = lexer->pos;
 	while (lexer->current_char != '\0' && lexer->current_char != quote_char)
 		advance_lexer(lexer);
-	if (lexer->current_char == quote_char) // Tırnaklara bir baştan bir sondan bakarak gidilecek
+	if (lexer->current_char == quote_char)
 	{
 		len = lexer->pos - start;
+		// printf("lexer: $%c$ - LEM: $%d$\n", lexer->current_char, len);
+		
 		quoted_str = ft_substr(lexer->input, start, len);
 		advance_lexer(lexer);
+		if (len == 0)
+			return(create_token_advanced(T_SINGLE_QUOTE, ft_strdup("")));
 		if (quote_char == '\'')
 			return (create_token_advanced(T_SINGLE_QUOTE, quoted_str));
 		else
 			return (create_token_advanced(T_DOUBLE_QUOTE, quoted_str));
 	}
 	return (NULL);
+}
+
+t_token_new	*handle_whitespaces_advanced(t_lexer_new *lexer)
+{
+	int		start;
+	int		len;
+	char	*whitepaces;
+
+	start = lexer->pos;
+	while (lexer->current_char != '\0' && (lexer->current_char == ' ' || lexer->current_char == '\t'))
+	{
+		advance_lexer(lexer);
+	}
+	len = lexer->pos - start;
+	whitepaces = ft_substr(lexer->input, start, len);
+	return(create_token_advanced(T_WHITESPACE, whitepaces));
 }

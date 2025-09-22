@@ -17,17 +17,11 @@ t_command	*parse_tokens_to_commands(t_list *tokens, t_global *global)
     t_command	*head;
     t_command	*current;
     t_list		*token_node;
-	// t_token_new *new_token = (t_token_new *)tokens->content;
 
     head = NULL;
     current = NULL;
     token_node = tokens;
-	// while (tokens->next)
-	// {
-	// 	printf("HELLOO, %s\n", (char *)new_token->value);
-	// 	tokens = tokens->next;
-	// 	new_token = (t_token_new *)tokens->content;
-	// }
+	// Buraya lexer tırnklar dahil ayırıyor 
 	
     while (token_node) // Tüm tokenları gezecek
     {
@@ -138,7 +132,7 @@ int	is_word_token(t_list *token_node)
         return (0);
     token = (t_token_new *)token_node->content;
     return (token->type == T_WORD || token->type == T_SINGLE_QUOTE || 
-            token->type == T_DOUBLE_QUOTE);
+            token->type == T_DOUBLE_QUOTE || token->type == T_WHITESPACE);
 }
 
 void	collect_command_arg(t_list **args_list, t_list *token_node)

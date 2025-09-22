@@ -152,6 +152,8 @@ t_token_new		*handle_pipe_advanced(t_lexer_new *lexer);				/* Pipe token'ını i
 t_token_new		*handle_redirect_advanced(t_lexer_new *lexer);			/* Yönlendirme token'larını işle */
 t_token_new		*handle_word_advanced(t_lexer_new *lexer);				/* Kelime token'larını işle */
 t_token_new		*handle_quotes_advanced(t_lexer_new *lexer);			/* Tırnaklı metinleri işle */
+t_token_new	*handle_whitespaces_advanced(t_lexer_new *lexer);
+
 
 // ========== KOMUT FONKSIYONLARI ==========
 t_command		*create_command(void);									/* Yeni komut yapısı oluştur */

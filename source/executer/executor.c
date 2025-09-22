@@ -191,9 +191,11 @@ pid_t	execute_pipeline_command_async(t_command *cmd, t_global *global, int prev_
 {
 	pid_t	pid;
 	char	*path;
+	int		exit_num;
 
 	// Pipeline'da tüm komutlar (built-in dahil) child process'te çalışmalı
 	pid = fork();
+	exit_num = 0;
 	if (pid == 0)
 	{
 		// Child process - sinyalleri default davranışa çevir
@@ -206,7 +208,9 @@ pid_t	execute_pipeline_command_async(t_command *cmd, t_global *global, int prev_
 		if (is_builtin(cmd->args[0]))
 		{
 			execute_builtin(cmd, global);
-			exit(global->exit_status);
+			exit_num = global->exit_status;
+			clear_garbage();
+			exit(exit_num);
 		}
 		
 		path = find_command_path(cmd->args[0], global->env_list);

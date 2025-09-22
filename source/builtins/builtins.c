@@ -241,7 +241,7 @@ int	builtin_echo(char **args)
 	}
 	while (args[i])
 	{
-		processed_arg = remove_quotes(args[i]);
+		processed_arg = args[i];
 		if (processed_arg)
 		{
 			if (enable_escape)
@@ -249,8 +249,8 @@ int	builtin_echo(char **args)
 			printf("%s", processed_arg);
 			// free(processed_arg);
 		}
-		if (args[i + 1])
-			printf(" ");
+		// if (args[i + 1])
+		// 	printf(" ");
 		i++;
 	}
 	if (newline)

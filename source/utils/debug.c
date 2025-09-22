@@ -34,6 +34,8 @@ static char	*get_token_type_name(t_token_types type)
 		return ("ENV_VAR");
 	else if (type == T_EOF)
 		return ("EOF");
+	else if (type == T_WHITESPACE)
+		return ("T_WHITESPACE");
 	return ("UNKNOWN");
 }
 
