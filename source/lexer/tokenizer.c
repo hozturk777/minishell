@@ -95,6 +95,12 @@ static t_token_new	*get_next_token(t_lexer_new *lexer, int single_quote_count)
 		token->len = ft_strlen(combined_value);
 	}
 
+	// Pipe ve redirect operatörleri derhal return edilmeli
+	if (token->type == T_PIPE || token->type == T_REDIRECT_IN || 
+		token->type == T_REDIRECT_OUT || token->type == T_APPEND || 
+		token->type == T_HEREDOC)
+		return (token);
+		
 	if (single_quote_count % 2 == 0)
 		// Tek sayıda single quote = literal (expansion yok)
 		token->type = T_WORD;
