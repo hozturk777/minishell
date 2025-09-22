@@ -31,6 +31,9 @@ static int	process_input(char *input, t_global *global)
 		return (0);
 	}
 	
+	// printf("\n=== TOKENS ===\n");
+	// print_tokens_advanced(tokens);
+
 	// 2. PARSER: Token'ları komut yapılarına çevir
 	commands = parse_tokens_to_commands(tokens, global);
 	if (!commands)

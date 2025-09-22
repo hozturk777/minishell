@@ -17,12 +17,21 @@ t_command	*parse_tokens_to_commands(t_list *tokens, t_global *global)
     t_command	*head;
     t_command	*current;
     t_list		*token_node;
+	// t_token_new *new_token = (t_token_new *)tokens->content;
 
     head = NULL;
     current = NULL;
     token_node = tokens;
+	// while (tokens->next)
+	// {
+	// 	printf("HELLOO, %s\n", (char *)new_token->value);
+	// 	tokens = tokens->next;
+	// 	new_token = (t_token_new *)tokens->content;
+	// }
+	
     while (token_node) // Tüm tokenları gezecek
     {
+		// printf("HELLOO, %s\n", (char *)new_token->value);
         if (is_command_start(token_node)) // Token word ise
         {
             current = parse_single_command(&token_node, global);
@@ -34,6 +43,7 @@ t_command	*parse_tokens_to_commands(t_list *tokens, t_global *global)
         else // Token word değil ise diğer token'a geç
             token_node = token_node->next;
     }
+	
     return (head);
 }
 
@@ -54,7 +64,7 @@ t_command	*parse_single_command(t_list **token_node, t_global *global)
             parse_redirection(cmd, &current, global); // redirect var ise cmd.redirections'a ekler
         else if (is_word_token(current)) // Wordlari de listeye ekliyor
             collect_command_arg(&args_list, current); // Wordleri arg_list içerisine ekler
-        current = current->next;
+		current = current->next;
     }
     cmd->args = convert_list_to_array(args_list); // oluşan arg_list'i cmd.args'e ekler
     *token_node = current; // token_node'u eğer command line bittiyse NULL pipe'a denk geldiyse yeni command'a geçer

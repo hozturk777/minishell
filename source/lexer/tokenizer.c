@@ -70,21 +70,21 @@ static t_token_new	*get_next_token(t_lexer_new *lexer, int single_quote_count)
 	if (!token)
 		return (NULL);
 	
-	// Adjacent token kontrolü - boşluk olmadan devam eden token'lar var mı?
 	while (lexer->current_char != '\0' && lexer->current_char != ' ' 
 		&& lexer->current_char != '\t' && lexer->current_char != '\n'
 		&& lexer->current_char != '|' && lexer->current_char != '<' 
-		&& lexer->current_char != '>')
+		&& lexer->current_char != '>' && token->type != T_HEREDOC) // /!ft_isalnum(lexer->current_char) eklenebilir fakar echo 'hello'world düzgün çalışmıyo.
 	{
 		// Sonraki karakter tokenizable mı kontrol et
 		if (lexer->current_char == '\'' || lexer->current_char == '"')
 			next_token = handle_quotes_advanced(lexer);
-		else if (ft_isalnum(lexer->current_char) || lexer->current_char == '_' 
-			|| lexer->current_char == '$' || lexer->current_char == '/' 
-			|| lexer->current_char == '.')
-			next_token = handle_word_advanced(lexer);
+		// else if (ft_isalnum(lexer->current_char) || lexer->current_char == '_' 
+		// 	|| lexer->current_char == '$' || lexer->current_char == '/' 
+		// 	|| lexer->current_char == '.')
+		// 	next_token = handle_word_advanced(lexer);
 		else
-			break; // Tokenizable değilse dur
+			next_token = handle_word_advanced(lexer);
+
 			
 		if (!next_token)
 			break;		
@@ -100,7 +100,6 @@ static t_token_new	*get_next_token(t_lexer_new *lexer, int single_quote_count)
 		token->type == T_REDIRECT_OUT || token->type == T_APPEND || 
 		token->type == T_HEREDOC)
 		return (token);
-		
 	if (single_quote_count % 2 == 0)
 		// Tek sayıda single quote = literal (expansion yok)
 		token->type = T_WORD;
@@ -141,7 +140,9 @@ t_list	*tokenize_advanced(char *input, t_global *global)
 		}
 		else if (token && !token->value[0])
 			break ;
+
 	}
+	
 	free_lexer_advanced(lexer);
 	return (tokens);
 }

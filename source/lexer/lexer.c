@@ -55,6 +55,7 @@ t_token_new	*create_token_advanced(t_token_types type, char *value)
 		return (NULL);
 	token->type = type;
 	token->value = ft_strdup(value);
+	
 	if (!token->value)
 	{
 		// free(token); // büyük ihtimalle bunlar silinecek
