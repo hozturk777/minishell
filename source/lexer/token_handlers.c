@@ -46,14 +46,25 @@ t_token_new	*handle_redirect_advanced(t_lexer_new *lexer)
 	return (NULL);
 }
 
-t_token_new	*handle_word_advanced(t_lexer_new *lexer)
+t_token_new	*handle_word_advanced(t_lexer_new *lexer, int *first_word_check)
 {
 	int		start;
 	int		len;
 	char	*word;
+	t_token_types types;
 
-	start = lexer->pos;
+	if (lexer->pos == 0)
+	{
+		types = T_CMD;
+		*first_word_check = 0;
+	}
+	else
+	{
+		types = T_WORD;
+		*first_word_check = 1;
+	}
 	
+	start = lexer->pos;
 	// Special case for $"..." pattern - treat as single word
 	if (lexer->current_char == '$' && lexer->input[lexer->pos + 1] == '"')
 	{
@@ -68,7 +79,7 @@ t_token_new	*handle_word_advanced(t_lexer_new *lexer)
 		word = ft_substr(lexer->input, start + 2, len - 3); // Skip $" and "
 		if (!word)
 			return (NULL);
-		return (create_token_advanced(T_WORD, word));
+		return (create_token_advanced(types, word));
 	}
 	
 	while (lexer->current_char != '\0' && lexer->current_char != ' '
@@ -81,8 +92,9 @@ t_token_new	*handle_word_advanced(t_lexer_new *lexer)
 	word = ft_substr(lexer->input, start, len);
 	if (!word)
 		return (NULL);
-	return (create_token_advanced(T_WORD, word));
+	return (create_token_advanced(types, word));
 }
+
 
 t_token_new	*handle_quotes_advanced(t_lexer_new *lexer)
 {
@@ -120,7 +132,7 @@ t_token_new	*handle_whitespaces_advanced(t_lexer_new *lexer)
 	char	*whitepaces;
 
 	start = lexer->pos;
-	while (lexer->current_char != '\0' && (lexer->current_char == ' ' || lexer->current_char == '\t'))
+	while (lexer->current_char != '\0' &&(lexer->current_char == ' ' || lexer->current_char == '\t'))
 	{
 		advance_lexer(lexer);
 	}

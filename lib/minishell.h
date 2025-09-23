@@ -48,6 +48,7 @@ typedef struct s_global t_global;
 typedef enum e_token_types
 {
 	T_WORD,				/* Normal kelimeler: komutlar, argümanlar, dosya adları */
+	T_CMD,
 	T_PIPE,				/* Pipe operatörü: | */
 	T_REDIRECT_IN,		/* Giriş yönlendirmesi: < */
 	T_REDIRECT_OUT,		/* Çıkış yönlendirmesi: > */
@@ -108,6 +109,7 @@ typedef struct s_lexer_new
 	char		*input;			/* Tokenize edilecek girdi metni */
 	int			pos;			/* Girdi metnindeki mevcut pozisyon */
 	int			len;			/* Girdi metninin uzunluğu */
+	int			first_word_check;
 	char		current_char;	/* İşlenmekte olan mevcut karakter */
 	t_global	*global;		/* Global duruma referans */
 }	t_lexer_new;
@@ -150,7 +152,7 @@ t_env			*init_env_from_envp(char **envp);						/* Envp'den çevre başlat */
 // ========== TOKEN İŞLEYİCİ FONKSIYONLARI ==========
 t_token_new		*handle_pipe_advanced(t_lexer_new *lexer);				/* Pipe token'ını işle */
 t_token_new		*handle_redirect_advanced(t_lexer_new *lexer);			/* Yönlendirme token'larını işle */
-t_token_new		*handle_word_advanced(t_lexer_new *lexer);				/* Kelime token'larını işle */
+t_token_new		*handle_word_advanced(t_lexer_new *lexer, int *first_word_check);				/* Kelime token'larını işle */
 t_token_new		*handle_quotes_advanced(t_lexer_new *lexer);			/* Tırnaklı metinleri işle */
 t_token_new	*handle_whitespaces_advanced(t_lexer_new *lexer);
 

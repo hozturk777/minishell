@@ -18,6 +18,8 @@ static char	*get_token_type_name(t_token_types type)
 		return ("WORD");
 	else if (type == T_PIPE)
 		return ("PIPE");
+	else if (type == T_CMD)
+		return ("T_CMD");
 	else if (type == T_REDIRECT_IN)
 		return ("REDIRECT_IN");
 	else if (type == T_REDIRECT_OUT)

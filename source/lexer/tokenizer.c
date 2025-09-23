@@ -57,54 +57,34 @@ static t_token_new	*get_next_token(t_lexer_new *lexer, int single_quote_count)
 	combined_value = 0;
 	single_quote_count = 0;
 	next_token = NULL;
+	token = NULL;
+	lexer->first_word_check = 0;
 	if (lexer->current_char == '\0')
 		return (NULL);
-		
+
 	// İlk token'ı oluştur
 	if (lexer->current_char == '|')
 		token = handle_pipe_advanced(lexer);
-	else if (lexer->current_char == ' ' || lexer->current_char == '\t')
+	else if ((lexer->current_char == ' ' || lexer->current_char == '\t'))
 		token = handle_whitespaces_advanced(lexer);
 	else if (lexer->current_char == '<' || lexer->current_char == '>')
 		token = handle_redirect_advanced(lexer);
 	else if (lexer->current_char == '\'' || lexer->current_char == '"')
 		token = handle_quotes_advanced(lexer);
 	else
-		token = handle_word_advanced(lexer);
-	
+		token = handle_word_advanced(lexer, &lexer->first_word_check);
+
 	if (!token)
 		return (NULL);
+	if (lexer->first_word_check == 0 && token->type != T_WHITESPACE) // Komut ile word arasında ki boşluğu atlamak için
+	    advance_lexer(lexer);
 	
-	// while (lexer->current_char != '\0' && lexer->current_char != ' ' 
-	// 	&& lexer->current_char != '\t' && lexer->current_char != '\n'
-	// 	&& lexer->current_char != '|' && lexer->current_char != '<' 
-	// 	&& lexer->current_char != '>' && token->type != T_HEREDOC) // /!ft_isalnum(lexer->current_char) eklenebilir fakar echo 'hello'world düzgün çalışmıyo.
-	// {
-	// 	// Sonraki karakter tokenizable mı kontrol et
-	// 	if (lexer->current_char == '\'' || lexer->current_char == '"')
-	// 		next_token = handle_quotes_advanced(lexer);
-	// 	// else if (ft_isalnum(lexer->current_char) || lexer->current_char == '_' 
-	// 	// 	|| lexer->current_char == '$' || lexer->current_char == '/' 
-	// 	// 	|| lexer->current_char == '.')
-	// 	// 	next_token = handle_word_advanced(lexer);
-	// 	else
-	// 		next_token = handle_word_advanced(lexer);
-
-			
-	// 	if (!next_token)
-	// 		break;		
-		
-	// 	// İki token'ı birleştir
-	// 	combined_value = ft_strjoin(token->value, next_token->value);
-	// 	token->value = combined_value; // Halloc kullanıyoruz, eski value'yu free etme
-	// 	token->len = ft_strlen(combined_value);
-	// }
 
 	// Pipe ve redirect operatörleri derhal return edilmeli
-	if (token->type == T_PIPE || token->type == T_REDIRECT_IN || 
-		token->type == T_REDIRECT_OUT || token->type == T_APPEND || 
-		token->type == T_HEREDOC)
-		return (token);
+	// if (token->type == T_PIPE || token->type == T_REDIRECT_IN || 
+	// 	token->type == T_REDIRECT_OUT || token->type == T_APPEND || 
+	// 	token->type == T_HEREDOC)
+	// 	return (token);
 	// if (single_quote_count % 2 == 0)
 	// 	// Tek sayıda single quote = literal (expansion yok)
 	// 	token->type = T_WORD;

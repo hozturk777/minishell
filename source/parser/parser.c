@@ -46,14 +46,19 @@ t_command	*parse_single_command(t_list **token_node, t_global *global)
     t_command	*cmd;
     t_list		*args_list;
     t_list		*current;
+	// t_token_new	*TEST;
 
     cmd = create_command(); // Command list initialize
     if (!cmd) // Buraya bizim error_check yapılabilir
         return (NULL);
     args_list = NULL;
     current = *token_node;
+	// TEST = (t_token_new *)current->content;
+	// printf("\nTEST_VALUE : $%s$\n", TEST->value);
     while (current && !is_pipe_token(current)) // Pipelar arasını word ve redirectleri ayırma işlemi
     {
+		// TEST = (t_token_new *)current->content;
+		// printf("TEST_VALUE : $%s$\n", TEST->value);
         if (is_redirect_token(current)) // Redirect var ise yönlendirmeyi yapıyor
             parse_redirection(cmd, &current, global); // redirect var ise cmd.redirections'a ekler
         else if (is_word_token(current)) // Wordlari de listeye ekliyor
@@ -100,7 +105,7 @@ int	is_command_start(t_list *token_node)
     if (!token_node)
         return (0);
     token = (t_token_new *)token_node->content;
-    return (token->type == T_WORD);
+    return (token->type == T_WORD || token->type == T_CMD);
 }
 
 int	is_pipe_token(t_list *token_node)
@@ -132,7 +137,7 @@ int	is_word_token(t_list *token_node)
         return (0);
     token = (t_token_new *)token_node->content;
     return (token->type == T_WORD || token->type == T_SINGLE_QUOTE || 
-            token->type == T_DOUBLE_QUOTE || token->type == T_WHITESPACE);
+            token->type == T_DOUBLE_QUOTE || token->type == T_WHITESPACE || token->type == T_CMD);
 }
 
 void	collect_command_arg(t_list **args_list, t_list *token_node)
