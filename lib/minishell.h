@@ -127,7 +127,6 @@ typedef struct s_global
 	int			interactive;	/* Etkileşimli mod bayrağı (1=evet, 0=hayır) */
 	int			in_child;		/* Child process'te mi (1=evet, 0=hayır) */
 	int			should_exit;	/* Çıkış yapılması gerekiyor mu */
-	t_redirect	*redirect;
 }	t_global;
 
 /* ************************************************************************** */

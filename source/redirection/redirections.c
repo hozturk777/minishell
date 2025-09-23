@@ -179,7 +179,7 @@ int	handle_heredoc(t_redirect *redirect)
 		return (-1);
 	}
 	write(STDOUT_FILENO, "> ", 2);
-	while ((line = readline("")) != NULL)
+	while ((line = add_garbage(readline(""))) != NULL)
 	{
 		if (ft_strcmp(line, redirect->filename) == 0)
 		{
@@ -193,6 +193,7 @@ int	handle_heredoc(t_redirect *redirect)
 	}
 	close(redirect->fd);
 	redirect->fd = open(temp_filename, O_RDONLY);
+
 	unlink(temp_filename);
 	// free(temp_filename);
 	return (redirect->fd);

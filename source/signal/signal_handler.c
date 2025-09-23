@@ -23,11 +23,23 @@ extern t_global	*g_global;
 void	sigint_handler(int sig)
 {
 	(void)sig;
+	t_redirect *redirect;
 	
 	if (g_global && g_global->in_child)
 	{
 		// Child process'te - default davranış
 		//buraya fd close gelmesi gerekioyor !!!!!!!!!!!!!!
+
+		while (g_global->commands->redirections)
+		{
+			redirect = (t_redirect *)g_global->commands->redirections->content;
+			// printf("REDİRECT: $%d$\n", redirect->fd);
+			if (redirect->fd > 0)
+			{
+				close(redirect->fd);
+			}
+			g_global->commands->redirections = g_global->commands->redirections->next;
+		}
 		clear_garbage();
 		exit(130); // 128 + SIGINT signal number (2)
 	}
