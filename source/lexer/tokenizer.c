@@ -76,7 +76,7 @@ static t_token_new	*get_next_token(t_lexer_new *lexer, int single_quote_count)
 
 	if (!token)
 		return (NULL);
-	if (lexer->first_word_check == 0 && token->type != T_WHITESPACE && token->type != T_SINGLE_QUOTE) // Komut ile word arasında ki boşluğu atlamak için
+	if (lexer->first_word_check == 0 && token->type != T_WHITESPACE && token->type != T_SINGLE_QUOTE && token->type != T_DOUBLE_QUOTE) // Komut ile word arasında ki boşluğu atlamak için
 	    advance_lexer(lexer);
 	
 

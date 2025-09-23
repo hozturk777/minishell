@@ -300,17 +300,17 @@ char	*resolve_logical_path(char *current_pwd, char *path)
 		if (last_slash && last_slash != clean_pwd)
 		{
 			temp = ft_substr(clean_pwd, 0, last_slash - clean_pwd);
-			free(clean_pwd);
+			// free(clean_pwd);
 			return (temp);
 		}
-		free(clean_pwd);
+		// free(clean_pwd);
 		return (ft_strdup("/"));
 	}
 	temp = ft_strjoin(clean_pwd, "/");
-	free(clean_pwd);
+	// free(clean_pwd);
 	if (!temp)
 		return (NULL);
 	resolved = ft_strjoin(temp, path);
-	free(temp);
+	// free(temp);
 	return (resolved);
 }
