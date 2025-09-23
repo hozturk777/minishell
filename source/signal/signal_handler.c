@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   signal_handler.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hsyn <hsyn@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: hasivaci <hasivaci@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/30 15:30:00 by hasivaci          #+#    #+#             */
-/*   Updated: 2025/09/09 13:10:31 by hsyn             ###   ########.fr       */
+/*   Updated: 2025/09/23 17:22:08 by hasivaci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,8 @@ void	sigint_handler(int sig)
 	if (g_global && g_global->in_child)
 	{
 		// Child process'te - default davranış
+		//buraya fd close gelmesi gerekioyor !!!!!!!!!!!!!!
+		clear_garbage();
 		exit(130); // 128 + SIGINT signal number (2)
 	}
 	else
@@ -87,19 +89,34 @@ void	setup_signals(void)
  */
 void	setup_child_signals(void) // Araştırılacak!!
 {
-	struct sigaction	sa;
+	struct sigaction	sa_int;
+	struct sigaction	sa_quit;
 
-	// SIGINT'i default davranışa çevir
-	sa.sa_handler = SIG_DFL;
-	sigemptyset(&sa.sa_mask);
-	sa.sa_flags = 0;
-	sigaction(SIGINT, &sa, NULL);
+	// SIGINT (Ctrl+C) ayarlama
+	sa_int.sa_handler = sigint_handler;
+	sigemptyset(&sa_int.sa_mask);
+	sa_int.sa_flags = SA_RESTART;
+	sigaction(SIGINT, &sa_int, NULL);
 
-	// SIGQUIT'i default davranışa çevir  
-	sa.sa_handler = SIG_DFL;
-	sigemptyset(&sa.sa_mask);
-	sa.sa_flags = 0;
-	sigaction(SIGQUIT, &sa, NULL);
+	// SIGQUIT (Ctrl+\) ayarlama
+	sa_quit.sa_handler = SIG_IGN; // Ignore et
+	sigemptyset(&sa_quit.sa_mask);
+	sa_quit.sa_flags = 0;
+	sigaction(SIGQUIT, &sa_quit, NULL);
+	
+	// struct sigaction	sa;
+
+	// // SIGINT'i default davranışa çevir
+	// sa.sa_handler = SIG_DFL;
+	// sigemptyset(&sa.sa_mask);
+	// sa.sa_flags = 0;
+	// sigaction(SIGINT, &sa, NULL);
+
+	// // SIGQUIT'i default davranışa çevir  
+	// sa.sa_handler = SIG_DFL;
+	// sigemptyset(&sa.sa_mask);
+	// sa.sa_flags = 0;
+	// sigaction(SIGQUIT, &sa, NULL);
 }
 
 /**

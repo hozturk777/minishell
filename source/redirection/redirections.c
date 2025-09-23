@@ -6,7 +6,7 @@
 /*   By: hasivaci <hasivaci@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/24 12:00:00 by huozturk          #+#    #+#             */
-/*   Updated: 2025/09/20 19:07:30 by hasivaci         ###   ########.fr       */
+/*   Updated: 2025/09/23 17:20:46 by hasivaci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -164,7 +164,7 @@ int	handle_heredoc(t_redirect *redirect)
 {
 	char			*line;
 	char			*temp_filename;
-	int				fd;
+	// int				fd;
 	static int		heredoc_count = 0;
 
 	if (!redirect || redirect->type != T_HEREDOC)
@@ -172,8 +172,8 @@ int	handle_heredoc(t_redirect *redirect)
 	temp_filename = create_temp_filename(heredoc_count++);
 	if (!temp_filename)
 		return (-1);
-	fd = open(temp_filename, O_CREAT | O_WRONLY | O_TRUNC, 0600);
-	if (fd == -1)
+	redirect->fd = open(temp_filename, O_CREAT | O_WRONLY | O_TRUNC, 0600);
+	if (redirect->fd == -1)
 	{
 		// free(temp_filename);
 		return (-1);
@@ -186,16 +186,16 @@ int	handle_heredoc(t_redirect *redirect)
 			// free(line);
 			break ;
 		}
-		write(fd, line, ft_strlen(line));
-		write(fd, "\n", 1);
+		write(redirect->fd, line, ft_strlen(line));
+		write(redirect->fd, "\n", 1);
 		// free(line);
 		write(STDOUT_FILENO, "> ", 2);
 	}
-	close(fd);
-	fd = open(temp_filename, O_RDONLY);
+	close(redirect->fd);
+	redirect->fd = open(temp_filename, O_RDONLY);
 	unlink(temp_filename);
 	// free(temp_filename);
-	return (fd);
+	return (redirect->fd);
 }
 
 /* ************************************************************************** */

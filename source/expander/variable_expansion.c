@@ -95,7 +95,7 @@ char	*handle_dollar_expansion(char *input, int *i, t_global *global)
 		}
 	}
 	
-	free(var_name);
+	// free(var_name);
 	return (var_value ? ft_strdup(var_value) : ft_strdup(""));
 }
 

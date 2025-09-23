@@ -6,7 +6,7 @@
 /*   By: hasivaci <hasivaci@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/28 17:39:25 by hasivaci          #+#    #+#             */
-/*   Updated: 2025/09/19 21:31:10 by hasivaci         ###   ########.fr       */
+/*   Updated: 2025/09/23 17:18:02 by hasivaci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,6 @@
 // halloc içinde heryere galloc yazıp galloc içinde hata durumları ve hata çıktıları kontorl edilirse 2 satır if bloğuna greek olmadan heryeri buradan freeleyip çıkarız;
 #include "libft.h"
 #include <stdlib.h>
-
-static void	*add_garbage(void *adress);
 
 static void	*get_garbage(void)
 {
@@ -39,7 +37,7 @@ void	*halloc(size_t size)
 	return (adress);
 }
 
-static void	*add_garbage(void *adress)
+void	*add_garbage(void *adress)
 {
 	t_list	**collector;
 	t_list	*tmp;

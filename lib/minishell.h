@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hsyn <hsyn@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: hasivaci <hasivaci@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 12:00:00 by huozturk          #+#    #+#             */
-/*   Updated: 2025/09/20 23:09:28 by hsyn             ###   ########.fr       */
+/*   Updated: 2025/09/23 17:18:51 by hasivaci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,6 +127,7 @@ typedef struct s_global
 	int			interactive;	/* Etkileşimli mod bayrağı (1=evet, 0=hayır) */
 	int			in_child;		/* Child process'te mi (1=evet, 0=hayır) */
 	int			should_exit;	/* Çıkış yapılması gerekiyor mu */
+	t_redirect	*redirect;
 }	t_global;
 
 /* ************************************************************************** */
