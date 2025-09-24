@@ -75,8 +75,20 @@ static t_token_new	*get_next_token(t_lexer_new *lexer, int single_quote_count)
 
 	if (!token)
 		return (NULL);
-	if (token->type == T_CMD)
+	if (token->type == T_PIPE || token->type == T_HEREDOC || token->type == T_REDIRECT_OUT) // pipedan sonrakini t_cmd tipine çevirmek için ve heredocdan sonra boşluğu alıyordu onu atlamak için
+	{
+		if (token->type != T_HEREDOC && token->type != T_REDIRECT_OUT)
+			advance_lexer(lexer);
+		if (lexer->current_char == ' ' || lexer->current_char == '\t')
+			skip_whitespace_advanced(lexer);
+		if (lexer->current_char >= 32 && lexer->current_char <= 127)
+			lexer->t_cmd_flag = 1;
+	}
+	
+	if (token->type == T_CMD) // komuttan sonra boşluğu yazıyordu örn: echo selam burada ' selam' bunu engellemek için
+	{
 		skip_whitespace_advanced(lexer);
+	}
 
 	// if (lexer->first_word_check == 0 && token->type != T_WHITESPACE && token->type != T_SINGLE_QUOTE && token->type != T_DOUBLE_QUOTE) // Komut ile word arasında ki boşluğu atlamak için
 	//     advance_lexer(lexer);

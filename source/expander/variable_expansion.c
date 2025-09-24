@@ -30,7 +30,7 @@ char	*expand_variables(char *input, t_global *global)
 			temp = handle_dollar_expansion(input, &i, global);
 		else
 			temp = handle_regular_char(input, &i);
-		result = join_and_free(result, temp);
+		result = ft_strjoin(result, temp);
 		if (!result)
 			return (NULL);
 	}
@@ -87,14 +87,13 @@ char	*handle_dollar_expansion(char *input, int *i, t_global *global)
 			{
 				// Partial match bulundu! Kalan kısmı geri döndür
 				*i = start + j; // Position'ı ayarla
-				free(var_name);
-				free(partial_name);
+				// free(var_name);
+				// free(partial_name);
 				return (ft_strdup(partial_value));
 			}
-			free(partial_name);
+			// free(partial_name);
 		}
 	}
-	
 	// free(var_name);
 	return (var_value ? ft_strdup(var_value) : ft_strdup(""));
 }
@@ -112,20 +111,20 @@ char	*handle_regular_char(char *input, int *i)
 	return (result);
 }
 
-char	*join_and_free(char *s1, char *s2)
-{
-	char	*result;
+// char	*join_and_free(char *s1, char *s2) // KAPANACAK
+// {
+// 	char	*result;
 
-	if (!s1 || !s2)
-	{
-		if (s1)
-			free(s1);
-		if (s2)
-			free(s2);
-		return (NULL);
-	}
-	result = ft_strjoin(s1, s2);
-	// free(s1);
-	// free(s2);
-	return (result);
-}
+// 	if (!s1 || !s2)
+// 	{
+// 		if (s1)
+// 			free(s1);
+// 		if (s2)
+// 			free(s2);
+// 		return (NULL);
+// 	}
+// 	result = ft_strjoin(s1, s2);
+// 	// free(s1);
+// 	// free(s2);
+// 	return (result);
+// }

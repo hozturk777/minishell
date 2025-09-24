@@ -268,7 +268,7 @@ int	execute_pipeline_command(t_command *cmd, t_global *global, int prev_fd, int 
 	else if (pid > 0)
 	{
 		waitpid(pid, &status, 0);
-		free(path);
+		// free(path);
 		
 		// Signal ile sonlandı mı kontrol et
 		if (WIFSIGNALED(status))
@@ -287,7 +287,7 @@ int	execute_pipeline_command(t_command *cmd, t_global *global, int prev_fd, int 
 	else
 	{
 		perror("fork");
-		free(path);
+		// free(path);
 		return (1);
 	}
 }

@@ -111,7 +111,7 @@ int	builtin_pwd(void)
 		return (1);
 	}
 	printf("%s\n", cwd);
-	free(cwd);
+	// free(cwd);
 	return (0);
 }
 
@@ -134,7 +134,7 @@ int	builtin_pwd_global(t_global *global)
 		return (1);
 	}
 	printf("%s\n", cwd);
-	free(cwd);
+	// free(cwd);
 	return (0);
 }
 

@@ -54,13 +54,13 @@ int	builtin_cd(char **args, t_global *global)
 						if (old_pwd)
 							set_env_var(global, "OLDPWD", old_pwd);
 						set_env_var(global, "PWD", existing_parent);
-						free(logical_path);
-						free(existing_parent);
+						// free(logical_path);
+						// free(existing_parent);
 						return (0);
 					}
-					free(existing_parent);
+					// free(existing_parent);
 				}
-				free(logical_path);
+				// free(logical_path);
 			}
 		}
 		perror("cd");
@@ -72,7 +72,7 @@ int	builtin_cd(char **args, t_global *global)
 	if (logical_path) // pwd güncellemek için
 	{
 		set_env_var(global, "PWD", logical_path);
-		free(logical_path);
+		// free(logical_path);
 	}
 	else
 		update_pwd_env(global);
@@ -111,7 +111,7 @@ int	builtin_export(char **args, t_global *global)
 				set_env_var(global, key, value);
 				*equal_sign = '=';
 			}
-			free(full_arg);
+			// free(full_arg);
 			i += 2; // Skip next arg since we processed it
 		}
 		else
@@ -167,7 +167,7 @@ void	update_pwd_env(t_global *global)
 	if (cwd)
 	{
 		set_env_var(global, "PWD", cwd);
-		free(cwd);
+		// free(cwd);
 	}
 	/* 
 	 * getcwd() başarısızsa PWD'yi değiştirme
@@ -198,7 +198,7 @@ void	set_env_var(t_global *global, char *key, char *value)
 	existing = find_env_node(global->env_list, key);
 	if (existing)
 	{
-		free(existing->value);
+		// free(existing->value);
 		existing->value = ft_strdup(value);
 	}
 	else
@@ -224,9 +224,9 @@ void	unset_env_var(t_global *global, char *key)
 				prev->next = current->next;
 			else
 				global->env_list = current->next;
-			free(current->key);
-			free(current->value);
-			free(current);
+			// free(current->key);
+			// free(current->value);
+			// free(current);
 			return ;
 		}
 		prev = current;
@@ -256,14 +256,14 @@ char	*find_existing_parent(char *path)
 		last_slash = ft_strrchr(current_path, '/');
 		if (!last_slash || last_slash == current_path)
 		{
-			free(current_path);
+			// free(current_path);
 			return (ft_strdup("/"));
 		}
 		temp = ft_substr(current_path, 0, last_slash - current_path);
-		free(current_path);
+		// free(current_path);
 		current_path = temp;
 	}
-	free(current_path);
+	// free(current_path);
 	return (ft_strdup("/"));
 }
 

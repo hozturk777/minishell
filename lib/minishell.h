@@ -110,8 +110,10 @@ typedef struct s_lexer_new
 	int			pos;			/* Girdi metnindeki mevcut pozisyon */
 	int			len;			/* Girdi metninin uzunluğu */
 	int			first_word_check;
+	int				t_cmd_flag;
 	char		current_char;	/* İşlenmekte olan mevcut karakter */
 	t_global	*global;		/* Global duruma referans */
+	
 }	t_lexer_new;
 
 // Global durum yapısı
@@ -195,7 +197,7 @@ void			print_commands_debug(t_command *commands);				/* Komutları debug yazdır
 char			*expand_variables(char *input, t_global *global);		/* Değişken genişletme ana fonksiyon */
 char			*handle_dollar_expansion(char *input, int *i, t_global *global);	/* $VAR genişletme */
 char			*handle_regular_char(char *input, int *i);				/* Normal karakter işleme */
-char			*join_and_free(char *s1, char *s2);					/* İki string birleştir ve bellekten serbest bırak */
+// char			*join_and_free(char *s1, char *s2);					/* İki string birleştir ve bellekten serbest bırak */
 
 // ========== QUOTE & EXPANSION FONKSIYONLARI ==========
 char			*expand_with_quotes(char *input, t_global *global);		/* Tırnakla genişletme */

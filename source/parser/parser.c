@@ -37,7 +37,7 @@ t_command	*parse_tokens_to_commands(t_list *tokens, t_global *global)
         else // Token word değil ise diğer token'a geç
             token_node = token_node->next;
     }
-	
+		
     return (head);
 }
 
@@ -105,7 +105,7 @@ int	is_command_start(t_list *token_node)
     if (!token_node)
         return (0);
     token = (t_token_new *)token_node->content;
-    return (token->type == T_WORD || token->type == T_CMD);
+    return (token->type == T_WORD || token->type == T_CMD); // Buraya redirectler de eklenecek
 }
 
 int	is_pipe_token(t_list *token_node)

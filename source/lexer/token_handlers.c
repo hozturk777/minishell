@@ -38,9 +38,13 @@ t_token_new	*handle_redirect_advanced(t_lexer_new *lexer)
 	else if (lexer->current_char == '>')
 	{
 		advance_lexer(lexer);
+		while (lexer->current_char == ' ' || lexer->current_char == '\t')
+			    advance_lexer(lexer);
 		if (lexer->current_char == '>')
 		{
 			advance_lexer(lexer);
+			while (lexer->current_char == ' ' || lexer->current_char == '\t')
+			    advance_lexer(lexer);
 			return (create_token_advanced(T_APPEND, ">>"));
 		}
 		return (create_token_advanced(T_REDIRECT_OUT, ">"));
@@ -55,10 +59,11 @@ t_token_new	*handle_word_advanced(t_lexer_new *lexer, int *first_word_check)
 	char	*word;
 	t_token_types types;
 
-	if (lexer->pos == 0)
+	if (lexer->pos == 0 || lexer->t_cmd_flag == 1) // Pipedan sonra ki inputu da T_CMD işaretliyecez
 	{
 		types = T_CMD;
 		*first_word_check = 0;
+		lexer->t_cmd_flag = 0;
 	}
 	else
 	{

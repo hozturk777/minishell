@@ -39,7 +39,7 @@ char	*expand_with_quotes(char *input, t_global *global)
 			i++;
 			continue ;
 		}
-		result = join_and_free(result, temp);
+		result = ft_strjoin(result, temp);
 		if (!result)
 			return (NULL);
 	}
@@ -157,10 +157,11 @@ void	filter_empty_args(t_command *cmd)
 		if (cmd->args[i][0] != '\0')
 		{
 			new_args[j] = cmd->args[i];
+			cmd->args[i] = NULL;
 			j++;
 		}
-		else
-			free(cmd->args[i]);
+		// else
+		// 	free(cmd->args[i]);
 		i++;
 	}
 	new_args[j] = NULL;
