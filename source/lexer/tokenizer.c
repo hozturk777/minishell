@@ -12,12 +12,12 @@
 
 #include "../../lib/minishell.h"
 
-// static void	skip_whitespace_advanced(t_lexer_new *lexer)
-// {
-// 	while (lexer->current_char == ' ' || lexer->current_char == '\t'
-// 		|| lexer->current_char == '\n')
-// 		advance_lexer(lexer);
-// }
+static void	skip_whitespace_advanced(t_lexer_new *lexer)
+{
+	while (lexer->current_char == ' ' || lexer->current_char == '\t'
+		|| lexer->current_char == '\n')
+		advance_lexer(lexer);
+}
 
 static int	check_quote_balance(char *input, int *single_quote_count)
 {
@@ -53,7 +53,6 @@ static t_token_new	*get_next_token(t_lexer_new *lexer, int single_quote_count)
 	char *combined_value;
 	
 	//single_quote_count = 0;
-	// skip_whitespace_advanced(lexer);
 	combined_value = 0;
 	single_quote_count = 0;
 	next_token = NULL;
@@ -76,8 +75,11 @@ static t_token_new	*get_next_token(t_lexer_new *lexer, int single_quote_count)
 
 	if (!token)
 		return (NULL);
-	if (lexer->first_word_check == 0 && token->type != T_WHITESPACE && token->type != T_SINGLE_QUOTE && token->type != T_DOUBLE_QUOTE) // Komut ile word arasında ki boşluğu atlamak için
-	    advance_lexer(lexer);
+	if (token->type == T_CMD)
+		skip_whitespace_advanced(lexer);
+
+	// if (lexer->first_word_check == 0 && token->type != T_WHITESPACE && token->type != T_SINGLE_QUOTE && token->type != T_DOUBLE_QUOTE) // Komut ile word arasında ki boşluğu atlamak için
+	//     advance_lexer(lexer);
 	
 
 	// Pipe ve redirect operatörleri derhal return edilmeli

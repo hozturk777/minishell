@@ -29,6 +29,8 @@ t_token_new	*handle_redirect_advanced(t_lexer_new *lexer)
 		if (lexer->current_char == '<')
 		{
 			advance_lexer(lexer);
+			while (lexer->current_char == ' ' || lexer->current_char == '\t')
+			    advance_lexer(lexer);
 			return (create_token_advanced(T_HEREDOC, "<<"));
 		}
 		return (create_token_advanced(T_REDIRECT_IN, "<"));
@@ -92,6 +94,8 @@ t_token_new	*handle_word_advanced(t_lexer_new *lexer, int *first_word_check)
 	word = ft_substr(lexer->input, start, len);
 	if (!word)
 		return (NULL);
+	// if (types == T_CMD)
+	//     advance_lexer(lexer);
 	return (create_token_advanced(types, word));
 }
 
@@ -132,11 +136,18 @@ t_token_new	*handle_whitespaces_advanced(t_lexer_new *lexer)
 	char	*whitepaces;
 
 	start = lexer->pos;
+	// if (lexer->first_word_check == 0)
+	// {
+	// 	while (lexer->current_char == ' ' || lexer->current_char == '\t')
+    //         advance_lexer(lexer);
+	// }
+	
 	while (lexer->current_char != '\0' &&(lexer->current_char == ' ' || lexer->current_char == '\t'))
 	{
 		advance_lexer(lexer);
 	}
 	len = lexer->pos - start;
-	whitepaces = ft_substr(lexer->input, start, len);
+	// whitepaces = ft_substr(lexer->input, start, len);
+	whitepaces = " ";
 	return(create_token_advanced(T_WHITESPACE, whitepaces));
 }
