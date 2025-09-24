@@ -100,6 +100,37 @@ int	execute_external_command(t_command *cmd, t_global *global)
 /*                            PIPELINE EXECUTION                             */
 /* ************************************************************************** */
 
+static int	preprocess_heredocs(t_command *commands, t_global *global)
+{
+	t_command	*current;
+	t_list		*redirect_node;
+	t_redirect	*redirect;
+
+	(void)global;
+	current = commands;
+	while (current)
+	{
+		if (current->redirections)
+		{
+			redirect_node = current->redirections;
+			while (redirect_node)
+			{
+				redirect = (t_redirect *)redirect_node->content;
+				if (redirect && redirect->type == T_HEREDOC)
+				{
+					// Heredoc'u main process'te işle
+					redirect->fd = handle_heredoc(redirect);
+					if (redirect->fd == -1)
+						return (-1);
+				}
+				redirect_node = redirect_node->next;
+			}
+		}
+		current = current->next;
+	}
+	return (0);
+}
+
 int	execute_pipeline(t_command *commands, t_global *global)
 {
 	t_command	*current;
@@ -109,6 +140,10 @@ int	execute_pipeline(t_command *commands, t_global *global)
 	pid_t		*pids;
 	int			cmd_count;
 	int			i;
+
+	// Pre-process heredocs in main process BEFORE forking
+	if (preprocess_heredocs(commands, global) == -1)
+		return (1);
 
 	// Count commands
 	current = commands;
@@ -126,22 +161,22 @@ int	execute_pipeline(t_command *commands, t_global *global)
 	current = commands;
 	prev_fd = 0;
 	i = 0;
+	last_status = 0;
 	
-	while (current)
+	while (current && i < cmd_count)
 	{
 		if (current->next && pipe(pipe_fd) == -1)
 		{
 			perror("pipe");
-			// free(pids);
 			return (1);
 		}
 		
 		pids[i] = execute_pipeline_command_async(current, global, prev_fd, pipe_fd);
 		if (pids[i] == -1)
-		{
-			// free(pids);
 			return (1);
-		}
+		
+		// Pipeline'da normal flow - redirection bekleme yapmıyoruz
+		// Race condition çözümü için farklı strateji gerekiyor
 		
 		if (prev_fd != 0)
 			close(prev_fd);
@@ -154,11 +189,12 @@ int	execute_pipeline(t_command *commands, t_global *global)
 		i++;
 	}
 	
-	// Wait for all children
-	for (i = 0; i < cmd_count; i++)
+	// Wait for remaining children (42 norm - while)
+	i = 0;
+	while (i < cmd_count)
 	{
 		int status;
-		if (pids[i] > 0)
+		if (pids[i] > 0) // Henüz beklenmemiş
 		{
 			waitpid(pids[i], &status, 0);
 			if (i == cmd_count - 1)  // Last command's exit status
@@ -177,9 +213,9 @@ int	execute_pipeline(t_command *commands, t_global *global)
 					last_status = WEXITSTATUS(status);
 			}
 		}
+		i++;
 	}
 	
-	// free(pids);
 	return (last_status);
 }
 
