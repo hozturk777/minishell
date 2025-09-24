@@ -25,11 +25,11 @@ static int	process_input(char *input, t_global *global)
 	
 	// 1. LEXER: Input'u token'lara çevir
 	tokens = tokenize_advanced(input, global);
-	if (!tokens)
-	{
-		printf("Error: Tokenization failed\n");
-		return (0);
-	}
+	// if (!tokens)
+	// {
+	// 	printf("Error: Tokenization failed\n");
+	// 	return (0);
+	// }
 	
 	// printf("\n=== TOKENS ===\n");
 	// print_tokens_advanced(tokens);
