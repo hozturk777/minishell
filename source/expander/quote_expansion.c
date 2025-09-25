@@ -46,25 +46,52 @@ char	*expand_with_quotes(char *input, t_global *global)
 	return (result);
 }
 
-char	*expand_with_heredoc(char *input, t_global *global)
+static char	*ft_strjoin_char(char const *s1, char const s2)
+{
+	char	*str;
+	int		i;
+
+	if (!s1 && !s2)
+		return (NULL);
+	// j = ft_strlen(s2);
+	i = ft_strlen(s1);
+	str = halloc(i + 2);
+	if (!str)
+	{
+        clear_garbage();
+		exit(1);
+		// return (NULL);
+	}
+	ft_memcpy(str, s1, i);
+	ft_memcpy(str + i, &s2, 1);
+	*(str + i + 1) = '\0';
+	return (str);
+}
+
+
+char	*expand_with_heredoc(char *input, t_global *global) 
 {
 	char	*result;
+	char	*temp;
 	int		i;
-	char *var_value;
 
-	result = ft_strdup("");
+	result = ft_strdup(""); // Buna check eklenecek!
 	i = 0;
-	printf("LİNE_EXPAND: $%s$\n", input);
-	if (input[i] == '$')
+
+	while (input[i])
 	{
-		input++;
-		var_value = get_env_value(global->env_list, input);
+		if (input[i] == '$')
+			temp = handle_dollar_expansion(input, &i, global); 
+		else
+		{
+			result = ft_strjoin_char(result, input[i]);
+			i++;
+			continue ;
+		}
+		result = ft_strjoin(result, temp);
+		if (!result)
+			return (NULL);
 	}
-	else
-		i++;
-	result = ft_strjoin(result, var_value);
-	if (!result)
-		return (NULL);
 	return (result);
 }
 

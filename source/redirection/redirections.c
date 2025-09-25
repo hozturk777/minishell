@@ -182,15 +182,13 @@ int	handle_heredoc(t_redirect *redirect)
 	redirect->fd = open(temp_filename, O_CREAT | O_WRONLY | O_TRUNC, 0600);
 	if (redirect->fd == -1)
 		return (-1);
-		
+
 	while ((line = add_garbage(readline("> "))) != NULL)
 	{
 		if (ft_strcmp(line, redirect->filename) == 0)
 			break ;
-		if (line[0] == '$')
-			line = expand_with_heredoc(line, global);
-		
-		printf("LİNE: $%s$\n", line);
+		// if (line[0] == '$')
+		line = expand_with_heredoc(line, global);
 		write(redirect->fd, line, ft_strlen(line));
 		write(redirect->fd, "\n", 1);
 	}

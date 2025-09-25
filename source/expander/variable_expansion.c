@@ -49,11 +49,11 @@ char	*handle_dollar_expansion(char *input, int *i, t_global *global)
 		(*i)++;
 		return (ft_itoa(global->exit_status));
 	}
-	if (input[*i] == '$')
-	{
-		(*i)++;
-		return (ft_itoa(getpid()));
-	}
+	// if (input[*i] == '$')
+	// {
+	// 	(*i)++;
+	// 	return (ft_itoa(getpid()));
+	// }
 	
 	// Digit check for positional parameters ($1, $2, etc.)
 	if (ft_isdigit(input[*i]))
@@ -88,7 +88,7 @@ char	*handle_dollar_expansion(char *input, int *i, t_global *global)
 				*i = start + j; // Position'ı ayarla
 				// free(var_name);
 				// free(partial_name);
-				return (ft_strdup(partial_value));
+				return (ft_strdup(""));
 			}
 			// free(partial_name);
 		}
