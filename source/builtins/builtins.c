@@ -68,7 +68,7 @@ int	execute_builtin(t_command *cmd, t_global *global)
 	else if (ft_strcmp(cmd->args[0], "env") == 0)
 		result = builtin_env(global->env_list);
 	else if (ft_strcmp(cmd->args[0], "exit") == 0)
-		result = builtin_exit(cmd->args, global);
+		result = builtin_exit(cmd->args);
 	else if (ft_strcmp(cmd->args[0], "cd") == 0)
 		result = builtin_cd(cmd->args, global);
 	else if (ft_strcmp(cmd->args[0], "export") == 0)
@@ -280,23 +280,38 @@ int	builtin_env(t_env *env_list)
 /*                            EXIT BUILT-IN                                  */
 /* ************************************************************************** */
 
-int	builtin_exit(char **args, t_global *global)
+int	builtin_exit(char **args)
 {
 	int	exit_code;
 
 	exit_code = 0;
 	printf("exit\n");
+	int i;
+	i = 0;
 	if (args[1])
 	{
+		// printf("exit code : %d\n", exit_code);
+		while(args[1][i])
+		{
+			while (args[1][i] == '+' || args[1][i] == '-')
+				i++;
+			if (!ft_isdigit(args[1][i]))
+			{
+				printf("minishell: exit: %s: numeric argument required\n", args[1]);
+				clear_garbage();
+				exit(2);
+			}
+			i++;
+		}
 		exit_code = ft_atoi(args[1]);
 		if (args[2])
 		{
 			printf("minishell: exit: too many arguments\n");
-			return (1);
+			return (0);
 		}
 	}
 	// free_global(global);
-	(void)*global;
+	// (void)*global;
 	clear_garbage();
 	exit(exit_code);
 }

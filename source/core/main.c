@@ -77,11 +77,11 @@ static int	process_input(char *input, t_global *global)
 		global->input_line = NULL;
 	}
 	
-	if (ft_strncmp(input, "exit", 4) == 0)
-	{
-		clear_garbage();
-		return (1);
-	}
+	// if (ft_strncmp(input, "exit", 4) == 0)
+	// {
+	// 	clear_garbage();
+	// 	return (1);
+	// }
 	return (0);
 }
 
