@@ -12,30 +12,30 @@
 
 #include "../../lib/minishell.h"
 
-char	*expand_variables(char *input, t_global *global)
-{
-	char	*result;
-	char	*temp;
-	int		i;
+// char	*expand_variables(char *input, t_global *global)
+// {
+// 	char	*result;
+// 	char	*temp;
+// 	int		i;
 
-	if (!input)
-		return (NULL);
-	result = ft_strdup("");
-	if (!result)
-		return (NULL);
-	i = 0;
-	while (input[i])
-	{
-		if (input[i] == '$')
-			temp = handle_dollar_expansion(input, &i, global);
-		else
-			temp = handle_regular_char(input, &i);
-		result = ft_strjoin(result, temp);
-		if (!result)
-			return (NULL);
-	}
-	return (result);
-}
+// 	if (!input)
+// 		return (NULL);
+// 	result = ft_strdup("");
+// 	if (!result)
+// 		return (NULL);
+// 	i = 0;
+// 	while (input[i])
+// 	{
+// 		if (input[i] == '$')
+// 			temp = handle_dollar_expansion(input, &i, global);
+// 		else
+// 			temp = handle_regular_char(input, &i);
+// 		result = ft_strjoin(result, temp);
+// 		if (!result)
+// 			return (NULL);
+// 	}
+// 	return (result);
+// }
 
 char	*handle_dollar_expansion(char *input, int *i, t_global *global)
 {
@@ -70,7 +70,6 @@ char	*handle_dollar_expansion(char *input, int *i, t_global *global)
 		(*i)++;
 	var_name = ft_substr(input, start, *i - start);
 	var_value = get_env_value(global->env_list, var_name);
-	
 	// Eğer variable bulunamadı ama uzun bir name ise, kısa versiyonları dene
 	if (!var_value && ft_strlen(var_name) > 1) // Buraya bakılacak!!!!
 	{

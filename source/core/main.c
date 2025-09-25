@@ -107,13 +107,21 @@ static void	run_shell_loop(t_global *global)
 	//clear_garbage();
 }
 
+t_global *get_global(void)
+{
+	static t_global	minishell;
+
+	return (&minishell);
+}
+
 int	main(int argc, char **argv, char **envp) // argc sayısı check
 {
 	t_global	*global;
 
 	(void)argc;
 	(void)argv;
-	global = init_global(envp);
+	global = get_global();
+	global = init_global(envp, global);
 	if (!global)
 	{
 		printf("Error: Failed to initialize global state\n");

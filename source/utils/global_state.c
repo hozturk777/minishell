@@ -13,13 +13,12 @@
 #include "../../lib/minishell.h"
 
 // Global değişken - sinyal handler'lar için
-t_global	*g_global = NULL;
+// t_global	*g_global = NULL;
 
-t_global	*init_global(char **envp) // bzero YAPILCAK
+t_global	*init_global(char **envp, t_global *global) // bzero YAPILCAK
 {
-	t_global	*global;
 
-	global = (t_global *)halloc(sizeof(t_global));
+	// global = (t_global *)halloc(sizeof(t_global));
 	if (!global)
 		return (NULL);
 	global->tokens = NULL;
@@ -34,7 +33,7 @@ t_global	*init_global(char **envp) // bzero YAPILCAK
 	global->should_exit = 0;
 	
 	// Global değişkeni ayarla
-	g_global = global;
+	// g_global = global;
 	
 	return (global);
 }

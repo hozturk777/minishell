@@ -13,7 +13,7 @@
 #include "../../lib/minishell.h"
 
 // Global değişken - shell'in ana durumunu tutar
-extern t_global	*g_global;
+// extern t_global	*g_global;
 
 /**
  * SIGINT (Ctrl+C) sinyal handler'ı
@@ -24,6 +24,9 @@ void	sigint_handler(int sig)
 {
 	(void)sig;
 	t_redirect *redirect;
+	t_global *g_global;
+
+	g_global = get_global();
 	
 	if (g_global && g_global->in_child)
 	{
@@ -64,7 +67,9 @@ void	sigint_handler(int sig)
 void	sigquit_handler(int sig)
 {
 	(void)sig;
+	t_global *g_global;
 	
+	g_global = get_global();
 	if (g_global && g_global->in_child)
 	{
 		// Child process'te - default davranış (core dump)
@@ -146,6 +151,9 @@ void	restore_signals(void)
  */
 void	handle_eof(void)
 {
+	t_global *g_global;
+
+	g_global = get_global();
 	printf("exit\n");
 	if (g_global)
 	{

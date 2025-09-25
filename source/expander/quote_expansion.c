@@ -27,7 +27,7 @@ char	*expand_with_quotes(char *input, t_global *global)
 	{
 		update_quote_state(input[i], quote_state);
 		if (input[i] == '$' && !quote_state[0])
-			temp = handle_dollar_expansion(input, &i, global);
+			temp = handle_dollar_expansion(input, &i, global); 
 		else if (input[i] == '\'' && quote_state[1]) // Single quote inside double quote - keep as literal
 			temp = handle_regular_char(input, &i);
 		else if (input[i] == '"' && quote_state[0]) // Double quote inside single quote - keep as literal  
@@ -43,6 +43,28 @@ char	*expand_with_quotes(char *input, t_global *global)
 		if (!result)
 			return (NULL);
 	}
+	return (result);
+}
+
+char	*expand_with_heredoc(char *input, t_global *global)
+{
+	char	*result;
+	int		i;
+	char *var_value;
+
+	result = ft_strdup("");
+	i = 0;
+	printf("LİNE_EXPAND: $%s$\n", input);
+	if (input[i] == '$')
+	{
+		input++;
+		var_value = get_env_value(global->env_list, input);
+	}
+	else
+		i++;
+	result = ft_strjoin(result, var_value);
+	if (!result)
+		return (NULL);
 	return (result);
 }
 

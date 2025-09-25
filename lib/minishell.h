@@ -135,6 +135,9 @@ typedef struct s_global
 /*                            FONKSIYON PROTOTIPLERI                         */
 /* ************************************************************************** */
 
+t_global *get_global(void);
+
+
 // ========== LEXER VE TOKENIZER FONKSIYONLARI ==========
 t_list			*tokenize_advanced(char *input, t_global *global);		/* Ana tokenize fonksiyonu */
 t_token_new		*create_token_advanced(t_token_types type, char *value);	/* Yeni token oluştur */
@@ -166,7 +169,7 @@ void			free_commands(t_list **commands);						/* Komut listesini serbest bırak 
 t_command		*parse_tokens_to_commands(t_list *tokens, t_global *global);	/* Token'ları komutlara ayrıştır */
 
 // ========== GLOBAL DURUM FONKSIYONLARI ==========
-t_global		*init_global(char **envp);								/* Global durumu başlat */
+t_global		*init_global(char **envp, t_global *global);								/* Global durumu başlat */
 void			free_global(t_global *global);							/* Global durumu serbest bırak */
 void			update_exit_status(t_global *global, int status);		/* Çıkış durumunu güncelle */
 
@@ -201,6 +204,7 @@ char			*handle_regular_char(char *input, int *i);				/* Normal karakter işleme 
 
 // ========== QUOTE & EXPANSION FONKSIYONLARI ==========
 char			*expand_with_quotes(char *input, t_global *global);		/* Tırnakla genişletme */
+char			*expand_with_heredoc(char *input, t_global *global);
 void			update_quote_state(char c, int *quote_state);			/* Tırnak durumunu güncelle */
 char			*remove_outer_quotes(char *input);						/* Dış tırnakları kaldır */
 int				needs_expansion(char *str);								/* Genişletme gerekli mi kontrol et */
@@ -254,7 +258,7 @@ int				count_env_nodes(t_env *env_list);						/* Çevre düğümlerini say */
 void			setup_redirections(t_command *cmd);					/* Yönlendirmeleri ayarla */
 void			handle_single_redirection(t_redirect *redirect);		/* Tek yönlendirme işle */
 void			setup_pipeline_fds(t_command *cmd, int prev_fd, int *pipe_fd);	/* Pipeline fd ayarla */
-int				handle_heredoc(t_redirect *delimiter);						/* Heredoc işle */
+int	handle_heredoc(t_redirect *redirect);						/* Heredoc işle */
 char			*generate_temp_filename(void);							/* Geçici dosya adı oluştur */
 
 // ========== SIGNAL HANDLING FONKSIYONLARI ==========

@@ -77,7 +77,7 @@ static t_token_new	*get_next_token(t_lexer_new *lexer, int single_quote_count)
 		return (NULL);
 	if (token->type == T_PIPE || token->type == T_HEREDOC || token->type == T_REDIRECT_OUT) // pipedan sonrakini t_cmd tipine çevirmek için ve heredocdan sonra boşluğu alıyordu onu atlamak için
 	{
-		if (token->type != T_HEREDOC && token->type != T_REDIRECT_OUT)
+		if (token->type != T_HEREDOC && token->type != T_REDIRECT_OUT && token->type != T_PIPE)
 			advance_lexer(lexer);
 		if (lexer->current_char == ' ' || lexer->current_char == '\t')
 			skip_whitespace_advanced(lexer);

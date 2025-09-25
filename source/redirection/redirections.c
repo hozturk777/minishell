@@ -33,8 +33,13 @@ static void	handle_multiple_heredocs(t_command *cmd)
 		{
 			if (last_heredoc_fd != -1)
 				close(last_heredoc_fd);
-			// Heredoc zaten pre-processed, sadece fd'yi kullan
-			last_heredoc_fd = redirect->fd;
+
+			// Eğer pre-processed ise (pipeline durumu), fd'yi kullan
+			if (redirect->fd > 0)
+				last_heredoc_fd = redirect->fd;
+			else
+				// Değilse (normal durumda), heredoc'u işle
+				last_heredoc_fd = handle_heredoc(redirect);
 		}
 		current = current->next;
 	}
@@ -152,7 +157,7 @@ static char	*create_temp_filename(int heredoc_count)
 		return (NULL);
 	}
 	temp1 = ft_strjoin("/tmp/heredoc_", pid_str);
-	temp2 = ft_strjoin(temp1, "_");
+	temp2 = ft_strjoin(temp1, "_");	
 	result = ft_strjoin(temp2, count_str);
 	// free(pid_str);
 	// free(count_str);
@@ -166,7 +171,9 @@ int	handle_heredoc(t_redirect *redirect)
 	char			*line;
 	char			*temp_filename;
 	static int		heredoc_count = 0;
+	t_global		*global;
 
+	global = get_global();
 	if (!redirect || redirect->type != T_HEREDOC)
 		return (-1);
 	temp_filename = create_temp_filename(heredoc_count++);
@@ -175,20 +182,17 @@ int	handle_heredoc(t_redirect *redirect)
 	redirect->fd = open(temp_filename, O_CREAT | O_WRONLY | O_TRUNC, 0600);
 	if (redirect->fd == -1)
 		return (-1);
-	
-	// Interactive mı kontrol et (terminal'den mi yoksa pipe'dan mı?)
-	if (isatty(STDIN_FILENO))
-		write(STDOUT_FILENO, "> ", 2);
-	
-	while ((line = add_garbage(readline(""))) != NULL)
+		
+	while ((line = add_garbage(readline("> "))) != NULL)
 	{
 		if (ft_strcmp(line, redirect->filename) == 0)
 			break ;
+		if (line[0] == '$')
+			line = expand_with_heredoc(line, global);
+		
+		printf("LİNE: $%s$\n", line);
 		write(redirect->fd, line, ft_strlen(line));
 		write(redirect->fd, "\n", 1);
-		
-		if (isatty(STDIN_FILENO))
-			write(STDOUT_FILENO, "> ", 2);
 	}
 	close(redirect->fd);
 	redirect->fd = open(temp_filename, O_RDONLY);
