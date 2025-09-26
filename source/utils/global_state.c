@@ -6,23 +6,24 @@
 /*   By: hasivaci <hasivaci@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 12:00:00 by huozturk          #+#    #+#             */
-/*   Updated: 2025/09/26 14:38:48 by hasivaci         ###   ########.fr       */
+/*   Updated: 2025/09/26 19:31:31 by hasivaci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../lib/minishell.h"
 
-static void update_shlvl(t_env *env)
+static void	update_shlvl(t_env *env)
 {
-    int value;
-    value = ft_atoi(get_env_value(env, "SHLVL"));
-    value++;
-    set_env_var(get_global(), "SHLVL", ft_itoa(value));
+	int	value;
+
+	value = ft_atoi(get_env_value(env, "SHLVL"));
+	value++;
+	set_env_var(get_global(), "SHLVL", ft_itoa(value));
 }
 
-t_global	*init_global(char **envp, t_global *global) // bzero YAPILCAK
+// bzero YAPILCAK
+t_global	*init_global(char **envp, t_global *global)
 {
-
 	// global = (t_global *)halloc(sizeof(t_global));
 	if (!global)
 		return (NULL);
@@ -37,18 +38,13 @@ t_global	*init_global(char **envp, t_global *global) // bzero YAPILCAK
 	global->interactive = 1;
 	global->in_child = 0;
 	global->should_exit = 0;
-	
 	// Global değişkeni ayarla
 	// g_global = global;
-	
 	return (global);
 }
-
-
 
 void	update_exit_status(t_global *global, int status)
 {
 	if (global)
 		global->exit_status = status;
 }
-
