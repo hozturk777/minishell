@@ -6,7 +6,7 @@
 /*   By: hasivaci <hasivaci@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/30 15:30:00 by hasivaci          #+#    #+#             */
-/*   Updated: 2025/09/23 17:22:08 by hasivaci         ###   ########.fr       */
+/*   Updated: 2025/09/26 14:41:56 by hasivaci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,19 +121,6 @@ void	setup_child_signals(void) // Araştırılacak!!
 	sa_quit.sa_flags = 0;
 	sigaction(SIGQUIT, &sa_quit, NULL);
 	
-	// struct sigaction	sa;
-
-	// // SIGINT'i default davranışa çevir
-	// sa.sa_handler = SIG_DFL;
-	// sigemptyset(&sa.sa_mask);
-	// sa.sa_flags = 0;
-	// sigaction(SIGINT, &sa, NULL);
-
-	// // SIGQUIT'i default davranışa çevir  
-	// sa.sa_handler = SIG_DFL;
-	// sigemptyset(&sa.sa_mask);
-	// sa.sa_flags = 0;
-	// sigaction(SIGQUIT, &sa, NULL);
 }
 
 /**
