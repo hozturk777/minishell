@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   debug_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hsyn <hsyn@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: hasivaci <hasivaci@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/28 17:37:10 by hasivaci          #+#    #+#             */
-/*   Updated: 2025/09/20 23:09:14 by hsyn             ###   ########.fr       */
+/*   Updated: 2025/09/26 14:38:26 by hasivaci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,51 +86,7 @@ void	print_commands_debug(t_command *commands)
 	}
 }
 
-//void	free_commands_list(t_command *commands)
-//{
-//	t_command	*current;
-//	t_command	*next;
-//	// t_list		*redirect_node;
-//	// t_list		*next_redirect;
-//	// t_redirect	*redirect;
-//	// int			i;
 
-//	current = commands;
-//	while (current)
-//	{
-//		next = current->next;
-//		// Free arguments array
-//		// if (current->args)
-//		// {
-//		// 	i = 0;
-//		// 	while (current->args[i])
-//		// 	{
-//		// 		free(current->args[i]);
-//		// 		i++;
-//		// 	}
-//		// 	free(current->args);
-//		// }
-//		// // Free redirections list
-//		// redirect_node = current->redirections;
-//		// while (redirect_node)
-//		// {
-//		// 	next_redirect = redirect_node->next;
-//		// 	redirect = (t_redirect *)redirect_node->content;
-//		// 	if (redirect)
-//		// 	{
-//		// 		if (redirect->filename)
-//		// 			free(redirect->filename);
-//		// 		free(redirect);
-//		// 	}
-//		// 	free(redirect_node);
-//		// 	redirect_node = next_redirect;
-//		// }
-//		// // Free command structure
-//		// free(current);
-//		current = next;
-		
-//	}
-//}
 
 t_command	*create_command(void)
 {
