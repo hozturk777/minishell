@@ -15,6 +15,14 @@
 // Global değişken - sinyal handler'lar için
 // t_global	*g_global = NULL;
 
+static void update_shlvl(t_env *env)
+{
+    int value;
+    value = ft_atoi(get_env_value(env, "SHLVL"));
+    value++;
+    set_env_var(get_global(), "SHLVL", ft_itoa(value));
+}
+
 t_global	*init_global(char **envp, t_global *global) // bzero YAPILCAK
 {
 
@@ -24,6 +32,7 @@ t_global	*init_global(char **envp, t_global *global) // bzero YAPILCAK
 	global->tokens = NULL;
 	global->commands = NULL;
 	global->env_list = init_env_from_envp(envp);
+	update_shlvl(global->env_list);
 	global->exit_status = 0;
 	global->pipe_count = 0;
 	global->heredoc_count = 0;

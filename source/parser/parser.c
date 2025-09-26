@@ -90,6 +90,13 @@ void	parse_redirection(t_command *cmd, t_list **token_node, t_global *global)
     redirect->fd = -1;
     redirect->next = NULL;
     *token_node = (*token_node)->next;
+	// while (*token_node)
+    // {
+    //     file_token = (t_token_new *)(*token_node)->content;
+    //     if (file_token->type != T_WHITESPACE)
+    //         break;
+    //     *token_node = (*token_node)->next;
+    // }
     if (*token_node)
     {
         file_token = (t_token_new *)(*token_node)->content;
@@ -152,8 +159,10 @@ void	collect_command_arg(t_list **args_list, t_list *token_node)
     if (token->type == T_SINGLE_QUOTE)
     {
         // Mark single quoted strings with special prefix to prevent expansion
-        temp = ft_strjoin("__SINGLE_QUOTE__", token->value);
-        arg_copy = ft_strjoin(temp, "__END_SINGLE_QUOTE__");
+        // temp = ft_strjoin("__SINGLE_QUOTE__", token->value);
+        // arg_copy = ft_strjoin(temp, "__END_SINGLE_QUOTE__");
+        temp = ft_strjoin("\'", token->value);
+        arg_copy = ft_strjoin(temp, "\'");
         // free(temp);
     }
     else if (token->type == T_DOUBLE_QUOTE)
@@ -165,7 +174,7 @@ void	collect_command_arg(t_list **args_list, t_list *token_node)
     }
     else
     {
-        // Regular words
+		// Regular words
         arg_copy = ft_strdup(token->value);
     }
     
