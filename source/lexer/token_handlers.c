@@ -33,11 +33,11 @@ t_token_new	*handle_redirect_advanced(t_lexer_new *lexer)
 			advance_lexer(lexer);
 			while (lexer->current_char == ' ' || lexer->current_char == '\t')
 			    advance_lexer(lexer);
-			if (!ft_isprint(lexer->current_char)) // Burada returnde value dönüp çıktıyı değiştiricez
+			if (!ft_isprint(lexer->current_char) || lexer->current_char == '|') // Burada returnde value dönüp çıktıyı değiştiricez
 				return (NULL);
 			return (create_token_advanced(T_HEREDOC, "<<"));
 		}
-		else if (!ft_isprint(lexer->current_char)) // Burada returnde value dönüp çıktıyı değiştiricez
+		else if (!ft_isprint(lexer->current_char) || lexer->current_char == '|') // Burada returnde value dönüp çıktıyı değiştiricez
 			return (NULL);
 		return (create_token_advanced(T_REDIRECT_IN, "<"));
 	}
@@ -51,11 +51,11 @@ t_token_new	*handle_redirect_advanced(t_lexer_new *lexer)
 			advance_lexer(lexer);
 			while (lexer->current_char == ' ' || lexer->current_char == '\t')
 			    advance_lexer(lexer);
-			if (!ft_isprint(lexer->current_char)) // Burada returnde value dönüp çıktıyı değiştiricez
+			if (!ft_isprint(lexer->current_char) || lexer->current_char == '|') // Burada returnde value dönüp çıktıyı değiştiricez
 				return (NULL);
 			return (create_token_advanced(T_APPEND, ">>"));
 		}
-		else if (!ft_isprint(lexer->current_char)) // Burada returnde value dönüp çıktıyı değiştiricez
+		else if (!ft_isprint(lexer->current_char) || lexer->current_char == '|') // Burada returnde value dönüp çıktıyı değiştiricez
 			return (NULL);
 		return (create_token_advanced(T_REDIRECT_OUT, ">"));
 	}

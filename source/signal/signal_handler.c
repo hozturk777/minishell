@@ -30,9 +30,6 @@ void	sigint_handler(int sig)
 	
 	if (g_global && g_global->in_child)
 	{
-		// Child process'te - default davranış
-		//buraya fd close gelmesi gerekioyor !!!!!!!!!!!!!!
-
 		while (g_global->commands->redirections)
 		{
 			redirect = (t_redirect *)g_global->commands->redirections->content;

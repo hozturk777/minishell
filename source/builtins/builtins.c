@@ -247,8 +247,9 @@ int	builtin_echo(char **args)
 			printf("%s", processed_arg);
 			// free(processed_arg);
 		}
-		if (args[i + 1])
-			printf(" ");
+
+		if (args[i + 1]) // Burada echo '$USER"test"'a'' '"' yerine boşluk yazıyor // cmd gönderilip karakter single quote içinde mi checklenebilir
+			printf(" ");		
 		i++;
 	}
 	if (newline)
