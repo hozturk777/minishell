@@ -59,8 +59,6 @@ int	execute_builtin(t_command *cmd, t_global *global)
 		original_stdin = dup(STDIN_FILENO);
 		setup_redirections(cmd);
 	}
-	
-	// Built-in komutunu çalıştır
 	if (ft_strcmp(cmd->args[0], "pwd") == 0)
 		result = builtin_pwd_global(global);
 	else if (ft_strcmp(cmd->args[0], "echo") == 0)
@@ -249,8 +247,8 @@ int	builtin_echo(char **args)
 			printf("%s", processed_arg);
 			// free(processed_arg);
 		}
-		// if (args[i + 1])
-		// 	printf(" ");
+		if (args[i + 1])
+			printf(" ");
 		i++;
 	}
 	if (newline)

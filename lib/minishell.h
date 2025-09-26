@@ -270,6 +270,8 @@ void			setup_child_signals(void);								/* Child process sinyalleri */
 void			handle_eof(void);										/* EOF (Ctrl+D) işleme */
 
 void			print_welcome_advanced(void);
+char			*ft_strjoin_char(char const *s1, char const s2);
+
 
 
 #endif

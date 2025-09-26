@@ -12,12 +12,12 @@
 
 #include "../../lib/minishell.h"
 
-static void	skip_whitespace_advanced(t_lexer_new *lexer)
-{
-	while (lexer->current_char == ' ' || lexer->current_char == '\t'
-		|| lexer->current_char == '\n')
-		advance_lexer(lexer);
-}
+// static void	skip_whitespace_advanced(t_lexer_new *lexer)
+// {
+// 	while (lexer->current_char == ' ' || lexer->current_char == '\t'
+// 		|| lexer->current_char == '\n')
+// 		advance_lexer(lexer);
+// }
 
 static int	check_quote_balance(char *input, int *single_quote_count)
 {
@@ -75,34 +75,21 @@ static t_token_new	*get_next_token(t_lexer_new *lexer, int single_quote_count)
 
 	if (!token)
 		return (NULL);
-	if (token->type == T_PIPE || token->type == T_HEREDOC || token->type == T_REDIRECT_OUT || token->type == T_REDIRECT_IN) // pipedan sonrakini t_cmd tipine çevirmek için ve heredocdan sonra boşluğu alıyordu onu atlamak için
-	{
-		if (token->type != T_HEREDOC && token->type != T_REDIRECT_OUT && token->type != T_REDIRECT_IN && token->type != T_PIPE)
-			advance_lexer(lexer);
-		if (lexer->current_char == ' ' || lexer->current_char == '\t')
-			skip_whitespace_advanced(lexer);
-		if (lexer->current_char >= 32 && lexer->current_char <= 127)
-			lexer->t_cmd_flag = 1;
-	}
+	// if (token->type == T_PIPE || token->type == T_HEREDOC || token->type == T_REDIRECT_OUT || token->type == T_REDIRECT_IN) // pipedan sonrakini t_cmd tipine çevirmek için ve heredocdan sonra boşluğu alıyordu onu atlamak için
+	// {
+	// 	if (token->type != T_HEREDOC && token->type != T_REDIRECT_OUT && token->type != T_REDIRECT_IN && token->type != T_PIPE)
+	// 		advance_lexer(lexer);
+	// 	if (lexer->current_char == ' ' || lexer->current_char == '\t')
+	// 		skip_whitespace_advanced(lexer);
+	// 	if (lexer->current_char >= 32 && lexer->current_char <= 127)
+	// 		lexer->t_cmd_flag = 1;
+	// }
 	
-	if (token->type == T_CMD) // komuttan sonra boşluğu yazıyordu örn: echo selam burada ' selam' bunu engellemek için
-	{
-		skip_whitespace_advanced(lexer);
-	}
+	// if (token->type == T_CMD) // komuttan sonra boşluğu yazıyordu örn: echo selam burada ' selam' bunu engellemek için
+	// {
+	// 	skip_whitespace_advanced(lexer);
+	// }
 
-	// if (lexer->first_word_check == 0 && token->type != T_WHITESPACE && token->type != T_SINGLE_QUOTE && token->type != T_DOUBLE_QUOTE) // Komut ile word arasında ki boşluğu atlamak için
-	//     advance_lexer(lexer);
-	
-
-	// Pipe ve redirect operatörleri derhal return edilmeli
-	// if (token->type == T_PIPE || token->type == T_REDIRECT_IN || 
-	// 	token->type == T_REDIRECT_OUT || token->type == T_APPEND || 
-	// 	token->type == T_HEREDOC)
-	// 	return (token);
-	// if (single_quote_count % 2 == 0)
-	// 	// Tek sayıda single quote = literal (expansion yok)
-	// 	token->type = T_WORD;
-	
 	return (token);
 }
 
