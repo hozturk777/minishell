@@ -23,6 +23,8 @@ t_lexer_new	*init_lexer_advanced(char *input, t_global *global)
 	lexer->pos = 0;
 	lexer->len = ft_strlen(input);
 	lexer->global = global;
+	lexer->current_char = '\0';  // ← İNİTİALİZE ET!
+    lexer->t_cmd_flag = 0;       // ← İNİTİALİZE ET!
 	if (lexer->len > 0)
 		lexer->current_char = input[0];
 	else

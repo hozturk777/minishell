@@ -16,7 +16,7 @@
 /*                            MULTIPLE HEREDOC HANDLER                       */
 /* ************************************************************************** */
 
-static void	handle_multiple_heredocs(t_command *cmd)
+void	handle_multiple_heredocs(t_command *cmd)
 {
 	t_list		*current;
 	t_redirect	*redirect;
@@ -26,6 +26,7 @@ static void	handle_multiple_heredocs(t_command *cmd)
 	if (!cmd->redirections)
 		return ;
 	current = cmd->redirections;
+
 	while (current)
 	{
 		redirect = (t_redirect *)current->content;
@@ -40,6 +41,7 @@ static void	handle_multiple_heredocs(t_command *cmd)
 			else
 				// Değilse (normal durumda), heredoc'u işle
 				last_heredoc_fd = handle_heredoc(redirect);
+			
 		}
 		current = current->next;
 	}
@@ -59,8 +61,10 @@ void	setup_redirections(t_command *cmd)
 	t_list		*current;
 	t_redirect	*redirect;
 
+
 	if (!cmd || !cmd->redirections)
 		return ;
+
 	handle_multiple_heredocs(cmd);
 	current = cmd->redirections;
 	while (current)
@@ -68,6 +72,7 @@ void	setup_redirections(t_command *cmd)
 		redirect = (t_redirect *)current->content;
 		if (redirect && redirect->type != T_HEREDOC)
 			handle_single_redirection(redirect);
+		
 		current = current->next;
 	}
 }

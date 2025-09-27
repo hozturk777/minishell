@@ -69,6 +69,14 @@ t_token_new	*handle_word_advanced(t_lexer_new *lexer, int *first_word_check)
 	char	*word;
 	t_token_types types;
 
+
+	start = lexer->pos;
+	len = 0;
+	word = NULL;
+	types = T_WORD;
+	if (!lexer || !lexer->input || lexer->pos >= lexer->len)
+		return (NULL);
+
 	if (lexer->pos == 0 || lexer->t_cmd_flag == 1 || (lexer->current_char == '-' && (lexer->input[lexer->pos + 1] == 'n' || lexer->input[lexer->pos + 1] == 'e' || lexer->input[lexer->pos + 1] == 'E'))) // Pipedan sonra ki inputu da T_CMD işaretliyecez & -n -e -E'de başta boşluk bırakıyordu T_CMD çevirdik token tipini
 	{
 		types = T_CMD;
@@ -81,7 +89,6 @@ t_token_new	*handle_word_advanced(t_lexer_new *lexer, int *first_word_check)
 		*first_word_check = 1;
 	}
 	
-	start = lexer->pos;
 	// Special case for $"..." pattern - treat as single word
 	if (lexer->current_char == '$' && lexer->input[lexer->pos + 1] == '"')
 	{
@@ -106,7 +113,14 @@ t_token_new	*handle_word_advanced(t_lexer_new *lexer, int *first_word_check)
 		&& lexer->current_char != '"')
 		advance_lexer(lexer);
 	len = lexer->pos - start;
-	word = ft_substr(lexer->input, start, len);
+	if (len > 0)
+	{
+		/* code */
+		word = ft_substr(lexer->input, start, len);
+	}
+	else
+		return (NULL);
+	
 	if (!word)
 		return (NULL);
 	// if (types == T_CMD)

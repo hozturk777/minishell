@@ -53,12 +53,8 @@ t_command	*parse_single_command(t_list **token_node, t_global *global)
         return (NULL);
     args_list = NULL;
     current = *token_node;
-	// TEST = (t_token_new *)current->content;
-	// printf("\nTEST_VALUE : $%s$\n", TEST->value);
     while (current && !is_pipe_token(current)) // Pipelar arasını word ve redirectleri ayırma işlemi
     {
-		// TEST = (t_token_new *)current->content;
-		// printf("TEST_VALUE : $%s$\n", TEST->value);
         if (is_redirect_token(current)) // Redirect var ise yönlendirmeyi yapıyor
             parse_redirection(cmd, &current, global); // redirect var ise cmd.redirections'a ekler
         else if (is_word_token(current)) // Wordlari de listeye ekliyor
@@ -90,13 +86,6 @@ void	parse_redirection(t_command *cmd, t_list **token_node, t_global *global)
     redirect->fd = -1;
     redirect->next = NULL;
     *token_node = (*token_node)->next;
-	// while (*token_node)
-    // {
-    //     file_token = (t_token_new *)(*token_node)->content;
-    //     if (file_token->type != T_WHITESPACE)
-    //         break;
-    //     *token_node = (*token_node)->next;
-    // }
     if (*token_node)
     {
         file_token = (t_token_new *)(*token_node)->content;
@@ -112,7 +101,7 @@ int	is_command_start(t_list *token_node)
     if (!token_node)
         return (0);
     token = (t_token_new *)token_node->content;
-    return (token->type == T_WORD || token->type == T_CMD || token->type == T_HEREDOC); // Buraya redirectler de eklenecek
+    return (token->type == T_WORD || token->type == T_CMD || token->type == T_HEREDOC || token->type == T_REDIRECT_OUT || token->type == T_REDIRECT_IN); // Buraya redirectler de eklenecek
 }
 
 int	is_pipe_token(t_list *token_node)
