@@ -6,7 +6,7 @@
 /*   By: hasivaci <hasivaci@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/28 17:39:03 by hasivaci          #+#    #+#             */
-/*   Updated: 2025/09/20 18:38:56 by hasivaci         ###   ########.fr       */
+/*   Updated: 2025/09/27 12:37:27 by hasivaci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -288,12 +288,14 @@ int	builtin_exit(char **args)
 	printf("exit\n");
 	int i;
 	i = 0;
+	// printf("eski args%s\n", args[1]);
+	args[1] = ft_strtrim(args[1], " ");
 	if (args[1])
 	{
-		// printf("exit code : %d\n", exit_code);
+		// printf("yeni args%s\n", args[1]);
 		while(args[1][i])
 		{
-			while (args[1][i] == '+' || args[1][i] == '-')
+			if (args[1][i] == '+' || args[1][i] == '-')
 				i++;
 			if (!ft_isdigit(args[1][i]))
 			{

@@ -38,6 +38,7 @@ MINISHELL_SRCS		= $(SRC_DIR)main.c \
 					  $(REDIRECT_DIR)redirections.c \
 					  $(REDIRECT_DIR)redirections2.c \
 					  $(PAR_DIR)parser.c \
+					  $(PAR_DIR)parser_is.c \
 
 SRCS				= $(MINISHELL_SRCS)
 OBJ					= $(addprefix $(OBJ_DIR), $(notdir $(SRCS:.c=.o)))
