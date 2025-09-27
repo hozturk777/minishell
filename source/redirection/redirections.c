@@ -86,6 +86,7 @@ void	handle_single_redirection(t_redirect *redirect)
 		if (fd == -1)
 		{
 			perror(redirect->filename);
+			clear_garbage();
 			exit(1);
 		}
 		dup2(fd, STDIN_FILENO);
