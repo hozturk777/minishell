@@ -6,7 +6,7 @@
 /*   By: hasivaci <hasivaci@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/26 19:16:01 by hasivaci          #+#    #+#             */
-/*   Updated: 2025/09/26 20:13:18 by hasivaci         ###   ########.fr       */
+/*   Updated: 2025/09/27 20:14:35 by hasivaci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@
 
 #include "../../lib/minishell.h"
 
-static void	sigint_handler_child_cleanup(t_command *cmd)
+void	sigint_handler_child_cleanup(t_command *cmd)
 {
 	t_redirect	*redirect;
 	t_list		*node;

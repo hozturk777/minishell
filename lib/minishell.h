@@ -6,7 +6,7 @@
 /*   By: hasivaci <hasivaci@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 12:00:00 by huozturk          #+#    #+#             */
-/*   Updated: 2025/09/26 20:13:40 by hasivaci         ###   ########.fr       */
+/*   Updated: 2025/09/27 15:42:39 by hasivaci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -270,6 +270,7 @@ void			setup_child_signals(void);								/* Child process sinyalleri */
 void			handle_eof(void);										/* EOF (Ctrl+D) işleme */
 
 void			print_welcome_advanced(void);
+void	sigint_handler_child_cleanup(t_command *cmd);
 
 
 

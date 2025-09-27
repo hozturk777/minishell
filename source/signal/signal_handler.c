@@ -6,7 +6,7 @@
 /*   By: hasivaci <hasivaci@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/30 15:30:00 by hasivaci          #+#    #+#             */
-/*   Updated: 2025/09/26 19:26:15 by hasivaci         ###   ########.fr       */
+/*   Updated: 2025/09/27 20:14:42 by hasivaci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,6 +95,7 @@ void	handle_eof(void)
 
 	g_global = get_global();
 	printf("exit\n");
+	// sigint_handler_child_cleanup(g_global->commands);
 	if (g_global)
 	{
 		g_global->should_exit = 1;

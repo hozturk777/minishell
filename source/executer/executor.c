@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hsyn <hsyn@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: hasivaci <hasivaci@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/24 12:00:00 by huozturk          #+#    #+#             */
-/*   Updated: 2025/09/21 16:22:21 by hsyn             ###   ########.fr       */
+/*   Updated: 2025/09/27 20:11:03 by hasivaci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,6 +120,10 @@ static int	preprocess_heredocs(t_command *commands, t_global *global)
 				{
 					// Heredoc'u main process'te işle
 					redirect->fd = handle_heredoc(redirect);
+					
+					printf("REDİRECT_VALUE: $%s$\n", redirect->filename);
+					printf("REDİRECT_FD: $%d$\n", redirect->fd);
+					
 					if (redirect->fd == -1)
 						return (-1);
 				}
@@ -128,6 +132,7 @@ static int	preprocess_heredocs(t_command *commands, t_global *global)
 		}
 		current = current->next;
 	}
+	close(redirect->fd);
 	return (0);
 }
 
@@ -216,6 +221,26 @@ int	execute_pipeline(t_command *commands, t_global *global)
 		i++;
 	}
 	
+	current = commands;
+	while (current)
+	{
+		if (current->redirections)
+		{
+			t_list *node = current->redirections;
+			while (node)
+			{
+				t_redirect *redirect = (t_redirect *)node->content;
+				if (redirect && redirect->type == T_HEREDOC && redirect->fd > 2)
+				{
+					close(redirect->fd);
+					redirect->fd = -1;
+				}
+				node = node->next;
+			}
+		}
+		current = current->next;
+	}
+	
 	return (last_status);
 }
 
@@ -241,7 +266,7 @@ pid_t	execute_pipeline_command_async(t_command *cmd, t_global *global, int prev_
 		setup_pipeline_fds(cmd, prev_fd, pipe_fd);
 		setup_redirections(cmd);
 		
-		if (is_builtin(cmd->args[0]))
+		if (is_builtin(cmd->args[0])) // Burada açık fd kalmıyor "prev_fd close olmadıpı için"
 		{
 			execute_builtin(cmd, global);
 			exit_num = global->exit_status;
@@ -273,57 +298,57 @@ pid_t	execute_pipeline_command_async(t_command *cmd, t_global *global, int prev_
 
 /* ************************************************************************** */
 
-int	execute_pipeline_command(t_command *cmd, t_global *global, int prev_fd, int *pipe_fd)
-{
-	pid_t	pid;
-	int		status;
-	char	*path;
+// int	execute_pipeline_command(t_command *cmd, t_global *global, int prev_fd, int *pipe_fd)
+// {
+// 	pid_t	pid;
+// 	int		status;
+// 	char	*path;
 
-	if (is_builtin(cmd->args[0]) && !cmd->next && prev_fd == 0)
-		return (execute_builtin(cmd, global));
-	path = find_command_path(cmd->args[0], global->env_list);
-	if (!path)
-		return (127);
-	pid = fork();
-	if (pid == 0)
-	{
-		// Child process - sinyalleri default davranışa çevir
-		setup_child_signals();
-		global->in_child = 1;
-		setup_pipeline_fds(cmd, prev_fd, pipe_fd);
-		setup_redirections(cmd);
-		if (is_builtin(cmd->args[0]))
-		{
-			execute_builtin(cmd, global);
-			exit(global->exit_status);
-		}
-		execve(path, cmd->args, env_list_to_array(global->env_list));
-		perror("execve");
-		exit(127);
-	}
-	else if (pid > 0)
-	{
-		waitpid(pid, &status, 0);
-		// free(path);
+// 	if (is_builtin(cmd->args[0]) && !cmd->next && prev_fd == 0)
+// 		return (execute_builtin(cmd, global));
+// 	path = find_command_path(cmd->args[0], global->env_list);
+// 	if (!path)
+// 		return (127);
+// 	pid = fork();
+// 	if (pid == 0)
+// 	{
+// 		// Child process - sinyalleri default davranışa çevir
+// 		setup_child_signals();
+// 		global->in_child = 1;
+// 		setup_pipeline_fds(cmd, prev_fd, pipe_fd);
+// 		setup_redirections(cmd);
+// 		if (is_builtin(cmd->args[0]))
+// 		{
+// 			execute_builtin(cmd, global);
+// 			exit(global->exit_status);
+// 		}
+// 		execve(path, cmd->args, env_list_to_array(global->env_list));
+// 		perror("execve");
+// 		exit(127);
+// 	}
+// 	else if (pid > 0)
+// 	{
+// 		waitpid(pid, &status, 0);
+// 		// free(path);
 		
-		// Signal ile sonlandı mı kontrol et
-		if (WIFSIGNALED(status))
-		{
-			int signal_num = WTERMSIG(status);
-			if (signal_num == SIGINT)
-				return (130); // 128 + SIGINT
-			else if (signal_num == SIGQUIT)
-				return (131); // 128 + SIGQUIT
-			else
-				return (128 + signal_num);
-		}
+// 		// Signal ile sonlandı mı kontrol et
+// 		if (WIFSIGNALED(status))
+// 		{
+// 			int signal_num = WTERMSIG(status);
+// 			if (signal_num == SIGINT)
+// 				return (130); // 128 + SIGINT
+// 			else if (signal_num == SIGQUIT)
+// 				return (131); // 128 + SIGQUIT
+// 			else
+// 				return (128 + signal_num);
+// 		}
 		
-		return (WEXITSTATUS(status));
-	}
-	else
-	{
-		perror("fork");
-		// free(path);
-		return (1);
-	}
-}
+// 		return (WEXITSTATUS(status));
+// 	}
+// 	else
+// 	{
+// 		perror("fork");
+// 		// free(path);
+// 		return (1);
+// 	}
+// }

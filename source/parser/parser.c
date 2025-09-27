@@ -6,7 +6,7 @@
 /*   By: hasivaci <hasivaci@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 02:50:00 by hsyn              #+#    #+#             */
-/*   Updated: 2025/09/26 22:37:11 by hasivaci         ###   ########.fr       */
+/*   Updated: 2025/09/27 12:43:46 by hasivaci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,40 +139,40 @@ void	collect_command_arg(t_list **args_list, t_list *token_node)
     ft_lstadd_back(args_list, ft_lstnew(arg_copy));
 }
 
-char	**convert_list_to_array(t_list *args_list)
-{
-    char	**args_array;
-    int		size;
-    int		i;
-    t_list	*current;
+// char	**convert_list_to_array(t_list *args_list)
+// {
+//     char	**args_array;
+//     int		size;
+//     int		i;
+//     t_list	*current;
 
-    size = ft_lstsize(args_list);
-    args_array = halloc(sizeof(char *) * (size + 1));
-    if (!args_array)
-        return (NULL);
-    i = 0;
-    current = args_list;
-    while (current)
-    {
-        args_array[i] = ft_strdup((char *)current->content);
-        current = current->next;
-        i++;
-    }
-    args_array[i] = NULL;
-    return (args_array);
-}
+//     size = ft_lstsize(args_list);
+//     args_array = halloc(sizeof(char *) * (size + 1));
+//     if (!args_array)
+//         return (NULL);
+//     i = 0;
+//     current = args_list;
+//     while (current)
+//     {
+//         args_array[i] = ft_strdup((char *)current->content);
+//         current = current->next;
+//         i++;
+//     }
+//     args_array[i] = NULL;
+//     return (args_array);
+// }
 
-void	append_command_to_chain(t_command *head, t_command *new_cmd)
-{
-    t_command	*current;
+// void	append_command_to_chain(t_command *head, t_command *new_cmd)
+// {
+//     t_command	*current;
 
-    current = head;
-    while (current->next)
-        current = current->next;
-    current->next = new_cmd;
-}
+//     current = head;
+//     while (current->next)
+//         current = current->next;
+//     current->next = new_cmd;
+// }
 
-void	add_redirect_to_command(t_command *cmd, t_redirect *redirect)
-{
-    ft_lstadd_back(&cmd->redirections, ft_lstnew(redirect));
-}
+// void	add_redirect_to_command(t_command *cmd, t_redirect *redirect)
+// {
+//     ft_lstadd_back(&cmd->redirections, ft_lstnew(redirect));
+// }

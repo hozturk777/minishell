@@ -6,7 +6,7 @@
 /*   By: hasivaci <hasivaci@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/28 17:39:25 by hasivaci          #+#    #+#             */
-/*   Updated: 2025/09/23 17:18:02 by hasivaci         ###   ########.fr       */
+/*   Updated: 2025/09/27 15:38:56 by hasivaci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 // halloc içinde heryere galloc yazıp galloc içinde hata durumları ve hata çıktıları kontorl edilirse 2 satır if bloğuna greek olmadan heryeri buradan freeleyip çıkarız;
 #include "libft.h"
+#include "../../lib/minishell.h"
 #include <stdlib.h>
 
 static void	*get_garbage(void)
@@ -69,10 +70,24 @@ void	clear_garbage(void)
 	t_list **collector;
 	t_list *total;
 	t_list *tmp;
+	// t_redirect	*redirect;
+	// t_list		*node;
+	// t_global	*global;
 
+	// global = get_global();
 	collector = get_garbage();
+	// node = global->commands->redirections;
+
 	if (!collector || !*collector)
 		return;
+	// while (node)
+	// {
+	// 	redirect = (t_redirect *)node->content;
+	// 	if (redirect->fd > 0)
+	// 		close(redirect->fd);
+	// 	node = node->next;
+	// }
+	
 		
 	total = *collector;
 	while (total)

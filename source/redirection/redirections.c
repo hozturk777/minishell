@@ -6,7 +6,7 @@
 /*   By: hasivaci <hasivaci@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/24 12:00:00 by huozturk          #+#    #+#             */
-/*   Updated: 2025/09/26 21:25:27 by hasivaci         ###   ########.fr       */
+/*   Updated: 2025/09/27 14:35:46 by hasivaci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,25 +49,25 @@
 // }
 static int	process_heredoc_redirects(t_list *cur)
 {
-	t_redirect	*r;
-	int			fd;
+	t_redirect	*redirect;
+	int			last_heredoc_fd;
 
-	fd = -1;
+	last_heredoc_fd = -1;
 	while (cur)
 	{
-		r = (t_redirect *)cur->content;
-		if (r && r->type == T_HEREDOC)
+		redirect = (t_redirect *)cur->content;
+		if (redirect && redirect->type == T_HEREDOC)
 		{
-			if (fd != -1)
-				close(fd);
-			if (r->fd > 0)
-				fd = r->fd;
+			if (last_heredoc_fd != -1)
+				close(last_heredoc_fd);
+			if (redirect->fd > 0)
+				last_heredoc_fd = redirect->fd;
 			else
-				fd = handle_heredoc(r);
+				last_heredoc_fd = handle_heredoc(redirect);
 		}
 		cur = cur->next;
 	}
-	return (fd);
+	return (last_heredoc_fd);
 }
 
 static void	handle_multiple_heredocs(t_command *cmd)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token_handlers.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hsyn <hsyn@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: hasivaci <hasivaci@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 12:00:00 by huozturk          #+#    #+#             */
-/*   Updated: 2025/09/18 22:07:43 by hsyn             ###   ########.fr       */
+/*   Updated: 2025/09/27 12:48:33 by hasivaci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,6 @@ t_token_new	*handle_pipe_advanced(t_lexer_new *lexer)
 
 t_token_new	*handle_redirect_advanced(t_lexer_new *lexer)
 {
-	//int		start_pos;
-
-	//start_pos = lexer->pos;
 	if (lexer->current_char == '<')
 	{
 		advance_lexer(lexer);
