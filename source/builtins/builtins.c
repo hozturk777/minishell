@@ -248,8 +248,11 @@ int	builtin_echo(char **args)
 			// free(processed_arg);
 		}
 
-		if (args[i + 1]) // Burada echo '$USER"test"'a'' '"' yerine boşluk yazıyor // cmd gönderilip karakter single quote içinde mi checklenebilir
-			printf(" ");		
+		// if (args[i + 1]) // Burada echo '$USER"test"'a'' '"' yerine boşluk yazıyor // cmd gönderilip karakter single quote içinde mi checklenebilir
+		// {
+		// 	// if (!ft_strcmp(args[i], "\'"))
+		// 		printf(" ");
+		// }
 		i++;
 	}
 	if (newline)

@@ -188,7 +188,6 @@ int	execute_pipeline(t_command *commands, t_global *global)
 		current = current->next;
 		i++;
 	}
-	
 	// Wait for remaining children (42 norm - while)
 	i = 0;
 	while (i < cmd_count)

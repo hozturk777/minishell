@@ -12,12 +12,12 @@
 
 #include "../../lib/minishell.h"
 
-// static void	skip_whitespace_advanced(t_lexer_new *lexer)
-// {
-// 	while (lexer->current_char == ' ' || lexer->current_char == '\t'
-// 		|| lexer->current_char == '\n')
-// 		advance_lexer(lexer);
-// }
+void	skip_whitespace_advanced(t_lexer_new *lexer)
+{
+	while (lexer->current_char == ' ' || lexer->current_char == '\t'
+		|| lexer->current_char == '\n')
+		advance_lexer(lexer);
+}
 
 static int	check_quote_balance(char *input, int *single_quote_count)
 {
@@ -72,7 +72,7 @@ static t_token_new	*get_next_token(t_lexer_new *lexer, int single_quote_count)
 		token = handle_quotes_advanced(lexer);
 	else
 		token = handle_word_advanced(lexer, &lexer->first_word_check);
-
+		
 	if (!token)
 		return (NULL);
 	// if (token->type == T_PIPE || token->type == T_HEREDOC || token->type == T_REDIRECT_OUT || token->type == T_REDIRECT_IN) // pipedan sonrakini t_cmd tipine çevirmek için ve heredocdan sonra boşluğu alıyordu onu atlamak için
@@ -85,10 +85,16 @@ static t_token_new	*get_next_token(t_lexer_new *lexer, int single_quote_count)
 	// 		lexer->t_cmd_flag = 1;
 	// }
 	
-	// if (token->type == T_CMD) // komuttan sonra boşluğu yazıyordu örn: echo selam burada ' selam' bunu engellemek için
-	// {
-	// 	skip_whitespace_advanced(lexer);
-	// }
+	if (token->type == T_CMD || token->type == T_PIPE) // komuttan sonra boşluğu yazıyordu örn: echo selam burada ' selam' bunu engellemek için
+	{
+		skip_whitespace_advanced(lexer);
+		if (token->type == T_PIPE)
+		{
+			if (lexer->current_char >= 32 && lexer->current_char <= 127)
+				lexer->t_cmd_flag = 1;
+		}
+		
+	}
 
 	return (token);
 }
@@ -115,6 +121,7 @@ t_list	*tokenize_advanced(char *input, t_global *global)
 	while (lexer->current_char != '\0')
 	{
 		token = get_next_token(lexer, single_quote_count);
+		global->echo_flag = 0;
 		if (token && token->value)
 			ft_lstadd_back(&tokens, ft_lstnew(token));
 		else if (!token)
