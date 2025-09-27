@@ -6,7 +6,7 @@
 /*   By: hasivaci <hasivaci@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/30 15:30:00 by hasivaci          #+#    #+#             */
-/*   Updated: 2025/09/23 17:22:08 by hasivaci         ###   ########.fr       */
+/*   Updated: 2025/09/27 23:12:50 by hasivaci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,41 +20,6 @@
  * - Interactive modda: Yeni prompt göster
  * - Child process'te: Process'i sonlandır
  */
-void	sigint_handler(int sig)
-{
-	(void)sig;
-	t_redirect *redirect;
-	t_global *g_global;
-
-	g_global = get_global();
-	
-	if (g_global && g_global->in_child)
-	{
-		while (g_global->commands->redirections)
-		{
-			redirect = (t_redirect *)g_global->commands->redirections->content;
-			// printf("REDİRECT: $%d$\n", redirect->fd);
-			if (redirect->fd > 0)
-			{
-				close(redirect->fd);
-			}
-			g_global->commands->redirections = g_global->commands->redirections->next;
-		}
-		clear_garbage();
-		exit(130); // 128 + SIGINT signal number (2)
-	}
-	else
-	{
-		// Parent process (interactive shell) - yeni satır ve prompt
-		write(STDOUT_FILENO, "\n", 1);
-		rl_on_new_line();
-		rl_replace_line("", 0);
-		rl_redisplay();
-		
-		if (g_global)
-			g_global->exit_status = 130;
-	}
-}
 
 /**
  * SIGQUIT (Ctrl+\) sinyal handler'ı  
@@ -118,19 +83,6 @@ void	setup_child_signals(void) // Araştırılacak!!
 	sa_quit.sa_flags = 0;
 	sigaction(SIGQUIT, &sa_quit, NULL);
 	
-	// struct sigaction	sa;
-
-	// // SIGINT'i default davranışa çevir
-	// sa.sa_handler = SIG_DFL;
-	// sigemptyset(&sa.sa_mask);
-	// sa.sa_flags = 0;
-	// sigaction(SIGINT, &sa, NULL);
-
-	// // SIGQUIT'i default davranışa çevir  
-	// sa.sa_handler = SIG_DFL;
-	// sigemptyset(&sa.sa_mask);
-	// sa.sa_flags = 0;
-	// sigaction(SIGQUIT, &sa, NULL);
 }
 
 /**

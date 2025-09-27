@@ -30,12 +30,16 @@ MINISHELL_SRCS		= $(SRC_DIR)main.c \
 					  $(EXPA_DIR)variable_expansion.c \
 					  $(EXPA_DIR)quote_expansion.c \
 					  $(SIG_DIR)signal_handler.c \
+					  $(SIG_DIR)sigint.c \
 					  $(BUILD_DIR)builtins.c \
 					  $(BUILD_DIR)builtins2.c \
 					  $(EXEC_DIR)executor.c \
 					  $(ENV_DIR)path_utils.c \
 					  $(REDIRECT_DIR)redirections.c \
+					  $(REDIRECT_DIR)redirections2.c \
 					  $(PAR_DIR)parser.c \
+					  $(PAR_DIR)command_utils.c \
+					  $(PAR_DIR)parser_is.c \
 
 SRCS				= $(MINISHELL_SRCS)
 OBJ					= $(addprefix $(OBJ_DIR), $(notdir $(SRCS:.c=.o)))

@@ -3,134 +3,158 @@
 /*                                                        :::      ::::::::   */
 /*   debug_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hsyn <hsyn@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: hasivaci <hasivaci@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/28 17:37:10 by hasivaci          #+#    #+#             */
-/*   Updated: 2025/09/20 23:09:14 by hsyn             ###   ########.fr       */
+/*   Updated: 2025/09/27 23:09:01 by hasivaci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../lib/minishell.h"
 
+static void	print_command_args(t_command *cmd)
+{
+	int	i;
+
+	printf("  Args: ");
+	if (cmd->args)
+	{
+		i = 0;
+		while (cmd->args[i])
+		{
+			printf("$%s$", cmd->args[i]);
+			if (cmd->args[i + 1])
+				printf(", ");
+			i++;
+		}
+	}
+	else
+		printf("(none)");
+	printf("\n");
+}
+
+static void	print_command_redirections(t_command *cmd)
+{
+	t_list		*node;
+	t_redirect	*redirect;
+
+	node = cmd->redirections;
+	if (!node)
+	{
+		printf("(none)\n");
+		return ;
+	}
+	printf("\n");
+	while (node)
+	{
+		redirect = (t_redirect *)node->content;
+		if (redirect->type == T_REDIRECT_IN)
+			printf("    < $%s$\n", redirect->filename);
+		else if (redirect->type == T_REDIRECT_OUT)
+			printf("    > $%s$\n", redirect->filename);
+		else if (redirect->type == T_APPEND)
+			printf("    >> $%s$\n", redirect->filename);
+		else if (redirect->type == T_HEREDOC)
+			printf("    << $%s$\n", redirect->filename);
+		else
+			printf("    Unknown redirect\n");
+		node = node->next;
+	}
+}
+
 void	print_commands_debug(t_command *commands)
 {
 	t_command	*current;
-	t_list		*redirect_node;
-	t_redirect	*redirect;
 	int			cmd_count;
-	int			i;
 
 	current = commands;
 	cmd_count = 1;
 	while (current)
 	{
 		printf("Command %d:\n", cmd_count);
-		// Print arguments
-		printf("  Args: ");
-		if (current->args)
-		{
-			i = 0;
-			while (current->args[i])
-			{
-				printf("$%s$", current->args[i]);
-				if (current->args[i + 1])
-					printf(", ");
-				i++;
-			}
-		}
-		else
-		{
-			printf("(none)");
-		}
-		printf("\n");
-		// Print redirections
+		print_command_args(current);
 		printf("  Redirections: ");
-		redirect_node = current->redirections;
-		if (redirect_node)
-		{
-			printf("\n");
-			while (redirect_node)
-			{
-				redirect = (t_redirect *)redirect_node->content;
-				printf("    ");
-				switch (redirect->type)
-				{
-				case T_REDIRECT_IN:
-					printf("< $%s$", redirect->filename);
-					break ;
-				case T_REDIRECT_OUT:
-					printf("> $%s$", redirect->filename);
-					break ;
-				case T_APPEND:
-					printf(">> $%s$", redirect->filename);
-					break ;
-				case T_HEREDOC:
-					printf("<< $%s$", redirect->filename);
-					break ;
-				default:
-					printf("Unknown redirect");
-				}
-				printf("\n");
-				redirect_node = redirect_node->next;
-			}
-		}
-		else
-		{
-			printf("(none)\n");
-		}
+		print_command_redirections(current);
 		printf("  Pipe: %s\n", current->next ? "YES" : "NO");
-		printf("  Pid: %d\n", current->pid);
-		printf("\n");
+		printf("  Pid: %d\n\n", current->pid);
 		current = current->next;
 		cmd_count++;
 	}
 }
 
-//void	free_commands_list(t_command *commands)
-//{
-//	t_command	*current;
-//	t_command	*next;
-//	// t_list		*redirect_node;
-//	// t_list		*next_redirect;
-//	// t_redirect	*redirect;
-//	// int			i;
+// void	print_commands_debug(t_command *commands)
+// {
+// 	t_command	*current;
+// 	t_list		*redirect_node;
+// 	t_redirect	*redirect;
+// 	int			cmd_count;
+// 	int			i;
 
-//	current = commands;
-//	while (current)
-//	{
-//		next = current->next;
-//		// Free arguments array
-//		// if (current->args)
-//		// {
-//		// 	i = 0;
-//		// 	while (current->args[i])
-//		// 	{
-//		// 		free(current->args[i]);
-//		// 		i++;
-//		// 	}
-//		// 	free(current->args);
-//		// }
-//		// // Free redirections list
-//		// redirect_node = current->redirections;
-//		// while (redirect_node)
-//		// {
-//		// 	next_redirect = redirect_node->next;
-//		// 	redirect = (t_redirect *)redirect_node->content;
-//		// 	if (redirect)
-//		// 	{
-//		// 		if (redirect->filename)
-//		// 			free(redirect->filename);
-//		// 		free(redirect);
-//		// 	}
-//		// 	free(redirect_node);
-//		// 	redirect_node = next_redirect;
-//		// }
-//		// // Free command structure
-//		// free(current);
-//		current = next;
-		
-//	}
-//}
+// 	current = commands;
+// 	cmd_count = 1;
+// 	while (current)
+// 	{
+// 		printf("Command %d:\n", cmd_count);
+// 		// Print arguments
+// 		printf("  Args: ");
+// 		if (current->args)
+// 		{
+// 			i = 0;
+// 			while (current->args[i])
+// 			{
+// 				printf("$%s$", current->args[i]);
+// 				if (current->args[i + 1])
+// 					printf(", ");
+// 				i++;
+// 			}
+// 		}
+// 		else
+// 		{
+// 			printf("(none)");
+// 		}
+// 		printf("\n");
+// 		// Print redirections
+// 		printf("  Redirections: ");
+// 		redirect_node = current->redirections;
+// 		if (redirect_node)
+// 		{
+// 			printf("\n");
+// 			while (redirect_node)
+// 			{
+// 				redirect = (t_redirect *)redirect_node->content;
+// 				printf("    ");
+// 				switch (redirect->type)
+// 				{
+// 				case T_REDIRECT_IN:
+// 					printf("< $%s$", redirect->filename);
+// 					break ;
+// 				case T_REDIRECT_OUT:
+// 					printf("> $%s$", redirect->filename);
+// 					break ;
+// 				case T_APPEND:
+// 					printf(">> $%s$", redirect->filename);
+// 					break ;
+// 				case T_HEREDOC:
+// 					printf("<< $%s$", redirect->filename);
+// 					break ;
+// 				default:
+// 					printf("Unknown redirect");
+// 				}
+// 				printf("\n");
+// 				redirect_node = redirect_node->next;
+// 			}
+// 		}
+// 		else
+// 		{
+// 			printf("(none)\n");
+// 		}
+// 		printf("  Pipe: %s\n", current->next ? "YES" : "NO");
+// 		printf("  Pid: %d\n", current->pid);
+// 		printf("\n");
+// 		current = current->next;
+// 		cmd_count++;
+// 	}
+// }
 
 t_command	*create_command(void)
 {

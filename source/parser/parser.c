@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hsyn <hsyn@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: hasivaci <hasivaci@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 02:50:00 by hsyn              #+#    #+#             */
-/*   Updated: 2025/09/21 18:00:44 by hsyn             ###   ########.fr       */
+/*   Updated: 2025/09/28 00:10:48 by hasivaci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,62 +94,6 @@ void	parse_redirection(t_command *cmd, t_list **token_node, t_global *global)
     add_redirect_to_command(cmd, redirect);
 }
 
-int	is_command_start(t_list *token_node)
-{
-    t_token_new	*token;
-
-    if (!token_node)
-        return (0);
-    token = (t_token_new *)token_node->content;
-    return (token->type == T_WORD || token->type == T_CMD || token->type == T_HEREDOC || token->type == T_REDIRECT_OUT || token->type == T_REDIRECT_IN); // Buraya redirectler de eklenecek
-}
-
-int	is_pipe_token(t_list *token_node)
-{
-    t_token_new	*token;
-	t_global *global;
-
-	global = get_global();
-    if (!token_node)
-        return (0);
-    token = (t_token_new *)token_node->content;
-	if (token->type == T_PIPE)
-		global->echo_flag = 0;
-    return (token->type == T_PIPE);
-}
-
-int	is_redirect_token(t_list *token_node)
-{
-    t_token_new	*token;
-
-    if (!token_node)
-        return (0);
-    token = (t_token_new *)token_node->content;
-    return (token->type == T_REDIRECT_IN || token->type == T_REDIRECT_OUT
-        || token->type == T_APPEND || token->type == T_HEREDOC);
-}
-
-int	is_word_token(t_list *token_node)
-{
-    t_token_new	*token;
-	t_global	*global;
-
-	global = get_global();
-    if (!token_node)
-        return (0);
-    token = (t_token_new *)token_node->content;
-	if (!ft_strcmp(token->value, "echo"))
-		global->echo_flag = 1;	
-
-	if (global->echo_flag) // Burada token echo geldiğinde giriyor ama pipe'a ya da null'a eşit olana kadar buraya girmesi gerek
-	{
-		return (token->type == T_WORD || token->type == T_SINGLE_QUOTE || 
-		token->type == T_DOUBLE_QUOTE || token->type == T_WHITESPACE || token->type == T_CMD);
-	}
-	
-	return (token->type == T_WORD || token->type == T_SINGLE_QUOTE || 
-            token->type == T_DOUBLE_QUOTE || token->type == T_CMD);
-}
 
 void	collect_command_arg(t_list **args_list, t_list *token_node)
 {
@@ -185,40 +129,40 @@ void	collect_command_arg(t_list **args_list, t_list *token_node)
     ft_lstadd_back(args_list, ft_lstnew(arg_copy));
 }
 
-char	**convert_list_to_array(t_list *args_list)
-{
-    char	**args_array;
-    int		size;
-    int		i;
-    t_list	*current;
+// char	**convert_list_to_array(t_list *args_list)
+// {
+//     char	**args_array;
+//     int		size;
+//     int		i;
+//     t_list	*current;
 
-    size = ft_lstsize(args_list);
-    args_array = halloc(sizeof(char *) * (size + 1));
-    if (!args_array)
-        return (NULL);
-    i = 0;
-    current = args_list;
-    while (current)
-    {
-        args_array[i] = ft_strdup((char *)current->content);
-        current = current->next;
-        i++;
-    }
-    args_array[i] = NULL;
-    return (args_array);
-}
+//     size = ft_lstsize(args_list);
+//     args_array = halloc(sizeof(char *) * (size + 1));
+//     if (!args_array)
+//         return (NULL);
+//     i = 0;
+//     current = args_list;
+//     while (current)
+//     {
+//         args_array[i] = ft_strdup((char *)current->content);
+//         current = current->next;
+//         i++;
+//     }
+//     args_array[i] = NULL;
+//     return (args_array);
+// }
 
-void	append_command_to_chain(t_command *head, t_command *new_cmd)
-{
-    t_command	*current;
+// void	append_command_to_chain(t_command *head, t_command *new_cmd)
+// {
+//     t_command	*current;
 
-    current = head;
-    while (current->next)
-        current = current->next;
-    current->next = new_cmd;
-}
+//     current = head;
+//     while (current->next)
+//         current = current->next;
+//     current->next = new_cmd;
+// }
 
-void	add_redirect_to_command(t_command *cmd, t_redirect *redirect)
-{
-    ft_lstadd_back(&cmd->redirections, ft_lstnew(redirect));
-}
+// void	add_redirect_to_command(t_command *cmd, t_redirect *redirect)
+// {
+//     ft_lstadd_back(&cmd->redirections, ft_lstnew(redirect));
+// }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   global_state.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hsyn <hsyn@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: hasivaci <hasivaci@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 12:00:00 by huozturk          #+#    #+#             */
-/*   Updated: 2025/09/20 23:08:18 by hsyn             ###   ########.fr       */
+/*   Updated: 2025/09/27 23:06:42 by hasivaci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,17 +15,17 @@
 // Global değişken - sinyal handler'lar için
 // t_global	*g_global = NULL;
 
-static void update_shlvl(t_env *env)
+static void	update_shlvl(t_env *env)
 {
-    int value;
-    value = ft_atoi(get_env_value(env, "SHLVL"));
-    value++;
-    set_env_var(get_global(), "SHLVL", ft_itoa(value));
+	int	value;
+
+	value = ft_atoi(get_env_value(env, "SHLVL"));
+	value++;
+	set_env_var(get_global(), "SHLVL", ft_itoa(value));
 }
-
-t_global	*init_global(char **envp, t_global *global) // bzero YAPILCAK
+ // bzero YAPILCAK
+t_global	*init_global(char **envp, t_global *global)
 {
-
 	// global = (t_global *)halloc(sizeof(t_global));
 	if (!global)
 		return (NULL);
@@ -40,54 +40,15 @@ t_global	*init_global(char **envp, t_global *global) // bzero YAPILCAK
 	global->interactive = 1;
 	global->in_child = 0;
 	global->should_exit = 0;
-	
+
 	// Global değişkeni ayarla
 	// g_global = global;
-	
+
 	return (global);
 }
-
-// void	free_global(t_global *global)
-// {
-// 	if (!global)
-// 		return ;
-// 	if (global->tokens)
-// 		free_tokens_advanced(&global->tokens);
-// 	if (global->env_list)
-// 		free_env_list(global->env_list);
-// 	if (global->input_line)
-// 		free(global->input_line);
-	
-// 	// Global değişkeni temizle
-// 	if (g_global == global)
-// 		g_global = NULL;
-		
-// 	free(global);
-// }
 
 void	update_exit_status(t_global *global, int status)
 {
 	if (global)
 		global->exit_status = status;
 }
-
-//void	free_token_advanced(void *token)
-//{
-//	t_token_new	*t;
-
-//	if (!token)
-//		return ;
-//	t = (t_token_new *)token;
-//	// if (t->value)
-//		// free(t->value);
-//	// free(t);
-//}
-
-//void	free_tokens_advanced(t_list **tokens)
-//{
-//	if (tokens && *tokens)
-//	{
-//		ft_lstclear(tokens, free_token_advanced);
-//		*tokens = NULL;
-//	}
-//}
