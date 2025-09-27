@@ -49,7 +49,7 @@ int	execute_single_command(t_command *cmd, t_global *global)
 /*                            EXTERNAL COMMAND EXECUTION                     */
 /* ************************************************************************** */
 
-int	execute_redirect_command(t_command *cmd, t_global *global)
+int	execute_redirect_command(t_command *cmd, t_global *global) // Burada sıkıntı var leek çıkartıyor '<<end' inputunda ve else eklenecek bi altta ki fonksiyon tarzı
 {
 	pid_t	pid;
 	int	status;
@@ -174,6 +174,7 @@ static int	preprocess_heredocs(t_command *commands, t_global *global)
 		}
 		current = current->next;
 	}
+	close(redirect->fd);
 	return (0);
 }
 
@@ -270,9 +271,6 @@ int	execute_pipeline(t_command *commands, t_global *global)
 			while (node)
 			{
 				t_redirect *redirect = (t_redirect *)node->content;
-
-				printf("HELLOOOO: $%d$\n", redirect->fd);
-
 				if (redirect && redirect->fd > 2)
 				{
 
