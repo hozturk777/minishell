@@ -93,8 +93,12 @@ char	*handle_dollar_expansion(char *input, int *i, t_global *global)
 			// free(partial_name);
 		}
 	}
+	if (var_value)
+		return(ft_strdup(var_value));
+	else
+		return(ft_strdup(""));
 	// free(var_name);
-	return (var_value ? ft_strdup(var_value) : ft_strdup(""));
+	// return (var_value ? ft_strdup(var_value) : ft_strdup(""));
 }
 
 char	*handle_regular_char(char *input, int *i)
