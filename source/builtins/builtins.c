@@ -98,20 +98,20 @@ int	execute_builtin(t_command *cmd, t_global *global)
 /*                            PWD BUILT-IN                                   */
 /* ************************************************************************** */
 
-int	builtin_pwd(void)
-{
-	char	*cwd;
+// int	builtin_pwd(void)
+// {
+// 	char	*cwd;
 
-	cwd = getcwd(NULL, 0);
-	if (!cwd)
-	{
-		printf("pwd: error retrieving current directory: No such file or directory\n");
-		return (1);
-	}
-	printf("%s\n", cwd);
-	// free(cwd);
-	return (0);
-}
+// 	cwd = getcwd(NULL, 0);
+// 	if (!cwd)
+// 	{
+// 		printf("pwd: error retrieving current directory: No such file or directory\n");
+// 		return (1);
+// 	}
+// 	printf("%s\n", cwd);
+// 	// free(cwd);
+// 	return (0);
+// }
 
 /* PWD built-in with global support */
 int	builtin_pwd_global(t_global *global)
@@ -119,6 +119,13 @@ int	builtin_pwd_global(t_global *global)
 	char	*pwd_env;
 	char	*cwd;
 
+	if (global->commands->args[1][0] == '-')
+	{
+		printf("minishell: pwd: -%c: invalid option\n", global->commands->args[1][1]);
+		return (2);
+		//bash: pwd: -d: invalid option
+	}
+	
 	pwd_env = get_env_value(global->env_list, "PWD");
 	if (pwd_env)
 	{
@@ -229,10 +236,10 @@ int	builtin_echo(char **args)
 	{
 		if (ft_strcmp(args[i], "-n") == 0)
 			newline = 0;
-		else if (ft_strcmp(args[i], "-e") == 0)
-			enable_escape = 1;
-		else if (ft_strcmp(args[i], "-E") == 0)
-			enable_escape = 0;
+		// else if (ft_strcmp(args[i], "-e") == 0)
+		// 	enable_escape = 1;
+		// else if (ft_strcmp(args[i], "-E") == 0)
+		// 	enable_escape = 0;
 		else
 			break;
 		i++;
@@ -266,9 +273,25 @@ int	builtin_echo(char **args)
 
 int	builtin_env(t_env *env_list)
 {
-	t_env	*current;
+	t_env		*current;
+	t_global	*global;
 
 	current = env_list;
+	global = get_global();
+	if (global->commands->args[1] && global->commands->args[1][0] == '-')
+	{
+		printf("env: invalid option -- '%c'\n", global->commands->args[1][1]);
+		return (125);
+	}
+	else if (global->commands->args[1])
+	{
+		printf("env: '%s': No such file or directory\n", global->commands->args[1]);	
+		return (127);
+		//	env: ‘dsadsa’: No such file or directory
+	
+	}
+	
+	
 	while (current)
 	{
 		if (current->value)
