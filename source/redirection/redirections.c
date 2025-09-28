@@ -23,15 +23,24 @@ static int	process_heredoc_redirects(t_list *cur)
 	int			last_heredoc_fd;
 
 	last_heredoc_fd = -1;
+	printf("BURASI ikinci process_heredoc_redirects\n");
 	while (cur)
 	{
 		redirect = (t_redirect *)cur->content;
 		if (redirect && redirect->type == T_HEREDOC)
 		{
+			
 			if (last_heredoc_fd != -1)
+			{
 				close(last_heredoc_fd);
+			}
 			if (redirect->fd > 0)
+			{
+				if (last_heredoc_fd != -1)
+					close(last_heredoc_fd);
 				last_heredoc_fd = redirect->fd;
+				// close(redirect->fd);
+			}
 			else
 				last_heredoc_fd = handle_heredoc(redirect);
 		}
@@ -96,15 +105,21 @@ void	setup_redirections(t_command *cmd)
 	t_list		*current;
 	t_redirect	*redirect;
 
+
 	if (!cmd || !cmd->redirections)
 		return ;
+
+
+
 	handle_multiple_heredocs(cmd);
 	current = cmd->redirections;
 	while (current)
 	{
 		redirect = (t_redirect *)current->content;
 		if (redirect && redirect->type != T_HEREDOC)
+		{
 			handle_single_redirection(redirect);
+		}
 		current = current->next;
 	}
 }

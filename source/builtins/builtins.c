@@ -119,7 +119,8 @@ int	builtin_pwd_global(t_global *global)
 	char	*pwd_env;
 	char	*cwd;
 
-	if (global->commands->args[1][0] == '-')
+
+	if (global && global->commands && global->commands->args[1] && global->commands->args[1][0] == '-' && global->commands->args[1][1])
 	{
 		printf("minishell: pwd: -%c: invalid option\n", global->commands->args[1][1]);
 		return (2);
