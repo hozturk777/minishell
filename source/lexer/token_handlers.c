@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token_handlers.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hasivaci <hasivaci@student.42kocaeli.co    +#+  +:+       +#+        */
+/*   By: hsyn <hsyn@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 12:00:00 by huozturk          #+#    #+#             */
-/*   Updated: 2025/09/27 12:48:33 by hasivaci         ###   ########.fr       */
+/*   Updated: 2025/09/18 22:07:43 by hsyn             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,16 +20,25 @@ t_token_new	*handle_pipe_advanced(t_lexer_new *lexer)
 
 t_token_new	*handle_redirect_advanced(t_lexer_new *lexer)
 {
+	//int		start_pos;
+
+	//start_pos = lexer->pos;
 	if (lexer->current_char == '<')
 	{
 		advance_lexer(lexer);
+		while (lexer->current_char == ' ' || lexer->current_char == '\t')
+			advance_lexer(lexer);
 		if (lexer->current_char == '<')
 		{
 			advance_lexer(lexer);
 			while (lexer->current_char == ' ' || lexer->current_char == '\t')
 			    advance_lexer(lexer);
+			if (!ft_isprint(lexer->current_char) || lexer->current_char == '|') // Burada returnde value dönüp çıktıyı değiştiricez
+				return (NULL);
 			return (create_token_advanced(T_HEREDOC, "<<"));
 		}
+		else if (!ft_isprint(lexer->current_char) || lexer->current_char == '|') // Burada returnde value dönüp çıktıyı değiştiricez
+			return (NULL);
 		return (create_token_advanced(T_REDIRECT_IN, "<"));
 	}
 	else if (lexer->current_char == '>')
@@ -42,8 +51,12 @@ t_token_new	*handle_redirect_advanced(t_lexer_new *lexer)
 			advance_lexer(lexer);
 			while (lexer->current_char == ' ' || lexer->current_char == '\t')
 			    advance_lexer(lexer);
+			if (!ft_isprint(lexer->current_char) || lexer->current_char == '|') // Burada returnde value dönüp çıktıyı değiştiricez
+				return (NULL);
 			return (create_token_advanced(T_APPEND, ">>"));
 		}
+		else if (!ft_isprint(lexer->current_char) || lexer->current_char == '|') // Burada returnde value dönüp çıktıyı değiştiricez
+			return (NULL);
 		return (create_token_advanced(T_REDIRECT_OUT, ">"));
 	}
 	return (NULL);
@@ -55,6 +68,14 @@ t_token_new	*handle_word_advanced(t_lexer_new *lexer, int *first_word_check)
 	int		len;
 	char	*word;
 	t_token_types types;
+
+
+	start = lexer->pos;
+	len = 0;
+	word = NULL;
+	types = T_WORD;
+	if (!lexer || !lexer->input || lexer->pos >= lexer->len)
+		return (NULL);
 
 	if (lexer->pos == 0 || lexer->t_cmd_flag == 1 || (lexer->current_char == '-' && (lexer->input[lexer->pos + 1] == 'n' || lexer->input[lexer->pos + 1] == 'e' || lexer->input[lexer->pos + 1] == 'E'))) // Pipedan sonra ki inputu da T_CMD işaretliyecez & -n -e -E'de başta boşluk bırakıyordu T_CMD çevirdik token tipini
 	{
@@ -68,7 +89,6 @@ t_token_new	*handle_word_advanced(t_lexer_new *lexer, int *first_word_check)
 		*first_word_check = 1;
 	}
 	
-	start = lexer->pos;
 	// Special case for $"..." pattern - treat as single word
 	if (lexer->current_char == '$' && lexer->input[lexer->pos + 1] == '"')
 	{
@@ -93,7 +113,14 @@ t_token_new	*handle_word_advanced(t_lexer_new *lexer, int *first_word_check)
 		&& lexer->current_char != '"')
 		advance_lexer(lexer);
 	len = lexer->pos - start;
-	word = ft_substr(lexer->input, start, len);
+	if (len > 0)
+	{
+		/* code */
+		word = ft_substr(lexer->input, start, len);
+	}
+	else
+		return (NULL);
+	
 	if (!word)
 		return (NULL);
 	// if (types == T_CMD)

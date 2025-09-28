@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hasivaci <hasivaci@student.42kocaeli.co    +#+  +:+       +#+        */
+/*   By: hsyn <hsyn@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/28 17:38:23 by hasivaci          #+#    #+#             */
-/*   Updated: 2025/09/27 20:36:30 by hasivaci         ###   ########.fr       */
+/*   Updated: 2025/09/21 21:45:10 by hsyn             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ static int	process_input(char *input, t_global *global)
 	if (commands)
 	{
 		global->exit_status = execute_commands(commands, global);
-		// debug_print("Commands executed successfully");
+		debug_print("Commands executed successfully");
 	}
 	
 	// 5. CLEANUP: Memory'yi temizle

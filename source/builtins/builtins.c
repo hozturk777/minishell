@@ -6,7 +6,7 @@
 /*   By: hasivaci <hasivaci@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/28 17:39:03 by hasivaci          #+#    #+#             */
-/*   Updated: 2025/09/27 12:37:27 by hasivaci         ###   ########.fr       */
+/*   Updated: 2025/09/20 18:38:56 by hasivaci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,8 +59,6 @@ int	execute_builtin(t_command *cmd, t_global *global)
 		original_stdin = dup(STDIN_FILENO);
 		setup_redirections(cmd);
 	}
-	
-	// Built-in komutunu çalıştır
 	if (ft_strcmp(cmd->args[0], "pwd") == 0)
 		result = builtin_pwd_global(global);
 	else if (ft_strcmp(cmd->args[0], "echo") == 0)
@@ -249,8 +247,12 @@ int	builtin_echo(char **args)
 			printf("%s", processed_arg);
 			// free(processed_arg);
 		}
-		// if (args[i + 1])
-		// 	printf(" ");
+
+		// if (args[i + 1]) // Burada echo '$USER"test"'a'' '"' yerine boşluk yazıyor // cmd gönderilip karakter single quote içinde mi checklenebilir
+		// {
+		// 	// if (!ft_strcmp(args[i], "\'"))
+		// 		printf(" ");
+		// }
 		i++;
 	}
 	if (newline)
@@ -288,14 +290,12 @@ int	builtin_exit(char **args)
 	printf("exit\n");
 	int i;
 	i = 0;
-	// printf("eski args%s\n", args[1]);
-	args[1] = ft_strtrim(args[1], " ");
 	if (args[1])
 	{
-		// printf("yeni args%s\n", args[1]);
+		// printf("exit code : %d\n", exit_code);
 		while(args[1][i])
 		{
-			if (args[1][i] == '+' || args[1][i] == '-')
+			while (args[1][i] == '+' || args[1][i] == '-')
 				i++;
 			if (!ft_isdigit(args[1][i]))
 			{

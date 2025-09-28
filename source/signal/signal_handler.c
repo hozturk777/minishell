@@ -6,7 +6,7 @@
 /*   By: hasivaci <hasivaci@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/30 15:30:00 by hasivaci          #+#    #+#             */
-/*   Updated: 2025/09/27 20:14:42 by hasivaci         ###   ########.fr       */
+/*   Updated: 2025/09/27 23:12:50 by hasivaci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,15 +16,21 @@
 // extern t_global	*g_global;
 
 /**
- * SIGQUIT (Ctrl+\) sinyal handler'ı
+ * SIGINT (Ctrl+C) sinyal handler'ı
+ * - Interactive modda: Yeni prompt göster
+ * - Child process'te: Process'i sonlandır
+ */
+
+/**
+ * SIGQUIT (Ctrl+\) sinyal handler'ı  
  * - Interactive modda: Hiçbir şey yapma (ignore)
  * - Child process'te: Core dump ile sonlandır
  */
 void	sigquit_handler(int sig)
 {
-	t_global	*g_global;
-
 	(void)sig;
+	t_global *g_global;
+	
 	g_global = get_global();
 	if (g_global && g_global->in_child)
 	{
@@ -49,6 +55,7 @@ void	setup_signals(void)
 	sigemptyset(&sa_int.sa_mask);
 	sa_int.sa_flags = SA_RESTART;
 	sigaction(SIGINT, &sa_int, NULL);
+
 	// SIGQUIT (Ctrl+\) ayarlama
 	sa_quit.sa_handler = SIG_IGN; // Ignore et
 	sigemptyset(&sa_quit.sa_mask);
@@ -58,8 +65,8 @@ void	setup_signals(void)
 
 /**
  * Child process'ler için sinyalleri default davranışa çevir
- */// Araştırılacak!!
-void	setup_child_signals(void)
+ */
+void	setup_child_signals(void) // Araştırılacak!!
 {
 	struct sigaction	sa_int;
 	struct sigaction	sa_quit;
@@ -69,11 +76,13 @@ void	setup_child_signals(void)
 	sigemptyset(&sa_int.sa_mask);
 	sa_int.sa_flags = SA_RESTART;
 	sigaction(SIGINT, &sa_int, NULL);
+
 	// SIGQUIT (Ctrl+\) ayarlama
 	sa_quit.sa_handler = SIG_IGN; // Ignore et
 	sigemptyset(&sa_quit.sa_mask);
 	sa_quit.sa_flags = 0;
 	sigaction(SIGQUIT, &sa_quit, NULL);
+	
 }
 
 /**
@@ -91,11 +100,10 @@ void	restore_signals(void)
  */
 void	handle_eof(void)
 {
-	t_global	*g_global;
+	t_global *g_global;
 
 	g_global = get_global();
 	printf("exit\n");
-	// sigint_handler_child_cleanup(g_global->commands);
 	if (g_global)
 	{
 		g_global->should_exit = 1;

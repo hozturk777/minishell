@@ -6,11 +6,14 @@
 /*   By: hasivaci <hasivaci@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 12:00:00 by huozturk          #+#    #+#             */
-/*   Updated: 2025/09/26 19:31:31 by hasivaci         ###   ########.fr       */
+/*   Updated: 2025/09/27 23:06:42 by hasivaci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../lib/minishell.h"
+
+// Global değişken - sinyal handler'lar için
+// t_global	*g_global = NULL;
 
 static void	update_shlvl(t_env *env)
 {
@@ -20,8 +23,7 @@ static void	update_shlvl(t_env *env)
 	value++;
 	set_env_var(get_global(), "SHLVL", ft_itoa(value));
 }
-
-// bzero YAPILCAK
+ // bzero YAPILCAK
 t_global	*init_global(char **envp, t_global *global)
 {
 	// global = (t_global *)halloc(sizeof(t_global));
@@ -38,8 +40,10 @@ t_global	*init_global(char **envp, t_global *global)
 	global->interactive = 1;
 	global->in_child = 0;
 	global->should_exit = 0;
+
 	// Global değişkeni ayarla
 	// g_global = global;
+
 	return (global);
 }
 

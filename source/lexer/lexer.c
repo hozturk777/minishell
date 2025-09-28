@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hasivaci <hasivaci@student.42kocaeli.co    +#+  +:+       +#+        */
+/*   By: hsyn <hsyn@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/28 17:38:04 by hasivaci          #+#    #+#             */
-/*   Updated: 2025/09/27 12:51:38 by hasivaci         ###   ########.fr       */
+/*   Updated: 2025/09/21 17:30:55 by hsyn             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,8 @@ t_lexer_new	*init_lexer_advanced(char *input, t_global *global)
 	lexer->pos = 0;
 	lexer->len = ft_strlen(input);
 	lexer->global = global;
+	lexer->current_char = '\0';  // ← İNİTİALİZE ET!
+    lexer->t_cmd_flag = 0;       // ← İNİTİALİZE ET!
 	if (lexer->len > 0)
 		lexer->current_char = input[0];
 	else
@@ -30,12 +32,12 @@ t_lexer_new	*init_lexer_advanced(char *input, t_global *global)
 	return (lexer);
 }
 
-// void	free_lexer_advanced(t_lexer_new *lexer)
-// {
-// 	// if (lexer)
-// 		// free(lexer);
-// 	(void)*lexer;
-// }
+void	free_lexer_advanced(t_lexer_new *lexer)
+{
+	// if (lexer)
+		// free(lexer);
+	(void)*lexer;
+}
 
 void	advance_lexer(t_lexer_new *lexer)
 {

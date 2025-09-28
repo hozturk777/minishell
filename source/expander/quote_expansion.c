@@ -46,7 +46,7 @@ char	*expand_with_quotes(char *input, t_global *global)
 	return (result);
 }
 
-static char	*ft_strjoin_char(char const *s1, char const s2)
+char	*ft_strjoin_char(char const *s1, char const s2)
 {
 	char	*str;
 	int		i;

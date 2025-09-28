@@ -6,7 +6,7 @@
 /*   By: hasivaci <hasivaci@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 12:00:00 by huozturk          #+#    #+#             */
-/*   Updated: 2025/09/27 15:42:39 by hasivaci         ###   ########.fr       */
+/*   Updated: 2025/09/23 17:18:51 by hasivaci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,6 +129,8 @@ typedef struct s_global
 	int			interactive;	/* Etkileşimli mod bayrağı (1=evet, 0=hayır) */
 	int			in_child;		/* Child process'te mi (1=evet, 0=hayır) */
 	int			should_exit;	/* Çıkış yapılması gerekiyor mu */
+	int			echo_flag;
+
 }	t_global;
 
 /* ************************************************************************** */
@@ -270,7 +272,12 @@ void			setup_child_signals(void);								/* Child process sinyalleri */
 void			handle_eof(void);										/* EOF (Ctrl+D) işleme */
 
 void			print_welcome_advanced(void);
-void	sigint_handler_child_cleanup(t_command *cmd);
+char			*ft_strjoin_char(char const *s1, char const s2);
+void			skip_whitespace_advanced(t_lexer_new *lexer);
+void			handle_multiple_heredocs(t_command *cmd);
+int				execute_redirect_command(t_command *cmd, t_global *global);
+
+
 
 
 

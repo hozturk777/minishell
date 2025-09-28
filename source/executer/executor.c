@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hasivaci <hasivaci@student.42kocaeli.co    +#+  +:+       +#+        */
+/*   By: hsyn <hsyn@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/24 12:00:00 by huozturk          #+#    #+#             */
-/*   Updated: 2025/09/27 20:11:03 by hasivaci         ###   ########.fr       */
+/*   Updated: 2025/09/21 16:22:21 by hsyn             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,8 +32,14 @@ int	execute_commands(t_command *commands, t_global *global)
 
 int	execute_single_command(t_command *cmd, t_global *global)
 {
+
+	if ((!cmd || !cmd->args || !cmd->args[0]) && cmd->redirections)
+	{
+		return (execute_redirect_command(cmd, global));
+	}
 	if (!cmd || !cmd->args || !cmd->args[0])
 		return (1);
+
 	if (is_builtin(cmd->args[0]))
 		return (execute_builtin(cmd, global));
 	return (execute_external_command(cmd, global));
@@ -43,6 +49,44 @@ int	execute_single_command(t_command *cmd, t_global *global)
 /*                            EXTERNAL COMMAND EXECUTION                     */
 /* ************************************************************************** */
 
+int	execute_redirect_command(t_command *cmd, t_global *global) // Burada sıkıntı var leek çıkartıyor '<<end' inputunda ve else eklenecek bi altta ki fonksiyon tarzı
+{
+	pid_t	pid;
+	int	status;
+
+	pid = 0;
+	status = 0;
+
+	pid = fork();
+	if (pid == 0)
+	{
+		setup_child_signals();
+		global->in_child = 1;
+		setup_redirections(cmd);
+		clear_garbage();
+		exit(0);
+	}
+	else if (pid > 0)
+	{
+		waitpid(pid, &status, 0); // Burada status pid numaralı process'in döndürdüğü exit status
+		
+		// Signal ile sonlandı mı kontrol et
+		if (WIFSIGNALED(status))
+		{
+			int signal_num = WTERMSIG(status);
+			if (signal_num == SIGINT)
+				return (130); // 128 + SIGINT
+			else if (signal_num == SIGQUIT)
+				return (131); // 128 + SIGQUIT
+			else
+				return (128 + signal_num);
+		}
+		//clear_garbage();
+		return (WEXITSTATUS(status));
+	}
+	return (1);
+}
+
 int	execute_external_command(t_command *cmd, t_global *global)
 {
 	pid_t	pid;
@@ -50,6 +94,7 @@ int	execute_external_command(t_command *cmd, t_global *global)
 	char	*path;
 
 	path = find_command_path(cmd->args[0], global->env_list); // Path içerisinde command arıyor bulduğu path'in yanına "/cmd->args[0]" ekliyor
+
 	if (!path) // Path içerisinde command bulunamazsa hata
 	{
 		printf("minishell: %s: command not found\n", cmd->args[0]);
@@ -59,9 +104,10 @@ int	execute_external_command(t_command *cmd, t_global *global)
 	if (pid == 0)
 	{
 		// Child process - sinyalleri default davranışa çevir
+
 		setup_child_signals();
+
 		global->in_child = 1;
-		
 		setup_redirections(cmd); // Öğrenilecek (dup ve dup2)
 		execve(path, cmd->args, env_list_to_array(global->env_list)); // Öğrenilecek!
 		perror("execve");
@@ -120,10 +166,6 @@ static int	preprocess_heredocs(t_command *commands, t_global *global)
 				{
 					// Heredoc'u main process'te işle
 					redirect->fd = handle_heredoc(redirect);
-					
-					printf("REDİRECT_VALUE: $%s$\n", redirect->filename);
-					printf("REDİRECT_FD: $%d$\n", redirect->fd);
-					
 					if (redirect->fd == -1)
 						return (-1);
 				}
@@ -193,7 +235,6 @@ int	execute_pipeline(t_command *commands, t_global *global)
 		current = current->next;
 		i++;
 	}
-	
 	// Wait for remaining children (42 norm - while)
 	i = 0;
 	while (i < cmd_count)
@@ -220,7 +261,7 @@ int	execute_pipeline(t_command *commands, t_global *global)
 		}
 		i++;
 	}
-	
+
 	current = commands;
 	while (current)
 	{
@@ -230,12 +271,13 @@ int	execute_pipeline(t_command *commands, t_global *global)
 			while (node)
 			{
 				t_redirect *redirect = (t_redirect *)node->content;
-				if (redirect && redirect->type == T_HEREDOC && redirect->fd > 2)
+				if (redirect && redirect->fd > 2)
 				{
+
 					close(redirect->fd);
 					redirect->fd = -1;
 				}
-				node = node->next;
+			node = node->next;
 			}
 		}
 		current = current->next;
@@ -266,7 +308,7 @@ pid_t	execute_pipeline_command_async(t_command *cmd, t_global *global, int prev_
 		setup_pipeline_fds(cmd, prev_fd, pipe_fd);
 		setup_redirections(cmd);
 		
-		if (is_builtin(cmd->args[0])) // Burada açık fd kalmıyor "prev_fd close olmadıpı için"
+		if (is_builtin(cmd->args[0]))
 		{
 			execute_builtin(cmd, global);
 			exit_num = global->exit_status;
@@ -296,59 +338,4 @@ pid_t	execute_pipeline_command_async(t_command *cmd, t_global *global, int prev_
 	}
 }
 
-/* ************************************************************************** */
 
-// int	execute_pipeline_command(t_command *cmd, t_global *global, int prev_fd, int *pipe_fd)
-// {
-// 	pid_t	pid;
-// 	int		status;
-// 	char	*path;
-
-// 	if (is_builtin(cmd->args[0]) && !cmd->next && prev_fd == 0)
-// 		return (execute_builtin(cmd, global));
-// 	path = find_command_path(cmd->args[0], global->env_list);
-// 	if (!path)
-// 		return (127);
-// 	pid = fork();
-// 	if (pid == 0)
-// 	{
-// 		// Child process - sinyalleri default davranışa çevir
-// 		setup_child_signals();
-// 		global->in_child = 1;
-// 		setup_pipeline_fds(cmd, prev_fd, pipe_fd);
-// 		setup_redirections(cmd);
-// 		if (is_builtin(cmd->args[0]))
-// 		{
-// 			execute_builtin(cmd, global);
-// 			exit(global->exit_status);
-// 		}
-// 		execve(path, cmd->args, env_list_to_array(global->env_list));
-// 		perror("execve");
-// 		exit(127);
-// 	}
-// 	else if (pid > 0)
-// 	{
-// 		waitpid(pid, &status, 0);
-// 		// free(path);
-		
-// 		// Signal ile sonlandı mı kontrol et
-// 		if (WIFSIGNALED(status))
-// 		{
-// 			int signal_num = WTERMSIG(status);
-// 			if (signal_num == SIGINT)
-// 				return (130); // 128 + SIGINT
-// 			else if (signal_num == SIGQUIT)
-// 				return (131); // 128 + SIGQUIT
-// 			else
-// 				return (128 + signal_num);
-// 		}
-		
-// 		return (WEXITSTATUS(status));
-// 	}
-// 	else
-// 	{
-// 		perror("fork");
-// 		// free(path);
-// 		return (1);
-// 	}
-// }

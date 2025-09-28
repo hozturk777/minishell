@@ -12,7 +12,7 @@
 
 #include "../../lib/minishell.h"
 
-static void	skip_whitespace_advanced(t_lexer_new *lexer)
+void	skip_whitespace_advanced(t_lexer_new *lexer)
 {
 	while (lexer->current_char == ' ' || lexer->current_char == '\t'
 		|| lexer->current_char == '\n')
@@ -72,37 +72,30 @@ static t_token_new	*get_next_token(t_lexer_new *lexer, int single_quote_count)
 		token = handle_quotes_advanced(lexer);
 	else
 		token = handle_word_advanced(lexer, &lexer->first_word_check);
-
+		
 	if (!token)
 		return (NULL);
-	if (token->type == T_PIPE || token->type == T_HEREDOC || token->type == T_REDIRECT_OUT || token->type == T_REDIRECT_IN) // pipedan sonrakini t_cmd tipine çevirmek için ve heredocdan sonra boşluğu alıyordu onu atlamak için
-	{
-		if (token->type != T_HEREDOC && token->type != T_REDIRECT_OUT && token->type != T_REDIRECT_IN && token->type != T_PIPE)
-			advance_lexer(lexer);
-		if (lexer->current_char == ' ' || lexer->current_char == '\t')
-			skip_whitespace_advanced(lexer);
-		if (lexer->current_char >= 32 && lexer->current_char <= 127)
-			lexer->t_cmd_flag = 1;
-	}
+	// if (token->type == T_PIPE || token->type == T_HEREDOC || token->type == T_REDIRECT_OUT || token->type == T_REDIRECT_IN) // pipedan sonrakini t_cmd tipine çevirmek için ve heredocdan sonra boşluğu alıyordu onu atlamak için
+	// {
+	// 	if (token->type != T_HEREDOC && token->type != T_REDIRECT_OUT && token->type != T_REDIRECT_IN && token->type != T_PIPE)
+	// 		advance_lexer(lexer);
+	// 	if (lexer->current_char == ' ' || lexer->current_char == '\t')
+	// 		skip_whitespace_advanced(lexer);
+	// 	if (lexer->current_char >= 32 && lexer->current_char <= 127)
+	// 		lexer->t_cmd_flag = 1;
+	// }
 	
-	if (token->type == T_CMD) // komuttan sonra boşluğu yazıyordu örn: echo selam burada ' selam' bunu engellemek için
+	if (token->type == T_CMD || token->type == T_PIPE) // komuttan sonra boşluğu yazıyordu örn: echo selam burada ' selam' bunu engellemek için
 	{
 		skip_whitespace_advanced(lexer);
+		if (token->type == T_PIPE)
+		{
+			if (lexer->current_char >= 32 && lexer->current_char <= 127)
+				lexer->t_cmd_flag = 1;
+		}
+		
 	}
 
-	// if (lexer->first_word_check == 0 && token->type != T_WHITESPACE && token->type != T_SINGLE_QUOTE && token->type != T_DOUBLE_QUOTE) // Komut ile word arasında ki boşluğu atlamak için
-	//     advance_lexer(lexer);
-	
-
-	// Pipe ve redirect operatörleri derhal return edilmeli
-	// if (token->type == T_PIPE || token->type == T_REDIRECT_IN || 
-	// 	token->type == T_REDIRECT_OUT || token->type == T_APPEND || 
-	// 	token->type == T_HEREDOC)
-	// 	return (token);
-	// if (single_quote_count % 2 == 0)
-	// 	// Tek sayıda single quote = literal (expansion yok)
-	// 	token->type = T_WORD;
-	
 	return (token);
 }
 
@@ -128,6 +121,7 @@ t_list	*tokenize_advanced(char *input, t_global *global)
 	while (lexer->current_char != '\0')
 	{
 		token = get_next_token(lexer, single_quote_count);
+		global->echo_flag = 0;
 		if (token && token->value)
 			ft_lstadd_back(&tokens, ft_lstnew(token));
 		else if (!token)

@@ -6,7 +6,7 @@
 /*   By: hasivaci <hasivaci@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 02:50:00 by hsyn              #+#    #+#             */
-/*   Updated: 2025/09/27 12:43:46 by hasivaci         ###   ########.fr       */
+/*   Updated: 2025/09/28 00:10:48 by hasivaci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,12 +53,8 @@ t_command	*parse_single_command(t_list **token_node, t_global *global)
         return (NULL);
     args_list = NULL;
     current = *token_node;
-	// TEST = (t_token_new *)current->content;
-	// printf("\nTEST_VALUE : $%s$\n", TEST->value);
     while (current && !is_pipe_token(current)) // Pipelar arasını word ve redirectleri ayırma işlemi
     {
-		// TEST = (t_token_new *)current->content;
-		// printf("TEST_VALUE : $%s$\n", TEST->value);
         if (is_redirect_token(current)) // Redirect var ise yönlendirmeyi yapıyor
             parse_redirection(cmd, &current, global); // redirect var ise cmd.redirections'a ekler
         else if (is_word_token(current)) // Wordlari de listeye ekliyor
@@ -90,13 +86,6 @@ void	parse_redirection(t_command *cmd, t_list **token_node, t_global *global)
     redirect->fd = -1;
     redirect->next = NULL;
     *token_node = (*token_node)->next;
-	// while (*token_node)
-    // {
-    //     file_token = (t_token_new *)(*token_node)->content;
-    //     if (file_token->type != T_WHITESPACE)
-    //         break;
-    //     *token_node = (*token_node)->next;
-    // }
     if (*token_node)
     {
         file_token = (t_token_new *)(*token_node)->content;
@@ -104,7 +93,6 @@ void	parse_redirection(t_command *cmd, t_list **token_node, t_global *global)
     }
     add_redirect_to_command(cmd, redirect);
 }
-
 
 
 void	collect_command_arg(t_list **args_list, t_list *token_node)
@@ -123,12 +111,14 @@ void	collect_command_arg(t_list **args_list, t_list *token_node)
         // arg_copy = ft_strjoin(temp, "__END_SINGLE_QUOTE__");
         temp = ft_strjoin("\'", token->value);
         arg_copy = ft_strjoin(temp, "\'");
+        // free(temp);
     }
     else if (token->type == T_DOUBLE_QUOTE)
     {
         // Double quoted strings should be marked for expansion by keeping quotes
         temp = ft_strjoin("\"", token->value);
         arg_copy = ft_strjoin(temp, "\"");
+        // free(temp);
     }
     else
     {
