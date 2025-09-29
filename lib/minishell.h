@@ -6,7 +6,7 @@
 /*   By: hasivaci <hasivaci@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 12:00:00 by huozturk          #+#    #+#             */
-/*   Updated: 2025/09/23 17:18:51 by hasivaci         ###   ########.fr       */
+/*   Updated: 2025/09/28 23:11:55 by hasivaci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -149,7 +149,7 @@ t_token_new		*create_token_advanced(t_token_types type, char *value);	/* Yeni to
 //void			free_token_advanced(void *token);						/* Tek token serbest bırak */
 //void			free_tokens_advanced(t_list **tokens);					/* Token listesini serbest bırak */
 t_lexer_new		*init_lexer_advanced(char *input, t_global *global);	/* Lexer başlat */
-void			free_lexer_advanced(t_lexer_new *lexer);				/* Lexer serbest bırak */
+// void			free_lexer_advanced(t_lexer_new *lexer);				/* Lexer serbest bırak */
 void			advance_lexer(t_lexer_new *lexer);						/* Sonraki karaktere geç */
 
 // ========== ÇEVRE DEĞIŞKENI FONKSIYONLARI ==========
