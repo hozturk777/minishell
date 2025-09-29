@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   environment.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hsyn <hsyn@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: hasivaci <hasivaci@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 12:00:00 by huozturk          #+#    #+#             */
-/*   Updated: 2025/09/21 15:44:43 by hsyn             ###   ########.fr       */
+/*   Updated: 2025/09/29 21:28:08 by hasivaci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,8 @@ t_env	*create_env_node(char *key, char *value)
 		return (NULL);
 	node->key = ft_strdup(key);
 	node->value = ft_strdup(value);
-	//free(key);
-	//free(value);  //eklemek gerekebilir
+	// free(key);
+	// free(value);  //eklemek gerekebilir
 	node->next = NULL;
 	if (!node->key || !node->value)
 	{
@@ -71,7 +71,6 @@ t_env	*find_env_node(t_env *env_list, char *key)
 void	free_env_list(t_env *env_list)
 {
 	// t_env	*temp;
-
 	// while (env_list)
 	// {
 	// 	temp = env_list->next;

@@ -6,7 +6,7 @@
 /*   By: hasivaci <hasivaci@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 12:00:00 by huozturk          #+#    #+#             */
-/*   Updated: 2025/09/29 20:25:04 by hasivaci         ###   ########.fr       */
+/*   Updated: 2025/09/29 21:00:46 by hasivaci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -284,6 +284,8 @@ void			skip_whitespace_advanced(t_lexer_new *lexer);
 void			handle_multiple_heredocs(t_command *cmd);
 int				execute_redirect_command(t_command *cmd, t_global *global);
 int				check_quote_balance(char *input, int *single_quote_count);
+int				preprocess_heredocs(t_command *commands, t_global *global);
+
 
 
 
