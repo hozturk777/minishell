@@ -20,6 +20,7 @@
 # define PROMPT "minishell$ "		/* Terminal prompt metni */
 # define GREEN "\033[1;92m"			/* Yeşil renk için ANSI kod */
 # define RESET "\033[0m"			/* Renk sıfırlama ANSI kodu */
+# define MAX_HEREDOC_FDS 32			/* Maximum heredoc file descriptors per command */
 
 /* ************************************************************************** */
 /*                               DAHIL EDILEN DOSYALAR                       */
@@ -130,6 +131,8 @@ typedef struct s_global
 	int			in_child;		/* Child process'te mi (1=evet, 0=hayır) */
 	int			should_exit;	/* Çıkış yapılması gerekiyor mu */
 	int			echo_flag;
+	int			heredoc_fds[MAX_HEREDOC_FDS];	/* Açık heredoc FD'leri */
+	int			heredoc_fd_count;	/* Açık heredoc FD sayısı */
 
 }	t_global;
 
@@ -174,6 +177,9 @@ t_command		*parse_tokens_to_commands(t_list *tokens, t_global *global);	/* Token
 t_global		*init_global(char **envp, t_global *global);								/* Global durumu başlat */
 void			free_global(t_global *global);							/* Global durumu serbest bırak */
 void			update_exit_status(t_global *global, int status);		/* Çıkış durumunu güncelle */
+void			register_heredoc_fd(int fd);							/* Heredoc FD'yi kaydet */
+void			close_all_heredoc_fds(void);							/* Tüm heredoc FD'leri kapat */
+void			cleanup_and_exit(void);								/* Exit handler */
 
 // ========== YARDIMCI FONKSIYONLAR ==========
 void			print_tokens_advanced(t_list *tokens);					/* Token'ları debug yazdır */
@@ -267,6 +273,7 @@ char			*generate_temp_filename(void);							/* Geçici dosya adı oluştur */
 void			setup_signals(void);									/* Sinyalleri ayarla */
 void			sigint_handler(int sig);								/* SIGINT (Ctrl+C) handler */
 void			sigquit_handler(int sig);								/* SIGQUIT (Ctrl+\) handler */
+void			sigpipe_handler(int sig);								/* SIGPIPE (broken pipe) handler */
 void			restore_signals(void);									/* Default sinyalleri geri yükle */
 void			setup_child_signals(void);								/* Child process sinyalleri */
 void			handle_eof(void);										/* EOF (Ctrl+D) işleme */

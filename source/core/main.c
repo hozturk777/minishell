@@ -97,7 +97,7 @@ static void	run_shell_loop(t_global *global)
 		{
 			// EOF (Ctrl+D) algılandı
 			handle_eof();
-			//clear_garbage();
+			cleanup_and_exit();  // FD'leri kapat ve garbage collect
 			break ;
 		}
 		should_exit = process_input(input, global);
@@ -113,6 +113,7 @@ t_global *get_global(void)
 	return (&minishell);
 }
 
+
 int	main(int argc, char **argv, char **envp) // argc sayısı check
 {
 	t_global	*global;
@@ -124,9 +125,12 @@ int	main(int argc, char **argv, char **envp) // argc sayısı check
 	if (!global)
 	{
 		printf("Error: Failed to initialize global state\n");
-		clear_garbage();
+		cleanup_and_exit();  // FD'leri kapat ve garbage collect
 		return (1);
 	}
+	
+	// Exit cleanup handler kaydet
+	// atexit(cleanup_and_exit);
 	
 	// Sinyalleri ayarla (ARAŞTIRILACAK)
 	setup_signals();
@@ -139,6 +143,7 @@ int	main(int argc, char **argv, char **envp) // argc sayısı check
 	
 	printf(GREEN "Goodbye!" RESET "\n");
 	// free_global(global);
-	clear_garbage();
+	
+	cleanup_and_exit();  // FD'leri kapat ve garbage collect
 	return (0);
 }

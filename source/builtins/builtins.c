@@ -324,7 +324,7 @@ int	builtin_exit(char **args)
 			if (!ft_isdigit(args[1][i]))
 			{
 				printf("minishell: exit: %s: numeric argument required\n", args[1]);
-				clear_garbage();
+				cleanup_and_exit();  // FD'leri kapat ve garbage collect
 				exit(2);
 			}
 			i++;
@@ -338,6 +338,6 @@ int	builtin_exit(char **args)
 	}
 	// free_global(global);
 	// (void)*global;
-	clear_garbage();
+	cleanup_and_exit();  // FD'leri kapat ve garbage collect
 	exit(exit_code);
 }

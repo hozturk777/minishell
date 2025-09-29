@@ -63,7 +63,7 @@ int	execute_redirect_command(t_command *cmd, t_global *global) // Burada sıkın
 		setup_child_signals();
 		global->in_child = 1;
 		setup_redirections(cmd);
-		clear_garbage();
+		cleanup_and_exit();
 		exit(0);
 	}
 	else if (pid > 0)
@@ -111,7 +111,7 @@ int	execute_external_command(t_command *cmd, t_global *global)
 		setup_redirections(cmd); // Öğrenilecek (dup ve dup2)
 		execve(path, cmd->args, env_list_to_array(global->env_list)); // Öğrenilecek!
 		perror("execve");
-		clear_garbage();
+		cleanup_and_exit();
 		exit(127);
 	}
 	else if (pid > 0)
@@ -164,7 +164,6 @@ static int	preprocess_heredocs(t_command *commands, t_global *global)
 				redirect = (t_redirect *)redirect_node->content;
 				if (redirect && redirect->type == T_HEREDOC)
 				{
-					printf("BURASI İLK preprocess_heredocs");
 					// Heredoc'u main process'te işle
 					redirect->fd = handle_heredoc(redirect);
 					if (redirect->fd == -1)
@@ -223,10 +222,8 @@ int	execute_pipeline(t_command *commands, t_global *global)
 		if (pids[i] == -1)
 			return (1);
 		
-		// Pipeline'da normal flow - redirection bekleme yapmıyoruz
-		// Race condition çözümü için farklı strateji gerekiyor
-		
-		if (prev_fd != 0) // BURADA AÇIK FD OLABİLİR!!!!!!
+
+		if (prev_fd != 0)
 			close(prev_fd);
 		if (current->next)
 		{
@@ -263,28 +260,55 @@ int	execute_pipeline(t_command *commands, t_global *global)
 		i++;
 	}
 
-	current = commands;
-	while (current)
-	{
-		if (current->redirections)
-		{
-			t_list *node = current->redirections;
-			while (node)
-			{
-				t_redirect *redirect = (t_redirect *)node->content;
-				if (redirect && redirect->type == T_HEREDOC && redirect->fd > 0)
-				{
-					printf("HELLOOO\n");
-					close(redirect->fd);
-					redirect->fd = -1;
-				}
-			node = node->next;
-			}
-		}
-		current = current->next;
-	}
+	// Cleanup heredoc FDs in parent process - MUTLAKA ÇALIŞTIR
+	// current = commands;
+	// while (current)
+	// {
+	// 	if (current->redirections)
+	// 	{
+	// 		t_list *node = current->redirections;
+	// 		while (node)
+	// 		{
+	// 			t_redirect *redirect = (t_redirect *)node->content;
+	// 			if (redirect && redirect->type == T_HEREDOC && redirect->fd > 2)
+	// 			{
+	// 				printf("FAFAFADEBUG: Closing heredoc FD %d in parent\n", redirect->fd);
+	// 				close(redirect->fd);
+	// 				redirect->fd = -1;
+	// 			}
+	// 			node = node->next;
+	// 		}
+	// 	}
+	// 	current = current->next;
+	// }
 	
 	return (last_status);
+}
+
+/* ************************************************************************** */
+/*                            HEREDOC FD CLEANUP                             */
+/* ************************************************************************** */
+
+static void	close_unused_heredoc_fds(t_command *cmd)
+{
+	t_list		*node;
+	t_redirect	*redirect;
+
+	if (!cmd->redirections)
+		return ;
+	
+	node = cmd->redirections;
+	while (node)
+	{
+		redirect = (t_redirect *)node->content;
+		if (redirect && redirect->type == T_HEREDOC && redirect->fd > 2)
+		{
+			// dup2 yapıldıktan sonra orijinal FD'yi kapat
+			close(redirect->fd);
+			redirect->fd = -1;
+		}
+		node = node->next;
+	}
 }
 
 /* ************************************************************************** */
@@ -306,12 +330,14 @@ pid_t	execute_pipeline_command_async(t_command *cmd, t_global *global, int prev_
 		setup_child_signals();
 		global->in_child = 1;
 		
-
-		printf("ARGS $%s$\n", cmd->args[0]);
+		// printf("ARGS $%s$\n", cmd->args[0]);
 		setup_pipeline_fds(cmd, prev_fd, pipe_fd);
-		printf("ARGS $%s$\n", cmd->args[0]);
+		// printf("ARGS $%s$\n", cmd->args[0]);
 
 		setup_redirections(cmd);
+		
+		// Child'da kullanılmayan heredoc FD'leri kapat
+		close_unused_heredoc_fds(cmd);
 
 
 		// AÇIK FD BURADA DEĞİL
@@ -342,7 +368,7 @@ pid_t	execute_pipeline_command_async(t_command *cmd, t_global *global, int prev_
 		{
 			execute_builtin(cmd, global);
 			exit_num = global->exit_status;
-			clear_garbage();
+			cleanup_and_exit();
 			exit(exit_num);
 		}
 		
@@ -351,11 +377,13 @@ pid_t	execute_pipeline_command_async(t_command *cmd, t_global *global, int prev_
 		if (!path)
 		{
 			printf("minishell: %s: command not found\n", cmd->args[0]);
+			cleanup_and_exit();
 			exit(127);
 		}
 		
 		execve(path, cmd->args, env_list_to_array(global->env_list));
 		perror("execve");
+		cleanup_and_exit();
 		exit(127);
 	}
 	else if (pid > 0)
@@ -368,5 +396,7 @@ pid_t	execute_pipeline_command_async(t_command *cmd, t_global *global, int prev_
 		return (-1);
 	}
 }
+
+
 
 

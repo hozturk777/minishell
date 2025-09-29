@@ -83,9 +83,13 @@ void	sigint_handler(int sig)
 	{
 		if (g_global->commands)
 			sigint_handler_child_cleanup(g_global->commands);
-		clear_garbage();
+		cleanup_and_exit();  // FD'leri kapat ve garbage collect
 		exit(130);
 	}
+	
+	// Parent process'te de FD'leri kapat
+	close_all_heredoc_fds();
+	
 	write(STDOUT_FILENO, "\n", 1);
 	rl_on_new_line();
 	rl_replace_line("", 0);

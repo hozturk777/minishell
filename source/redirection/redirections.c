@@ -23,23 +23,19 @@ static int	process_heredoc_redirects(t_list *cur)
 	int			last_heredoc_fd;
 
 	last_heredoc_fd = -1;
-	printf("BURASI ikinci process_heredoc_redirects\n");
 	while (cur)
 	{
 		redirect = (t_redirect *)cur->content;
 		if (redirect && redirect->type == T_HEREDOC)
 		{
-			
-			if (last_heredoc_fd != -1)
-			{
+			// Önceki heredoc FD'sini kapat (sadece en son geçerli)
+			if (last_heredoc_fd != -1 && last_heredoc_fd != redirect->fd)
 				close(last_heredoc_fd);
-			}
+			
 			if (redirect->fd > 0)
 			{
-				if (last_heredoc_fd != -1)
-					close(last_heredoc_fd);
 				last_heredoc_fd = redirect->fd;
-				// close(redirect->fd);
+				// redirect->fd'yi parent'ta kapatmak için -1 yapma!
 			}
 			else
 				last_heredoc_fd = handle_heredoc(redirect);
@@ -143,6 +139,7 @@ static int	open_redirection_file(t_redirect *redirect)
 	if (fd == -1)
 	{
 		perror(redirect->filename);
+		cleanup_and_exit();
 		exit(1);
 	}
 	return (fd);
