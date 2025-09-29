@@ -374,8 +374,17 @@ pid_t	execute_pipeline_command_async(t_command *cmd, t_global *global, int prev_
 		
 
 		path = find_command_path(cmd->args[0], global->env_list);
+
+		t_redirect *redirect;
+		redirect = (t_redirect *)cmd->redirections->content;
 		if (!path)
 		{
+			if (redirect->type == T_HEREDOC)
+			{
+				cleanup_and_exit();
+				exit(0);
+			}
+			
 			printf("minishell: %s: command not found\n", cmd->args[0]);
 			cleanup_and_exit();
 			exit(127);
