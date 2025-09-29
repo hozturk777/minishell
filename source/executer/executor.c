@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hsyn <hsyn@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: hasivaci <hasivaci@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/24 12:00:00 by huozturk          #+#    #+#             */
-/*   Updated: 2025/09/21 16:22:21 by hsyn             ###   ########.fr       */
+/*   Updated: 2025/09/29 12:01:56 by hasivaci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -307,9 +307,9 @@ pid_t	execute_pipeline_command_async(t_command *cmd, t_global *global, int prev_
 		global->in_child = 1;
 		
 
-		printf("ARGS $%s$\n", cmd->args[0]);
+		// printf("ARGS $%s$\n", cmd->args[0]);
 		setup_pipeline_fds(cmd, prev_fd, pipe_fd);
-		printf("ARGS $%s$\n", cmd->args[0]);
+		// printf("ARGS $%s$\n", cmd->args[0]);
 
 		setup_redirections(cmd);
 

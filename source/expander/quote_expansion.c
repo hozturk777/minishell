@@ -6,44 +6,90 @@
 /*   By: hasivaci <hasivaci@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 12:00:00 by hsyn              #+#    #+#             */
-/*   Updated: 2025/09/20 18:15:42 by hasivaci         ###   ########.fr       */
+/*   Updated: 2025/09/29 11:41:31 by hasivaci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../lib/minishell.h"
 
+// char	*expand_with_quotes(char *input, t_global *global)
+// {
+// 	char	*result;
+// 	char	*temp;
+// 	int		i;
+// 	int		quote_state[2];
+
+// 	result = ft_strdup(""); // Buna check eklenecek!
+// 	i = 0;
+// 	quote_state[0] = 0;  // single quote
+// 	quote_state[1] = 0;  // double quote
+// 	while (input[i])
+// 	{
+// 		update_quote_state(input[i], quote_state);
+// 		if (input[i] == '$' && !quote_state[0])
+// 			temp = handle_dollar_expansion(input, &i, global); 
+// 		else if (input[i] == '\'' && quote_state[1]) // Single quote inside double quote - keep as literal
+// 			temp = handle_regular_char(input, &i);
+// 		else if (input[i] == '"' && quote_state[0]) // Double quote inside single quote - keep as literal  
+// 			temp = handle_regular_char(input, &i);
+// 		else if (input[i] != '\'' && input[i] != '"')
+// 			temp = handle_regular_char(input, &i);
+// 		else
+// 		{
+// 			i++;
+// 			continue ;
+// 		}
+// 		result = ft_strjoin(result, temp);
+// 		if (!result)
+// 			return (NULL);
+// 	}
+// 	return (result);
+// }
+
+static char	*process_character(char *input, int *i, t_global *global, int *quote_state)
+{
+    char	*temp;
+
+    if (input[*i] == '$' && !quote_state[0])
+        temp = handle_dollar_expansion(input, i, global);
+    else if (input[*i] == '\'' && quote_state[1])
+        temp = handle_regular_char(input, i);
+    else if (input[*i] == '"' && quote_state[0])
+        temp = handle_regular_char(input, i);
+    else if (input[*i] != '\'' && input[*i] != '"')
+        temp = handle_regular_char(input, i);
+    else
+    {
+        (*i)++;
+        return (NULL);
+    }
+    return (temp);
+}
+
 char	*expand_with_quotes(char *input, t_global *global)
 {
-	char	*result;
-	char	*temp;
-	int		i;
-	int		quote_state[2];
+    char	*result;
+    char	*temp;
+    int		i;
+    int		quote_state[2];
 
-	result = ft_strdup(""); // Buna check eklenecek!
-	i = 0;
-	quote_state[0] = 0;  // single quote
-	quote_state[1] = 0;  // double quote
-	while (input[i])
-	{
-		update_quote_state(input[i], quote_state);
-		if (input[i] == '$' && !quote_state[0])
-			temp = handle_dollar_expansion(input, &i, global); 
-		else if (input[i] == '\'' && quote_state[1]) // Single quote inside double quote - keep as literal
-			temp = handle_regular_char(input, &i);
-		else if (input[i] == '"' && quote_state[0]) // Double quote inside single quote - keep as literal  
-			temp = handle_regular_char(input, &i);
-		else if (input[i] != '\'' && input[i] != '"')
-			temp = handle_regular_char(input, &i);
-		else
-		{
-			i++;
-			continue ;
-		}
-		result = ft_strjoin(result, temp);
-		if (!result)
-			return (NULL);
-	}
-	return (result);
+    result = ft_strdup("");
+    if (!result)
+        return (NULL);
+    i = 0;
+    quote_state[0] = 0;
+    quote_state[1] = 0;
+    while (input[i])
+    {
+        update_quote_state(input[i], quote_state);
+        temp = process_character(input, &i, global, quote_state);
+        if (!temp)
+            continue ;
+        result = ft_strjoin(result, temp);
+        if (!result)
+            return (NULL);
+    }
+    return (result);
 }
 
 char	*ft_strjoin_char(char const *s1, char const s2)
@@ -69,7 +115,7 @@ char	*ft_strjoin_char(char const *s1, char const s2)
 }
 
 
-char	*expand_with_heredoc(char *input, t_global *global) 
+char	*expand_with_heredoc(char *input, t_global *global)
 {
 	char	*result;
 	char	*temp;
@@ -94,6 +140,7 @@ char	*expand_with_heredoc(char *input, t_global *global)
 	}
 	return (result);
 }
+
 
 void	update_quote_state(char c, int *quote_state)
 {
@@ -122,7 +169,8 @@ char	*remove_outer_quotes(char *input)
 	return (ft_strdup(input));
 }
 
-int	needs_expansion(char *str) // '$' var ise expanded için 1 dönecek
+// '$' var ise expanded için 1 dönecek
+int	needs_expansion(char *str)
 {
 	int	i;
 	int	in_single_quote;
@@ -160,26 +208,19 @@ void	expand_command_args(t_command *cmd, t_global *global)
 		{
 			// Remove the marker and keep content as-is (no expansion)
 			clean_str = extract_single_quote_content(cmd->args[i]);
-			// free(cmd->args[i]);
 			cmd->args[i] = clean_str;
 		}
 		else if (needs_expansion(cmd->args[i]))
 		{
 			expanded = expand_with_quotes(cmd->args[i], global);
 			if (expanded)
-			{
-				// free(cmd->args[i]);
 				cmd->args[i] = expanded;
-			}
 		}
 		else
 		{
 			expanded = remove_outer_quotes(cmd->args[i]);
 			if (expanded)
-			{
-				// free(cmd->args[i]);
 				cmd->args[i] = expanded;
-			}
 		}
 		i++;
 	}
@@ -209,12 +250,9 @@ void	filter_empty_args(t_command *cmd)
 			cmd->args[i] = NULL;
 			j++;
 		}
-		// else
-		// 	free(cmd->args[i]);
 		i++;
 	}
 	new_args[j] = NULL;
-	// free(cmd->args);
 	cmd->args = new_args;
 }
 
