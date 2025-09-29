@@ -82,7 +82,7 @@ void	setup_child_signals(void) // Araştırılacak!!
 	sigemptyset(&sa_quit.sa_mask);
 	sa_quit.sa_flags = 0;
 	sigaction(SIGQUIT, &sa_quit, NULL);
-	
+	// signal(SIGPIPE, SIG_IGN);
 }
 
 /**

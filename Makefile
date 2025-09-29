@@ -22,6 +22,7 @@ MINISHELL_SRCS		= $(SRC_DIR)main.c \
 					  $(LXR_DIR)lexer.c \
 					  $(LXR_DIR)tokenizer.c \
 					  $(LXR_DIR)token_handlers.c \
+					  $(LXR_DIR)token_handlers_advanced.c \
 					  $(UTL_DIR)global_state.c \
 					  $(ENV_DIR)environment.c \
 					  $(ENV_DIR)env_utils.c \

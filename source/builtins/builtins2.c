@@ -37,6 +37,13 @@ int	builtin_cd(char **args, t_global *global)
 	}
 	else
 		path = args[1];
+
+	if (global->commands->args[2])
+	{
+		printf("minishell: cd: too many arguments\n");
+		return (1);
+	}
+	
 	if (chdir(path) != 0) // chdir dizin değiştirmek için başarılı: 0 hata: -1
 	{
 		/* Bi önceki dizin silindiğinde çalışacak olan func  HATALI!! */
@@ -63,7 +70,8 @@ int	builtin_cd(char **args, t_global *global)
 				// free(logical_path);
 			}
 		}
-		perror("cd");
+		// perror("minishell: cd: %s: ", path);
+		printf("minishell: cd: %s: No such file or directory\n", path);
 		return (1);
 	}
 	if (old_pwd) // old pwd güncellemek için

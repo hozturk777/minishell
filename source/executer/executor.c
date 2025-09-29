@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hsyn <hsyn@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: hasivaci <hasivaci@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/24 12:00:00 by huozturk          #+#    #+#             */
-/*   Updated: 2025/09/21 16:22:21 by hsyn             ###   ########.fr       */
+/*   Updated: 2025/09/29 12:01:56 by hasivaci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -164,6 +164,7 @@ static int	preprocess_heredocs(t_command *commands, t_global *global)
 				redirect = (t_redirect *)redirect_node->content;
 				if (redirect && redirect->type == T_HEREDOC)
 				{
+					printf("BURASI İLK preprocess_heredocs");
 					// Heredoc'u main process'te işle
 					redirect->fd = handle_heredoc(redirect);
 					if (redirect->fd == -1)
@@ -174,7 +175,7 @@ static int	preprocess_heredocs(t_command *commands, t_global *global)
 		}
 		current = current->next;
 	}
-	close(redirect->fd);
+	// close(redirect->fd);
 	return (0);
 }
 
@@ -225,7 +226,7 @@ int	execute_pipeline(t_command *commands, t_global *global)
 		// Pipeline'da normal flow - redirection bekleme yapmıyoruz
 		// Race condition çözümü için farklı strateji gerekiyor
 		
-		if (prev_fd != 0)
+		if (prev_fd != 0) // BURADA AÇIK FD OLABİLİR!!!!!!
 			close(prev_fd);
 		if (current->next)
 		{
@@ -271,9 +272,9 @@ int	execute_pipeline(t_command *commands, t_global *global)
 			while (node)
 			{
 				t_redirect *redirect = (t_redirect *)node->content;
-				if (redirect && redirect->fd > 2)
+				if (redirect && redirect->type == T_HEREDOC && redirect->fd > 0)
 				{
-
+					printf("HELLOOO\n");
 					close(redirect->fd);
 					redirect->fd = -1;
 				}
@@ -305,9 +306,38 @@ pid_t	execute_pipeline_command_async(t_command *cmd, t_global *global, int prev_
 		setup_child_signals();
 		global->in_child = 1;
 		
+
+		// printf("ARGS $%s$\n", cmd->args[0]);
 		setup_pipeline_fds(cmd, prev_fd, pipe_fd);
+		// printf("ARGS $%s$\n", cmd->args[0]);
+
 		setup_redirections(cmd);
+
+
+		// AÇIK FD BURADA DEĞİL
 		
+		// printf("prev_fd: %d - pipe_Fd[0]: %d - pipe_fd[1]: %d \n", prev_fd, pipe_fd[0], pipe_fd[1]);
+
+		// if (prev_fd > 0)
+		// {
+		// 	close(prev_fd);
+		// 	prev_fd = -1;
+		// }
+		// if (pipe_fd[0] > 0)
+		// {
+		// 	close(pipe_fd[0]);
+		// 	pipe_fd[0] = -1;
+		// }
+		// if (pipe_fd[1] > 0)
+		// {
+		// 	close(pipe_fd[1]);
+		// 	pipe_fd[1] = -1;
+		// }
+		// printf("prev_fd: %d - pipe_Fd[0]: %d - pipe_fd[1]: %d \n", prev_fd, pipe_fd[0], pipe_fd[1]);
+		
+		// printf("ARGS[0]: $%s$\n", cmd->args[0]);
+
+
 		if (is_builtin(cmd->args[0]))
 		{
 			execute_builtin(cmd, global);
@@ -316,6 +346,7 @@ pid_t	execute_pipeline_command_async(t_command *cmd, t_global *global, int prev_
 			exit(exit_num);
 		}
 		
+
 		path = find_command_path(cmd->args[0], global->env_list);
 		if (!path)
 		{

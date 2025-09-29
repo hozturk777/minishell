@@ -60,7 +60,6 @@ static int	process_input(char *input, t_global *global)
 	if (commands)
 	{
 		global->exit_status = execute_commands(commands, global);
-		debug_print("Commands executed successfully");
 	}
 	
 	// 5. CLEANUP: Memory'yi temizle

@@ -37,65 +37,153 @@
 // 	return (result);
 // }
 
+static char	*try_partial_matches(char *var_name, int *i, int start, t_global *global)
+{
+    int		len;
+    int		j;
+    char	*partial_name;
+    char	*partial_value;
+
+    len = ft_strlen(var_name);
+    j = len - 1;
+    /* Sondan başlayarak kısalt ve dene */
+    while (j > 0)
+    {
+        partial_name = ft_substr(var_name, 0, j);
+        partial_value = get_env_value(global->env_list, partial_name);
+        if (partial_value)
+        {
+            /* Partial match bulundu! Kalan kısmı geri döndür */
+            *i = start + j;
+            /* free(partial_name); */
+            return (ft_strdup(""));
+        }
+        /* free(partial_name); */
+        j--;
+    }
+    return (NULL);
+}
+
+static char	*process_variable_name(char *input, int *i, t_global *global)
+{
+    char	*var_name;
+    char	*var_value;
+    int		start;
+
+    start = *i;
+    while (input[*i] && (ft_isalnum(input[*i]) || input[*i] == '_'))
+        (*i)++;
+    var_name = ft_substr(input, start, *i - start);
+    var_value = get_env_value(global->env_list, var_name);
+    /* Eğer variable bulunamadı ama uzun bir name ise, kısa versiyonları dene */
+    if (!var_value && ft_strlen(var_name) > 1)
+    {
+        var_value = try_partial_matches(var_name, i, start, global);
+        if (var_value)
+        {
+            /* free(var_name); */
+            return (var_value);
+        }
+    }
+    /* free(var_name); */
+    if (var_value)
+        return (ft_strdup(var_value));
+    else
+        return (ft_strdup(""));
+}
+
 char	*handle_dollar_expansion(char *input, int *i, t_global *global)
 {
-	char	*var_name;
-	char	*var_value;
-	int		start;
+    // char	*var_name;
+    // char	*var_value;
+    // int		start;
 
-	(*i)++;
-	if (input[*i] == '?')
-	{
-		(*i)++;
-		return (ft_itoa(global->exit_status));
-	}
-	// if (input[*i] == '$')
-	// {
-	// 	(*i)++;
-	// 	return (ft_itoa(getpid()));
-	// }
-	
-	// Digit check for positional parameters ($1, $2, etc.)
-	if (ft_isdigit(input[*i]))
-	{
-		(*i)++; // Skip the digit
-		// Positional parameters not supported in minishell, return empty
-		return (ft_strdup(""));
-	}
-	
-	if (!ft_isalpha(input[*i]) && input[*i] != '_')
-		return (ft_strdup("$"));
-	start = *i;
-	while (input[*i] && (ft_isalnum(input[*i]) || input[*i] == '_'))
-		(*i)++;
-	var_name = ft_substr(input, start, *i - start);
-	var_value = get_env_value(global->env_list, var_name);
-	// Eğer variable bulunamadı ama uzun bir name ise, kısa versiyonları dene
-	if (!var_value && ft_strlen(var_name) > 1) // Buraya bakılacak!!!!
-	{
-		int len = ft_strlen(var_name);
-		int j;
-		
-		// Sondan başlayarak kısalt ve dene
-		for (j = len - 1; j > 0; j--)
-		{
-			char *partial_name = ft_substr(var_name, 0, j);
-			char *partial_value = get_env_value(global->env_list, partial_name);
-			
-			if (partial_value)
-			{
-				// Partial match bulundu! Kalan kısmı geri döndür
-				*i = start + j; // Position'ı ayarla
-				// free(var_name);
-				// free(partial_name);
-				return (ft_strdup(""));
-			}
-			// free(partial_name);
-		}
-	}
-	// free(var_name);
-	return (var_value ? ft_strdup(var_value) : ft_strdup(""));
+    (*i)++;
+    if (input[*i] == '?')
+    {
+        (*i)++;
+        return (ft_itoa(global->exit_status));
+    }
+    /* if (input[*i] == '$') */
+    /* { */
+    /* 	(*i)++; */
+    /* 	return (ft_itoa(getpid())); */
+    /* } */
+    /* Digit check for positional parameters ($1, $2, etc.) */
+    if (ft_isdigit(input[*i]))
+    {
+        (*i)++;
+        /* Positional parameters not supported in minishell, return empty */
+        return (ft_strdup(""));
+    }
+    if (!ft_isalpha(input[*i]) && input[*i] != '_')
+        return (ft_strdup("$"));
+    return (process_variable_name(input, i, global));
 }
+
+// char	*handle_dollar_expansion(char *input, int *i, t_global *global)
+// {
+// 	char	*var_name;
+// 	char	*var_value;
+// 	int		start;
+
+// 	(*i)++;
+// 	if (input[*i] == '?')
+// 	{
+// 		(*i)++;
+// 		return (ft_itoa(global->exit_status));
+// 	}
+// 	// if (input[*i] == '$')
+// 	// {
+// 	// 	(*i)++;
+// 	// 	return (ft_itoa(getpid()));
+// 	// }
+	
+// 	// Digit check for positional parameters ($1, $2, etc.)
+// 	if (ft_isdigit(input[*i]))
+// 	{
+// 		(*i)++; // Skip the digit
+// 		// Positional parameters not supported in minishell, return empty
+// 		return (ft_strdup(""));
+// 	}
+	
+// 	if (!ft_isalpha(input[*i]) && input[*i] != '_')
+// 		return (ft_strdup("$"));
+// 	start = *i;
+// 	while (input[*i] && (ft_isalnum(input[*i]) || input[*i] == '_'))
+// 		(*i)++;
+// 	var_name = ft_substr(input, start, *i - start);
+// 	var_value = get_env_value(global->env_list, var_name);
+// 	// Eğer variable bulunamadı ama uzun bir name ise, kısa versiyonları dene
+// 	if (!var_value && ft_strlen(var_name) > 1) // Buraya bakılacak!!!!
+// 	{
+// 		int len = ft_strlen(var_name);
+// 		int j;
+		
+// 		// Sondan başlayarak kısalt ve dene
+// 		for (j = len - 1; j > 0; j--)
+// 		{
+// 			char *partial_name = ft_substr(var_name, 0, j);
+// 			char *partial_value = get_env_value(global->env_list, partial_name);
+			
+// 			if (partial_value)
+// 			{
+// 				// Partial match bulundu! Kalan kısmı geri döndür
+// 				*i = start + j; // Position'ı ayarla
+// 				// free(var_name);
+// 				// free(partial_name);
+// 				return (ft_strdup(""));
+// 			}
+// 			// free(partial_name);
+// 		}
+// 	}
+// 	if (var_value)
+// 		return(ft_strdup(var_value));
+// 	else
+// 		return(ft_strdup(""));
+// 	// free(var_name);
+// 	// return (var_value ? ft_strdup(var_value) : ft_strdup(""));
+// }
 
 char	*handle_regular_char(char *input, int *i)
 {
