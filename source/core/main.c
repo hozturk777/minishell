@@ -97,6 +97,7 @@ static void	run_shell_loop(t_global *global)
 		{
 			// EOF (Ctrl+D) algılandı
 			handle_eof();
+			// rl_clear_history();
 			cleanup_and_exit();  // FD'leri kapat ve garbage collect
 			break ;
 		}
