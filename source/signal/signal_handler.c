@@ -34,10 +34,23 @@ void	sigquit_handler(int sig)
 	g_global = get_global();
 	if (g_global && g_global->in_child)
 	{
+		// Child process'te heredoc FD'leri kapat
+		cleanup_and_exit();  // FD'leri kapat ve garbage collect
 		// Child process'te - default davranış (core dump)
 		exit(131); // 128 + SIGQUIT signal number (3)
 	}
 	// Parent process'te hiçbir şey yapma (ignore)
+}
+
+/**
+ * SIGPIPE sinyal handler'ı
+ * - Pipeline'larda broken pipe durumunda crash engelle
+ */
+void	sigpipe_handler(int sig)
+{
+	(void)sig;
+	// SIGPIPE'ı ignore et, sadece exit status ayarla
+	// Bu pipeline'da normal bir durum olabilir
 }
 
 /**
@@ -49,6 +62,7 @@ void	setup_signals(void)
 {
 	struct sigaction	sa_int;
 	struct sigaction	sa_quit;
+	struct sigaction	sa_pipe;
 
 	// SIGINT (Ctrl+C) ayarlama
 	sa_int.sa_handler = sigint_handler;
@@ -61,6 +75,12 @@ void	setup_signals(void)
 	sigemptyset(&sa_quit.sa_mask);
 	sa_quit.sa_flags = 0;
 	sigaction(SIGQUIT, &sa_quit, NULL);
+
+	// SIGPIPE ayarlama - pipeline'larda broken pipe ignore et
+	sa_pipe.sa_handler = sigpipe_handler;
+	sigemptyset(&sa_pipe.sa_mask);
+	sa_pipe.sa_flags = 0;
+	sigaction(SIGPIPE, &sa_pipe, NULL);
 }
 
 /**
@@ -104,6 +124,7 @@ void	handle_eof(void)
 
 	g_global = get_global();
 	printf("exit\n");
+	// FD cleanup main'de yapılacak
 	if (g_global)
 	{
 		g_global->should_exit = 1;
