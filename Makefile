@@ -30,6 +30,8 @@ MINISHELL_SRCS		= $(SRC_DIR)main.c \
 					  $(UTL_DIR)debug_utils.c \
 					  $(EXPA_DIR)variable_expansion.c \
 					  $(EXPA_DIR)quote_expansion.c \
+					  $(EXPA_DIR)expansion_utils.c \
+					  $(EXPA_DIR)argument_processor.c \
 					  $(SIG_DIR)signal_handler.c \
 					  $(SIG_DIR)sigint.c \
 					  $(BUILD_DIR)builtins.c \

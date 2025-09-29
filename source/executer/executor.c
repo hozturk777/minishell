@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hsyn <hsyn@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: hasivaci <hasivaci@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/24 12:00:00 by huozturk          #+#    #+#             */
-/*   Updated: 2025/09/21 16:22:21 by hsyn             ###   ########.fr       */
+/*   Updated: 2025/09/29 19:55:02 by hasivaci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -375,21 +375,34 @@ pid_t	execute_pipeline_command_async(t_command *cmd, t_global *global, int prev_
 
 		path = find_command_path(cmd->args[0], global->env_list);
 
-		t_redirect *redirect;
-		redirect = (t_redirect *)cmd->redirections->content;
-		if (!path)
-		{
-			if (redirect->type == T_HEREDOC)
-			{
-				cleanup_and_exit();
-				exit(0);
-			}
+		// t_redirect *redirect;
+		// redirect = (t_redirect *)cmd->redirections->content;
+		// if (!path)
+		// {
+		// 	if (redirect->type == T_HEREDOC)
+		// 	{
+		// 		cleanup_and_exit();
+		// 		exit(0);
+		// 	}
 			
-			printf("minishell: %s: command not found\n", cmd->args[0]);
-			cleanup_and_exit();
-			exit(127);
-		}
+		// 	printf("minishell: %s: command not found\n", cmd->args[0]);
+		// 	cleanup_and_exit();
+		// 	exit(127);
+		// }
 		
+		// t_redirect *redirect;
+        // redirect = (t_redirect *)cmd->redirections->content; // burası açıkken 'echo hello >> test.txt | cat test.txt' çalışmıyor kapalıyken de 'echo hello | <<end' command not found veriyor!!
+        if (!path)
+        {
+            // if (redirect->type == T_HEREDOC)
+            // {
+            //  cleanup_and_exit();
+            //  exit(0);
+            // }
+            printf("minishell: %s: command not found\n", cmd->args[0]);
+            cleanup_and_exit();
+            exit(127);
+        }
 		execve(path, cmd->args, env_list_to_array(global->env_list));
 		perror("execve");
 		cleanup_and_exit();

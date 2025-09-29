@@ -6,45 +6,45 @@
 /*   By: hasivaci <hasivaci@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 12:00:00 by huozturk          #+#    #+#             */
-/*   Updated: 2025/09/29 09:40:48 by hasivaci         ###   ########.fr       */
+/*   Updated: 2025/09/29 20:02:55 by hasivaci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../lib/minishell.h"
 
-void	skip_whitespace_advanced(t_lexer_new *lexer)
-{
-	while (lexer->current_char == ' ' || lexer->current_char == '\t'
-		|| lexer->current_char == '\n')
-		advance_lexer(lexer);
-}
+// void	skip_whitespace_advanced(t_lexer_new *lexer)
+// {
+// 	while (lexer->current_char == ' ' || lexer->current_char == '\t'
+// 		|| lexer->current_char == '\n')
+// 		advance_lexer(lexer);
+// }
 
-static int	check_quote_balance(char *input, int *single_quote_count)
-{
-	int	i;
-	int	single_quotes;
-	int	double_quotes;
-	int	dollar_flag;
+// static int	check_quote_balance(char *input, int *single_quote_count)
+// {
+// 	int	i;
+// 	int	single_quotes;
+// 	int	double_quotes;
+// 	int	dollar_flag;
 
-	i = 0;
-	single_quotes = 0;
-	double_quotes = 0;
-	dollar_flag = 1;
-	while (input[i])
-	{
-		if (input[i] == '\'')
-			single_quotes++;
-		else if (input[i] == '"')
-			double_quotes++;
-		if (input[i] == '\'' && dollar_flag)
-			(*single_quote_count)++;
-		if (input[i] == '$')
-			dollar_flag = 0;
-		i++;
-	}
-	// Both single and double quotes must be even
-	return (single_quotes % 2 == 0 && double_quotes % 2 == 0);
-}
+// 	i = 0;
+// 	single_quotes = 0;
+// 	double_quotes = 0;
+// 	dollar_flag = 1;
+// 	while (input[i])
+// 	{
+// 		if (input[i] == '\'')
+// 			single_quotes++;
+// 		else if (input[i] == '"')
+// 			double_quotes++;
+// 		if (input[i] == '\'' && dollar_flag)
+// 			(*single_quote_count)++;
+// 		if (input[i] == '$')
+// 			dollar_flag = 0;
+// 		i++;
+// 	}
+// 	// Both single and double quotes must be even
+// 	return (single_quotes % 2 == 0 && double_quotes % 2 == 0);
+// }
 
 static t_token_new	*create_token_by_type(t_lexer_new *lexer)
 {

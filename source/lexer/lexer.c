@@ -6,7 +6,7 @@
 /*   By: hasivaci <hasivaci@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/28 17:38:04 by hasivaci          #+#    #+#             */
-/*   Updated: 2025/09/28 23:11:49 by hasivaci         ###   ########.fr       */
+/*   Updated: 2025/09/29 20:28:51 by hasivaci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,4 +67,37 @@ t_token_new	*create_token_advanced(t_token_types type, char *value)
 	token->quote_type = 0;
 	token->expanded = 0;
 	return (token);
+}
+void	skip_whitespace_advanced(t_lexer_new *lexer)
+{
+	while (lexer->current_char == ' ' || lexer->current_char == '\t'
+		|| lexer->current_char == '\n')
+		advance_lexer(lexer);
+}
+
+int	check_quote_balance(char *input, int *single_quote_count)
+{
+	int	i;
+	int	single_quotes;
+	int	double_quotes;
+	int	dollar_flag;
+
+	i = 0;
+	single_quotes = 0;
+	double_quotes = 0;
+	dollar_flag = 1;
+	while (input[i])
+	{
+		if (input[i] == '\'')
+			single_quotes++;
+		else if (input[i] == '"')
+			double_quotes++;
+		if (input[i] == '\'' && dollar_flag)
+			(*single_quote_count)++;
+		if (input[i] == '$')
+			dollar_flag = 0;
+		i++;
+	}
+	// Both single and double quotes must be even
+	return (single_quotes % 2 == 0 && double_quotes % 2 == 0);
 }
