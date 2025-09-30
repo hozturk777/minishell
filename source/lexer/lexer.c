@@ -6,7 +6,7 @@
 /*   By: hasivaci <hasivaci@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/28 17:38:04 by hasivaci          #+#    #+#             */
-/*   Updated: 2025/09/29 20:28:51 by hasivaci         ###   ########.fr       */
+/*   Updated: 2025/09/30 19:50:10 by hasivaci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,13 +31,6 @@ t_lexer_new	*init_lexer_advanced(char *input, t_global *global)
 		lexer->current_char = '\0';
 	return (lexer);
 }
-
-// void	free_lexer_advanced(t_lexer_new *lexer)
-// {
-// 	// if (lexer)
-// 		// free(lexer);
-// 	(void)*lexer;
-// }
 
 void	advance_lexer(t_lexer_new *lexer)
 {

@@ -6,7 +6,7 @@
 /*   By: hasivaci <hasivaci@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/28 17:38:23 by hasivaci          #+#    #+#             */
-/*   Updated: 2025/09/29 21:26:37 by hasivaci         ###   ########.fr       */
+/*   Updated: 2025/09/30 20:43:03 by hasivaci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,11 +25,11 @@ static int	process_input(char *input, t_global *global)
 	global->input_line = ft_strdup(input);
 	// 1. LEXER: Input'u token'lara çevir
 	tokens = tokenize_advanced(input, global);
-	// if (!tokens)
-	// {
-	// 	printf("Error: Tokenization failed\n");
-	// 	return (0);
-	// }
+	if (!tokens)
+	{
+		global->exit_status = 2;
+		return (0);
+	}
 	// printf("\n=== TOKENS ===\n");
 	// print_tokens_advanced(tokens);
 	// 2. PARSER: Token'ları komut yapılarına çevir
@@ -53,20 +53,9 @@ static int	process_input(char *input, t_global *global)
 	global->commands = commands;
 	// 4. EXECUTION: Komutları çalıştır
 	if (commands)
-	{
 		global->exit_status = execute_commands(commands, global);
-	}
-	// 5. CLEANUP: Memory'yi temizle
-	// global->tokens = tokens;
-	// global->commands = commands;
-	// global->redirect = commands->redirections;
-	// free_tokens_advanced(&global->tokens);
-	// free_commands_list(global->commands);
-	// global->commands = NULL;
 	if (global->input_line)
-	{
 		global->input_line = NULL;
-	}
 	return (0);
 }
 

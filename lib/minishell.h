@@ -6,7 +6,7 @@
 /*   By: hasivaci <hasivaci@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 12:00:00 by huozturk          #+#    #+#             */
-/*   Updated: 2025/09/29 21:00:46 by hasivaci         ###   ########.fr       */
+/*   Updated: 2025/09/30 20:30:23 by hasivaci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -156,7 +156,7 @@ void			advance_lexer(t_lexer_new *lexer);						/* Sonraki karaktere geç */
 t_env			*create_env_node(char *key, char *value);	/* Çevre değişkeni düğümü oluştur */
 void			add_env_node(t_env **env_list, t_env *new_node);		/* Çevre düğümünü listeye ekle */
 t_env			*find_env_node(t_env *env_list, char *key);				/* Anahtar ile çevre değişkeni bul */
-void			free_env_list(t_env *env_list);							/* Çevre listesini serbest bırak */
+// void			free_env_list(t_env *env_list);							/* Çevre listesini serbest bırak */
 t_env			*init_env_from_envp(char **envp);						/* Envp'den çevre başlat */
 
 // ========== TOKEN İŞLEYİCİ FONKSIYONLARI ==========

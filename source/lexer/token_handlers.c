@@ -6,7 +6,7 @@
 /*   By: hasivaci <hasivaci@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 12:00:00 by huozturk          #+#    #+#             */
-/*   Updated: 2025/09/29 09:36:29 by hasivaci         ###   ########.fr       */
+/*   Updated: 2025/09/30 19:49:58 by hasivaci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -163,13 +163,9 @@ static t_token_new	*process_word_content(t_lexer_new *lexer, int start, t_token_
 t_token_new	*handle_word_advanced(t_lexer_new *lexer, int *first_word_check)
 {
     int				start;
-    int				len;
-    char			*word;
     t_token_types	types;
 
     start = lexer->pos;
-    len = 0;
-    word = NULL;
     types = T_WORD;
     if (!lexer || !lexer->input || lexer->pos >= lexer->len)
         return (NULL);

@@ -6,103 +6,281 @@
 /*   By: hasivaci <hasivaci@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/24 12:00:00 by huozturk          #+#    #+#             */
-/*   Updated: 2025/09/29 21:00:01 by hasivaci         ###   ########.fr       */
+/*   Updated: 2025/09/30 21:04:50 by hasivaci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../lib/minishell.h"
 
+// /* ************************************************************************** */
+// /*                            MAIN EXECUTOR FUNCTION                         */
+// /* ************************************************************************** */
+
+// int	execute_commands(t_command *commands, t_global *global)
+// {
+// 	if (!commands)
+// 		return (0);
+// 	if (commands->next)
+// 		return (execute_pipeline(commands, global)); // BURADAYIZ
+// 	else
+// 		return (execute_single_command(commands, global));
+// }
+
+// /* ************************************************************************** */
+// /*                            SINGLE COMMAND EXECUTION                       */
+// /* ************************************************************************** */
+
+// int	execute_single_command(t_command *cmd, t_global *global)
+// {
+
+// 	if ((!cmd || !cmd->args || !cmd->args[0]) && cmd->redirections)
+// 	{
+// 		return (execute_redirect_command(cmd, global));
+// 	}
+// 	if (!cmd || !cmd->args || !cmd->args[0])
+// 		return (1);
+
+// 	if (is_builtin(cmd->args[0]))
+// 		return (execute_builtin(cmd, global));
+// 	return (execute_external_command(cmd, global));
+// }
+
+// /* ************************************************************************** */
+// /*                            EXTERNAL COMMAND EXECUTION                     */
+// /* ************************************************************************** */
+
+
+// static void	handle_redirect_child_process(t_command *cmd, t_global *global)
+// {
+//     /* Setup child signal handlers */
+//     setup_child_signals();
+//     global->in_child = 1;
+//     /* Setup redirections for the command */
+//     setup_redirections(cmd);
+//     /* Exit after setup - redirect only command */
+//     cleanup_and_exit();
+//     exit(0);
+// }
+
+// static int	wait_for_redirect_process(pid_t pid)
+// {
+// 	int	status;
+
+//     /* Wait for redirect process to complete */
+//     waitpid(pid, &status, 0);
+//     /* Handle signal termination */
+//     if (WIFSIGNALED(status))
+//     {
+// 		int signal_num = WTERMSIG(status);
+//         /* Return appropriate exit code for signals */
+//         if (signal_num == SIGINT)
+// 		return (130);
+//         else if (signal_num == SIGQUIT)
+// 		return (131);
+//         else
+// 		return (128 + signal_num);
+//     }
+//     /* Return normal exit status */
+//     return (WEXITSTATUS(status));
+// }
+
+// int	execute_redirect_command(t_command *cmd, t_global *global)
+// {
+// 	pid_t	pid;
+
+// 	/* Fork child process for redirect command */
+// 	pid = fork();
+// 	if (pid == 0)
+// 	{
+// 		/* Child process handles redirect execution */
+// 		handle_redirect_child_process(cmd, global);
+// 	}
+// 	else if (pid > 0)
+// 	{
+// 		/* Parent process waits for child completion */
+// 		return (wait_for_redirect_process(pid));
+// 	}
+// 	/* Fork failed */
+// 	return (1);
+// }
+
 /* ************************************************************************** */
-/*                            MAIN EXECUTOR FUNCTION                         */
+/*                            PIPELINE EXECUTION                             */
 /* ************************************************************************** */
 
-int	execute_commands(t_command *commands, t_global *global)
+int	preprocess_heredocs(t_command *commands, t_global *global)
 {
-	if (!commands)
-		return (0);
-	if (commands->next)
-		return (execute_pipeline(commands, global)); // BURADAYIZ
-	else
-		return (execute_single_command(commands, global));
-}
+	t_command	*current;
+	t_list		*redirect_node;
+	t_redirect	*redirect;
 
-/* ************************************************************************** */
-/*                            SINGLE COMMAND EXECUTION                       */
-/* ************************************************************************** */
-
-int	execute_single_command(t_command *cmd, t_global *global)
-{
-
-	if ((!cmd || !cmd->args || !cmd->args[0]) && cmd->redirections)
+	(void)global;
+	current = commands;
+	while (current)
 	{
-		return (execute_redirect_command(cmd, global));
+		if (current->redirections)
+		{
+			redirect_node = current->redirections;
+			while (redirect_node)
+			{
+				redirect = (t_redirect *)redirect_node->content;
+				if (redirect && redirect->type == T_HEREDOC)
+				{
+					// Heredoc'u main process'te işle
+					redirect->fd = handle_heredoc(redirect);
+					if (redirect->fd == -1)
+						return (-1);
+				}
+				redirect_node = redirect_node->next;
+			}
+		}
+		current = current->next;
 	}
-	if (!cmd || !cmd->args || !cmd->args[0])
-		return (1);
-
-	if (is_builtin(cmd->args[0]))
-		return (execute_builtin(cmd, global));
-	return (execute_external_command(cmd, global));
+	// close(redirect->fd);
+	return (0);
 }
 
 /* ************************************************************************** */
-/*                            EXTERNAL COMMAND EXECUTION                     */
+/*                            HEREDOC FD CLEANUP                             */
 /* ************************************************************************** */
 
-
-static void	handle_redirect_child_process(t_command *cmd, t_global *global)
+static void	close_unused_heredoc_fds(t_command *cmd)
 {
-    /* Setup child signal handlers */
-    setup_child_signals();
-    global->in_child = 1;
-    /* Setup redirections for the command */
-    setup_redirections(cmd);
-    /* Exit after setup - redirect only command */
-    cleanup_and_exit();
-    exit(0);
+	t_list		*node;
+	t_redirect	*redirect;
+
+	if (!cmd->redirections)
+		return ;
+	
+	node = cmd->redirections;
+	while (node)
+	{
+		redirect = (t_redirect *)node->content;
+		if (redirect && redirect->type == T_HEREDOC && redirect->fd > 2)
+		{
+			// dup2 yapıldıktan sonra orijinal FD'yi kapat
+			close(redirect->fd);
+			redirect->fd = -1;
+		}
+		node = node->next;
+	}
 }
 
-static int	wait_for_redirect_process(pid_t pid)
+/* ************************************************************************** */
+/*                            ASYNC PIPELINE COMMAND EXECUTION              */
+/* ************************************************************************** */
+// YORUM satırları kaldırıınca 52 satır kod bloğu;
+pid_t	execute_pipeline_command_async(t_command *cmd, t_global *global, int prev_fd, int *pipe_fd)
 {
-	int	status;
+	pid_t		pid;
+	char		*path;
+	int			exit_num;
+	t_redirect	*redirect;
+	t_list		*node;
 
-    /* Wait for redirect process to complete */
-    waitpid(pid, &status, 0);
-    /* Handle signal termination */
-    if (WIFSIGNALED(status))
-    {
-		int signal_num = WTERMSIG(status);
-        /* Return appropriate exit code for signals */
-        if (signal_num == SIGINT)
-		return (130);
-        else if (signal_num == SIGQUIT)
-		return (131);
-        else
-		return (128 + signal_num);
-    }
-    /* Return normal exit status */
-    return (WEXITSTATUS(status));
-}
-
-int	execute_redirect_command(t_command *cmd, t_global *global)
-{
-	pid_t	pid;
-
-	/* Fork child process for redirect command */
+	// Pipeline'da tüm komutlar (built-in dahil) child process'te çalışmalı
+	node = cmd->redirections; // burası açıkken 'echo hello >> test.txt | cat test.txt' çalışmıyor kapalıyken de 'echo hello | <<end' command not found veriyor!!
 	pid = fork();
+	exit_num = 0;
 	if (pid == 0)
 	{
-		/* Child process handles redirect execution */
-		handle_redirect_child_process(cmd, global);
+		// Child process - sinyalleri default davranışa çevir
+		setup_child_signals();
+		global->in_child = 1;
+		
+		// printf("ARGS $%s$\n", cmd->args[0]);
+		setup_pipeline_fds(cmd, prev_fd, pipe_fd);
+		// printf("ARGS $%s$\n", cmd->args[0]);
+
+		setup_redirections(cmd);
+		
+		// Child'da kullanılmayan heredoc FD'leri kapat
+		close_unused_heredoc_fds(cmd);
+		close_all_heredoc_fds();
+
+		// AÇIK FD BURADA DEĞİL
+		
+		// printf("prev_fd: %d - pipe_Fd[0]: %d - pipe_fd[1]: %d \n", prev_fd, pipe_fd[0], pipe_fd[1]);
+
+		// if (prev_fd > 0)
+		// {
+		// 	close(prev_fd);
+		// 	prev_fd = -1;
+		// }
+		// if (pipe_fd[0] > 0)
+		// {
+		// 	close(pipe_fd[0]);
+		// 	pipe_fd[0] = -1;
+		// }
+		// if (pipe_fd[1] > 0)
+		// {
+		// 	close(pipe_fd[1]);
+		// 	pipe_fd[1] = -1;
+		// }
+		// printf("prev_fd: %d - pipe_Fd[0]: %d - pipe_fd[1]: %d \n", prev_fd, pipe_fd[0], pipe_fd[1]);
+		
+		// printf("ARGS[0]: $%s$\n", cmd->args[0]);
+
+
+		if (is_builtin(cmd->args[0]))
+		{
+			execute_builtin(cmd, global);
+			exit_num = global->exit_status;
+			cleanup_and_exit();
+			exit(exit_num);
+		}
+		
+
+		path = find_command_path(cmd->args[0], global->env_list);
+
+		// t_redirect *redirect;
+		// redirect = (t_redirect *)cmd->redirections->content;
+		// if (!path)
+		// {
+		// 	if (redirect->type == T_HEREDOC)
+		// 	{
+		// 		cleanup_and_exit();
+		// 		exit(0);
+		// 	}
+			
+		// 	printf("minishell: %s: command not found\n", cmd->args[0]);
+		// 	cleanup_and_exit();
+		// 	exit(127);
+		// }
+		
+        if (!path)
+        {
+			while (node)
+			{
+				redirect = (t_redirect *)node->content;
+				if (redirect->type == T_HEREDOC)
+				{
+				 cleanup_and_exit();
+				 exit(0);
+				}
+				node = node->next;
+			}
+			
+            printf("minishell: %s: command not found\n", cmd->args[0]);
+            cleanup_and_exit();
+            exit(127);
+        }
+		execve(path, cmd->args, env_list_to_array(global->env_list));
+		perror("execve");
+		cleanup_and_exit();
+		exit(127);
 	}
 	else if (pid > 0)
 	{
-		/* Parent process waits for child completion */
-		return (wait_for_redirect_process(pid));
+		return (pid);
 	}
-	/* Fork failed */
-	return (1);
+	else
+	{
+		perror("fork");
+		return (-1);
+	}
 }
+
 
 // int	execute_redirect_command(t_command *cmd, t_global *global) // Burada sıkıntı var leek çıkartıyor '<<end' inputunda ve else eklenecek bi altta ki fonksiyon tarzı
 // {
@@ -276,37 +454,37 @@ int	execute_redirect_command(t_command *cmd, t_global *global)
 /*                            PIPELINE EXECUTION                             */
 /* ************************************************************************** */
 
-int	preprocess_heredocs(t_command *commands, t_global *global)
-{
-	t_command	*current;
-	t_list		*redirect_node;
-	t_redirect	*redirect;
+// int	preprocess_heredocs(t_command *commands, t_global *global)
+// {
+// 	t_command	*current;
+// 	t_list		*redirect_node;
+// 	t_redirect	*redirect;
 
-	(void)global;
-	current = commands;
-	while (current)
-	{
-		if (current->redirections)
-		{
-			redirect_node = current->redirections;
-			while (redirect_node)
-			{
-				redirect = (t_redirect *)redirect_node->content;
-				if (redirect && redirect->type == T_HEREDOC)
-				{
-					// Heredoc'u main process'te işle
-					redirect->fd = handle_heredoc(redirect);
-					if (redirect->fd == -1)
-						return (-1);
-				}
-				redirect_node = redirect_node->next;
-			}
-		}
-		current = current->next;
-	}
-	// close(redirect->fd);
-	return (0);
-}
+// 	(void)global;
+// 	current = commands;
+// 	while (current)
+// 	{
+// 		if (current->redirections)
+// 		{
+// 			redirect_node = current->redirections;
+// 			while (redirect_node)
+// 			{
+// 				redirect = (t_redirect *)redirect_node->content;
+// 				if (redirect && redirect->type == T_HEREDOC)
+// 				{
+// 					// Heredoc'u main process'te işle
+// 					redirect->fd = handle_heredoc(redirect);
+// 					if (redirect->fd == -1)
+// 						return (-1);
+// 				}
+// 				redirect_node = redirect_node->next;
+// 			}
+// 		}
+// 		current = current->next;
+// 	}
+// 	// close(redirect->fd);
+// 	return (0);
+// }
 
 // // int	execute_pipeline(t_command *commands, t_global *global)
 // // {
@@ -547,148 +725,6 @@ int	preprocess_heredocs(t_command *commands, t_global *global)
 //     // }
 //     return (last_status);
 // }
-
-/* ************************************************************************** */
-/*                            HEREDOC FD CLEANUP                             */
-/* ************************************************************************** */
-
-static void	close_unused_heredoc_fds(t_command *cmd)
-{
-	t_list		*node;
-	t_redirect	*redirect;
-
-	if (!cmd->redirections)
-		return ;
-	
-	node = cmd->redirections;
-	while (node)
-	{
-		redirect = (t_redirect *)node->content;
-		if (redirect && redirect->type == T_HEREDOC && redirect->fd > 2)
-		{
-			// dup2 yapıldıktan sonra orijinal FD'yi kapat
-			close(redirect->fd);
-			redirect->fd = -1;
-		}
-		node = node->next;
-	}
-}
-
-/* ************************************************************************** */
-/*                            ASYNC PIPELINE COMMAND EXECUTION              */
-/* ************************************************************************** */
-// YORUM satırları kaldırıınca 52 satır kod bloğu;
-pid_t	execute_pipeline_command_async(t_command *cmd, t_global *global, int prev_fd, int *pipe_fd)
-{
-	pid_t		pid;
-	char		*path;
-	int			exit_num;
-	t_redirect	*redirect;
-	t_list		*node;
-
-	// Pipeline'da tüm komutlar (built-in dahil) child process'te çalışmalı
-	node = cmd->redirections; // burası açıkken 'echo hello >> test.txt | cat test.txt' çalışmıyor kapalıyken de 'echo hello | <<end' command not found veriyor!!
-	pid = fork();
-	exit_num = 0;
-	if (pid == 0)
-	{
-		// Child process - sinyalleri default davranışa çevir
-		setup_child_signals();
-		global->in_child = 1;
-		
-		// printf("ARGS $%s$\n", cmd->args[0]);
-		setup_pipeline_fds(cmd, prev_fd, pipe_fd);
-		// printf("ARGS $%s$\n", cmd->args[0]);
-
-		setup_redirections(cmd);
-		
-		// Child'da kullanılmayan heredoc FD'leri kapat
-		close_unused_heredoc_fds(cmd);
-
-
-		// AÇIK FD BURADA DEĞİL
-		
-		// printf("prev_fd: %d - pipe_Fd[0]: %d - pipe_fd[1]: %d \n", prev_fd, pipe_fd[0], pipe_fd[1]);
-
-		// if (prev_fd > 0)
-		// {
-		// 	close(prev_fd);
-		// 	prev_fd = -1;
-		// }
-		// if (pipe_fd[0] > 0)
-		// {
-		// 	close(pipe_fd[0]);
-		// 	pipe_fd[0] = -1;
-		// }
-		// if (pipe_fd[1] > 0)
-		// {
-		// 	close(pipe_fd[1]);
-		// 	pipe_fd[1] = -1;
-		// }
-		// printf("prev_fd: %d - pipe_Fd[0]: %d - pipe_fd[1]: %d \n", prev_fd, pipe_fd[0], pipe_fd[1]);
-		
-		// printf("ARGS[0]: $%s$\n", cmd->args[0]);
-
-
-		if (is_builtin(cmd->args[0]))
-		{
-			execute_builtin(cmd, global);
-			exit_num = global->exit_status;
-			cleanup_and_exit();
-			exit(exit_num);
-		}
-		
-
-		path = find_command_path(cmd->args[0], global->env_list);
-
-		// t_redirect *redirect;
-		// redirect = (t_redirect *)cmd->redirections->content;
-		// if (!path)
-		// {
-		// 	if (redirect->type == T_HEREDOC)
-		// 	{
-		// 		cleanup_and_exit();
-		// 		exit(0);
-		// 	}
-			
-		// 	printf("minishell: %s: command not found\n", cmd->args[0]);
-		// 	cleanup_and_exit();
-		// 	exit(127);
-		// }
-		
-        if (!path)
-        {
-			while (node)
-			{
-				redirect = (t_redirect *)node->content;
-				if (redirect->type == T_HEREDOC)
-				{
-				 cleanup_and_exit();
-				 exit(0);
-				}
-				node = node->next;
-			}
-			
-            printf("minishell: %s: command not found\n", cmd->args[0]);
-            cleanup_and_exit();
-            exit(127);
-        }
-		execve(path, cmd->args, env_list_to_array(global->env_list));
-		perror("execve");
-		cleanup_and_exit();
-		exit(127);
-	}
-	else if (pid > 0)
-	{
-		return (pid);
-	}
-	else
-	{
-		perror("fork");
-		return (-1);
-	}
-}
-
 
 
 

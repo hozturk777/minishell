@@ -6,7 +6,7 @@
 /*   By: hasivaci <hasivaci@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/24 12:00:00 by huozturk          #+#    #+#             */
-/*   Updated: 2025/09/30 12:20:55 by hasivaci         ###   ########.fr       */
+/*   Updated: 2025/09/30 20:31:54 by hasivaci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,44 +15,85 @@
 /* ************************************************************************** */
 /*                            PATH RESOLUTION                                */
 /* ************************************************************************** */
-
-char	*find_command_path(char *command, t_env *env_list)
+static char	*search_in_path_directories(char *path_env, char *command)
 {
-	char	*path_env;
 	char	**paths;
 	char	*full_path;
 	int		i;
 
-	if (!command)
-		return (NULL);
-	if (ft_strchr(command, '/'))
-	{
-		if (access(command, F_OK) == 0) // access dosya var mı check için 
-			return (ft_strdup(command));
-		return (NULL);
-	}
-	path_env = get_env_value(env_list, "PATH"); // PATH env buluyor
-	if (!path_env)
-		return (NULL);
-	paths = ft_split(path_env, ':'); // içeriğini ':''dan bölüyor
+	paths = ft_split(path_env, ':');
 	if (!paths)
 		return (NULL);
 	i = 0;
 	while (paths[i])
 	{
 		full_path = build_full_path(paths[i], command);
-		if (full_path && access(full_path, F_OK) == 0) // path'in yanına eklenen command var mı check?
+		if (full_path && access(full_path, F_OK) == 0)
 		{
-			free_string_array(paths);
 			return (full_path);
 		}
 		if (full_path)
 			// free(full_path);
-		i++;
+			i++;
 	}
-	free_string_array(paths);
-	return (NULL); // eğer path'de bulunmayan bir command girildiyse null dönüyor
+	return (NULL);
 }
+
+char	*find_command_path(char *command, t_env *env_list)
+{
+	char	*path_env;
+
+	if (!command)
+		return (NULL);
+	if (ft_strchr(command, '/'))
+	{
+		if (access(command, F_OK) == 0)
+			return (ft_strdup(command));
+		return (NULL);
+	}
+	path_env = get_env_value(env_list, "PATH");
+	if (!path_env)
+		return (NULL);
+	return (search_in_path_directories(path_env, command));
+}
+
+// char	*find_command_path(char *command, t_env *env_list)
+// {
+// 	char	*path_env;
+// 	char	**paths;
+// 	char	*full_path;
+// 	int		i;
+
+// 	if (!command)
+// 		return (NULL);
+// 	if (ft_strchr(command, '/'))
+// 	{
+// 		if (access(command, F_OK) == 0) // access dosya var mı check için 
+// 			return (ft_strdup(command));
+// 		return (NULL);
+// 	}
+// 	path_env = get_env_value(env_list, "PATH"); // PATH env buluyor
+// 	if (!path_env)
+// 		return (NULL);
+// 	paths = ft_split(path_env, ':'); // içeriğini ':''dan bölüyor
+// 	if (!paths)
+// 		return (NULL);
+// 	i = 0;
+// 	while (paths[i])
+// 	{
+// 		full_path = build_full_path(paths[i], command);
+// 		if (full_path && access(full_path, F_OK) == 0) // path'in yanına eklenen command var mı check?
+// 		{
+// 			free_string_array(paths);
+// 			return (full_path);
+// 		}
+// 		if (full_path)
+// 			// free(full_path);
+// 		i++;
+// 	}
+// 	free_string_array(paths);
+// 	return (NULL); // eğer path'de bulunmayan bir command girildiyse null dönüyor
+// }
 
 /* ************************************************************************** */
 /*                            HELPER FUNCTIONS                               */
@@ -87,20 +128,6 @@ char	*get_env_value(t_env *env_list, char *key)
 	return (NULL);
 }
 
-void	free_string_array(char **array)
-{
-	int	i;
-
-	if (!array)
-		return ;
-	i = 0;
-	while (array[i])
-	{
-		// free(array[i]);
-		i++;
-	}
-	// free(array);
-}
 
 char	**env_list_to_array(t_env *env_list)
 {
@@ -120,10 +147,7 @@ char	**env_list_to_array(t_env *env_list)
 	{
 		temp = ft_strjoin(current->key, "=");
 		if (temp)
-		{
 			env_array[i] = ft_strjoin(temp, current->value);
-			// free(temp);
-		}
 		else
 			env_array[i] = NULL;
 		current = current->next;
@@ -133,17 +157,4 @@ char	**env_list_to_array(t_env *env_list)
 	return (env_array);
 }
 
-int	count_env_nodes(t_env *env_list)
-{
-	t_env	*current;
-	int		count;
 
-	current = env_list;
-	count = 0;
-	while (current)
-	{
-		count++;
-		current = current->next;
-	}
-	return (count);
-}
