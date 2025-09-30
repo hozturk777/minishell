@@ -6,7 +6,7 @@
 /*   By: hasivaci <hasivaci@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/24 12:00:00 by huozturk          #+#    #+#             */
-/*   Updated: 2025/09/20 19:05:05 by hasivaci         ###   ########.fr       */
+/*   Updated: 2025/09/30 12:20:55 by hasivaci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,7 +122,7 @@ char	**env_list_to_array(t_env *env_list)
 		if (temp)
 		{
 			env_array[i] = ft_strjoin(temp, current->value);
-			free(temp);
+			// free(temp);
 		}
 		else
 			env_array[i] = NULL;

@@ -6,7 +6,7 @@
 /*   By: hasivaci <hasivaci@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/29 20:52:51 by hasivaci          #+#    #+#             */
-/*   Updated: 2025/09/29 21:24:10 by hasivaci         ###   ########.fr       */
+/*   Updated: 2025/09/30 12:44:31 by hasivaci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,10 +86,9 @@ static void	handle_external_child_process(t_command *cmd, t_global *global, char
 static int	wait_for_external_process(pid_t pid, char *path)
 {
 	int	status;
-
+	(void) path;
     /* Free path before waiting */
-    free(path);
-    clear_garbage();
+
     /* Wait for external process to complete */
     waitpid(pid, &status, 0);
     /* Handle signal termination */
