@@ -6,7 +6,7 @@
 /*   By: hasivaci <hasivaci@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 12:00:00 by huozturk          #+#    #+#             */
-/*   Updated: 2025/09/29 20:02:55 by hasivaci         ###   ########.fr       */
+/*   Updated: 2025/09/30 21:24:25 by hasivaci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -171,7 +171,7 @@ static int	process_token(t_list **tokens, t_token_new *token)
 	}
 	else if (!token)
 	{
-		printf("Error: Unclosed quote detected\n");
+		printf("Error: Syntax Error\n");
 		return (0);
 	}
 	return (1);
