@@ -136,7 +136,7 @@ int	builtin_export(char **args, t_global *global)
 			else
 			{
 				key = args[i];
-				set_env_var(global, key, "");
+				set_env_var(global, key, NULL);
 			}
 			i++;
 		}
@@ -190,7 +190,7 @@ void	print_export_env(t_env *env_list)
 	current = env_list;
 	while (current)
 	{
-		if (current->value && ft_strlen(current->value) > 0)
+		if (current->value && ft_strlen(current->value) >= 0)
 			printf("declare -x %s=\"%s\"\n", current->key, current->value);
 		else
 			printf("declare -x %s\n", current->key);

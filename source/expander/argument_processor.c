@@ -12,6 +12,8 @@
 
 #include "../../lib/minishell.h"
 
+
+
 void	expand_command_args(t_command *cmd, t_global *global)
 {
 	int		i;
@@ -24,7 +26,13 @@ void	expand_command_args(t_command *cmd, t_global *global)
 	while (cmd->args[i])
 	{
 		// Check if this is a single-quoted token (no expansion needed)
-		if (is_single_quoted_literal(cmd->args[i]))
+		if (is_double_quoted_literal(cmd->args[i]))
+		{
+			expanded = expand_with_quotes(cmd->args[i], global);
+			if (expanded)
+				cmd->args[i] = expanded;
+		}
+		else if (is_single_quoted_literal(cmd->args[i]))
 		{
 			// Remove the marker and keep content as-is (no expansion)
 			clean_str = extract_single_quote_content(cmd->args[i]);

@@ -580,11 +580,14 @@ static void	close_unused_heredoc_fds(t_command *cmd)
 // YORUM satırları kaldırıınca 52 satır kod bloğu;
 pid_t	execute_pipeline_command_async(t_command *cmd, t_global *global, int prev_fd, int *pipe_fd)
 {
-	pid_t	pid;
-	char	*path;
-	int		exit_num;
+	pid_t		pid;
+	char		*path;
+	int			exit_num;
+	t_redirect	*redirect;
+	t_list		*node;
 
 	// Pipeline'da tüm komutlar (built-in dahil) child process'te çalışmalı
+	node = cmd->redirections; // burası açıkken 'echo hello >> test.txt | cat test.txt' çalışmıyor kapalıyken de 'echo hello | <<end' command not found veriyor!!
 	pid = fork();
 	exit_num = 0;
 	if (pid == 0)
@@ -653,15 +656,19 @@ pid_t	execute_pipeline_command_async(t_command *cmd, t_global *global, int prev_
 		// 	exit(127);
 		// }
 		
-		// t_redirect *redirect;
-        // redirect = (t_redirect *)cmd->redirections->content; // burası açıkken 'echo hello >> test.txt | cat test.txt' çalışmıyor kapalıyken de 'echo hello | <<end' command not found veriyor!!
         if (!path)
         {
-            // if (redirect->type == T_HEREDOC)
-            // {
-            //  cleanup_and_exit();
-            //  exit(0);
-            // }
+			while (node)
+			{
+				redirect = (t_redirect *)node->content;
+				if (redirect->type == T_HEREDOC)
+				{
+				 cleanup_and_exit();
+				 exit(0);
+				}
+				node = node->next;
+			}
+			
             printf("minishell: %s: command not found\n", cmd->args[0]);
             cleanup_and_exit();
             exit(127);

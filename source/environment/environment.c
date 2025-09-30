@@ -24,7 +24,7 @@ t_env	*create_env_node(char *key, char *value)
 	// free(key);
 	// free(value);  //eklemek gerekebilir
 	node->next = NULL;
-	if (!node->key || !node->value)
+	if (!node->key)
 	{
 		// if (node->key)
 		// 	free(node->key);

@@ -73,13 +73,12 @@ static void	handle_post_token_processing(t_lexer_new *lexer, t_token_new *token)
 	}
 }
 
-static t_token_new	*get_next_token(t_lexer_new *lexer, int single_quote_count)
+static t_token_new	*get_next_token(t_lexer_new *lexer)
 {
 	t_token_new	*token;
 
 	/* single_quote_count = 0; */
 	/* combined_value = 0; */
-	single_quote_count = 0;
 	/* next_token = NULL; */
 	token = NULL;
 	lexer->first_word_check = 0;
@@ -183,10 +182,7 @@ t_list	*tokenize_advanced(char *input, t_global *global)
 	t_lexer_new	*lexer;
 	t_list		*tokens;
 	t_token_new	*token;
-	int			single_quote_count;
-
-	single_quote_count = 0;
-	if (!check_quote_balance(input, &single_quote_count))
+	if (!check_quote_balance(input))
 	{
 		printf("Error: Unbalanced quotes detected\n");
 		return (NULL);
@@ -197,12 +193,10 @@ t_list	*tokenize_advanced(char *input, t_global *global)
 	tokens = NULL;
 	while (lexer->current_char != '\0')
 	{
-		token = get_next_token(lexer, single_quote_count);
+		token = get_next_token(lexer);
 		global->echo_flag = 0;
 		if (!process_token(&tokens, token))
 			return (NULL);
-		if (token && token->value && !token->value[0])
-			break ;
 	}
 	return (tokens);
 }

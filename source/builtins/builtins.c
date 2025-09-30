@@ -116,17 +116,25 @@ int	execute_builtin(t_command *cmd, t_global *global)
 /* PWD built-in with global support */
 int	builtin_pwd_global(t_global *global)
 {
-	char	*pwd_env;
-	char	*cwd;
+	t_command	*cmd;
+	char		*pwd_env;
+	char		*cwd;
 
-
-	if (global && global->commands && global->commands->args[1] && global->commands->args[1][0] == '-' && global->commands->args[1][1])
+	cmd = global->commands;
+	while (cmd)
 	{
-		printf("minishell: pwd: -%c: invalid option\n", global->commands->args[1][1]);
-		return (2);
-		//bash: pwd: -d: invalid option
+		if (cmd->args && !ft_strcmp(cmd->args[0], "pwd")  && cmd->args[1])
+		{
+			if (cmd->args[1][0] && cmd->args[1][0] == '-' && cmd->args[1][1])
+			{
+				printf("minishell: pwd: -%c: invalid option\n", cmd->args[1][1]);
+				return (2);
+				//bash: pwd: -d: invalid option
+			}
+		}
+		cmd = cmd->next;
 	}
-	
+
 	pwd_env = get_env_value(global->env_list, "PWD");
 	if (pwd_env)
 	{
@@ -199,25 +207,22 @@ static void	process_escape_sequences(char *str)
 	{
 		if (str[i] == '\\' && str[i + 1])
 		{
-			i++;
-			if (str[i] == 'n')
-				str[j++] = '\n';
-			else if (str[i] == 't')
-				str[j++] = '\t';
-			else if (str[i] == 'r')
-				str[j++] = '\r';
-			else if (str[i] == '\\')
-				str[j++] = '\\';
-			else if (str[i] == '"')
-				str[j++] = '"';
+			if (str[i + 1] == '\\')
+			{
+				str[i] = '\\';
+				str[j] = str[i];
+
+			}
 			else
 			{
-				str[j++] = '\\';
-				str[j++] = str[i];
+				str[j] = str[i+1];
 			}
-		}
+			i++;
+			// j++;
+		}		
 		else
-			str[j++] = str[i];
+			str[j] = str[i];
+		j++;
 		i++;
 	}
 	str[j] = '\0';
@@ -226,42 +231,81 @@ static void	process_escape_sequences(char *str)
 int	builtin_echo(char **args)
 {
 	int		i;
+	int		j;
+	int		b;
+	int		next_g;
 	int		newline;
+	int		n_flag;
 	int		enable_escape;
 	char	*processed_arg;
 
 	i = 1;
+	j = 1;
+	b = 0;
+	n_flag = 0;
+	next_g = 0;
 	newline = 1;
 	enable_escape = 0;
-	while (args[i] && args[i][0] == '-')
+	
+	if (args[1] && args[1][next_g] == '-')
 	{
-		if (ft_strcmp(args[i], "-n") == 0)
+		next_g++;
+		while (args[1][next_g])
+		{
+			if (args[1][next_g] == 'n')
+				n_flag = 1;
+			else
+			{
+				n_flag = 0;
+				break;
+			}
+			next_g++;
+		}
+
+		if (n_flag)
+		{
 			newline = 0;
-		// else if (ft_strcmp(args[i], "-e") == 0)
-		// 	enable_escape = 1;
-		// else if (ft_strcmp(args[i], "-E") == 0)
-		// 	enable_escape = 0;
-		else
-			break;
-		i++;
+			i++;
+			if (args[i][0] != ' ')
+			{
+				newline = 1;
+				i--;
+			}
+			
+			while (!ft_strcmp(args[i], " ") || !ft_strcmp(args[i], "\t"))
+			{
+				i++;
+			}
+			
+		}
 	}
-	while (args[i])
+	j = i;
+	while (args[j])
 	{
-		processed_arg = args[i];
+		while (args[j][b])
+		{
+			if (args[j][b] == '\\')
+				enable_escape = 1;
+			b++;
+		}
+		
+		j++;
+	}
+	
+	j = i;
+	while (args[j])
+	{
+		processed_arg = args[j];
 		if (processed_arg)
 		{
 			if (enable_escape)
+			{
 				process_escape_sequences(processed_arg);
+				enable_escape = 0;
+			}
 			printf("%s", processed_arg);
-			// free(processed_arg);
 		}
-
-		// if (args[i + 1]) // Burada echo '$USER"test"'a'' '"' yerine boşluk yazıyor // cmd gönderilip karakter single quote içinde mi checklenebilir
-		// {
-		// 	// if (!ft_strcmp(args[i], "\'"))
-		// 		printf(" ");
-		// }
-		i++;
+		j++;
 	}
 	if (newline)
 		printf("\n");

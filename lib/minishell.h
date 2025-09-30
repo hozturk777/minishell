@@ -220,6 +220,7 @@ void			expand_command_args(t_command *cmd, t_global *global);	/* Komut argümanl
 void			filter_empty_args(t_command *cmd);						/* Boş argümanları filtrele */
 int				count_non_empty_args(char **args);						/* Boş olmayan argüman sayısı */
 int				is_single_quoted_literal(char *str);					/* Tek tırnaklı literal mi kontrol et */
+int				is_double_quoted_literal(char *str);
 char			*extract_single_quote_content(char *str);				/* Tek tırnaklı içerik çıkart */
 void			filter_empty_args(t_command *cmd);						/* Boş argümanları filtrele */
 int				count_non_empty_args(char **args);						/* Boş olmayan argüman sayısı */
@@ -283,7 +284,7 @@ char			*ft_strjoin_char(char const *s1, char const s2);
 void			skip_whitespace_advanced(t_lexer_new *lexer);
 void			handle_multiple_heredocs(t_command *cmd);
 int				execute_redirect_command(t_command *cmd, t_global *global);
-int				check_quote_balance(char *input, int *single_quote_count);
+int				check_quote_balance(char *input);
 int				preprocess_heredocs(t_command *commands, t_global *global);
 
 

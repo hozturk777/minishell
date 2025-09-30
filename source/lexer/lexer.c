@@ -75,7 +75,7 @@ void	skip_whitespace_advanced(t_lexer_new *lexer)
 		advance_lexer(lexer);
 }
 
-int	check_quote_balance(char *input, int *single_quote_count)
+int	check_quote_balance(char *input)
 {
 	int	i;
 	int	single_quotes;
@@ -86,18 +86,45 @@ int	check_quote_balance(char *input, int *single_quote_count)
 	single_quotes = 0;
 	double_quotes = 0;
 	dollar_flag = 1;
+	// while (input[i]) // Herhangi bir tırnak açıldıysa içerisinde ki tırnakları saymaya gerek yok sadece açılan tırnağın kapanıp kapanmadığı checklenecek
+	// {
+	// 	if (input[i] == '\'')
+	// 		single_quotes++;
+	// 	else if (input[i] == '"')
+	// 		double_quotes++;
+	// 	if (input[i] == '\'' && dollar_flag)
+	// 		(*single_quote_count)++;
+	// 	if (input[i] == '$')
+	// 		dollar_flag = 0;
+	// 	i++;
+	// }
 	while (input[i])
 	{
 		if (input[i] == '\'')
-			single_quotes++;
+		{
+			single_quotes = !single_quotes;
+			i++;
+			while (input[i])
+			{
+				if (input[i] == '\'')
+					single_quotes = !single_quotes;
+				i++;
+			}
+		}
 		else if (input[i] == '"')
-			double_quotes++;
-		if (input[i] == '\'' && dollar_flag)
-			(*single_quote_count)++;
-		if (input[i] == '$')
-			dollar_flag = 0;
+		{
+			double_quotes = !double_quotes;
+			i++;
+			while (input[i])
+			{
+				if (input[i] == '"')
+					double_quotes = !double_quotes;
+				i++;
+			}
+		}
 		i++;
 	}
+	
 	// Both single and double quotes must be even
 	return (single_quotes % 2 == 0 && double_quotes % 2 == 0);
 }

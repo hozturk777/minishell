@@ -174,10 +174,7 @@ t_token_new	*handle_word_advanced(t_lexer_new *lexer, int *first_word_check)
     if (!lexer || !lexer->input || lexer->pos >= lexer->len)
         return (NULL);
     /* Pipedan sonra ki inputu da T_CMD işaretliyecez & -n -e -E'de başta boşluk bırakıyordu T_CMD çevirdik token tipini */
-    if (lexer->pos == 0 || lexer->t_cmd_flag == 1 || (lexer->current_char == '-' 
-        && (lexer->input[lexer->pos + 1] == 'n' 
-        || lexer->input[lexer->pos + 1] == 'e' 
-        || lexer->input[lexer->pos + 1] == 'E')))
+    if (lexer->pos == 0 || lexer->t_cmd_flag == 1)
     {
         types = T_CMD;
         *first_word_check = 0;

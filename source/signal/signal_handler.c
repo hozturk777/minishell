@@ -46,12 +46,12 @@ void	sigquit_handler(int sig)
  * SIGPIPE sinyal handler'ı
  * - Pipeline'larda broken pipe durumunda crash engelle
  */
-void	sigpipe_handler(int sig)
-{
-	(void)sig;
-	// SIGPIPE'ı ignore et, sadece exit status ayarla
-	// Bu pipeline'da normal bir durum olabilir
-}
+// void	sigpipe_handler(int sig)
+// {
+// 	(void)sig;
+// 	// SIGPIPE'ı ignore et, sadece exit status ayarla
+// 	// Bu pipeline'da normal bir durum olabilir
+// }
 
 /**
  * Interactive shell için sinyalleri ayarla
@@ -62,7 +62,7 @@ void	setup_signals(void)
 {
 	struct sigaction	sa_int;
 	struct sigaction	sa_quit;
-	struct sigaction	sa_pipe;
+	// struct sigaction	sa_pipe;
 
 	// SIGINT (Ctrl+C) ayarlama
 	sa_int.sa_handler = sigint_handler;
@@ -77,10 +77,10 @@ void	setup_signals(void)
 	sigaction(SIGQUIT, &sa_quit, NULL);
 
 	// SIGPIPE ayarlama - pipeline'larda broken pipe ignore et
-	sa_pipe.sa_handler = sigpipe_handler;
-	sigemptyset(&sa_pipe.sa_mask);
-	sa_pipe.sa_flags = 0;
-	sigaction(SIGPIPE, &sa_pipe, NULL);
+	// sa_pipe.sa_handler = sigpipe_handler;
+	// sigemptyset(&sa_pipe.sa_mask);
+	// sa_pipe.sa_flags = 0;
+	// sigaction(SIGPIPE, &sa_pipe, NULL);
 }
 
 /**

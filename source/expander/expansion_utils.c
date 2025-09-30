@@ -44,6 +44,14 @@ int	is_single_quoted_literal(char *str)
 	return (ft_strnstr(str, "__SINGLE_QUOTE__", ft_strlen(str)) != NULL);
 }
 
+int	is_double_quoted_literal(char *str)
+{
+	// Check if string has single quote marker
+	if (!str)
+		return (0);
+	return (ft_strnstr(str, "\"", ft_strlen(str)) != NULL);
+}
+
 char	*extract_single_quote_content(char *str)
 {
 	char	*start;
