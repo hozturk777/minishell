@@ -33,8 +33,8 @@ static int	process_input(char *input, t_global *global)
 	// printf("\n=== TOKENS ===\n");
 	// print_tokens_advanced(tokens);
 	// 2. PARSER: Token'ları komut yapılarına çevir
-	commands = parse_tokens_to_commands(tokens, global);
-	// if (!commands)
+	commands = parse_tokens_to_commands(tokens, global); // NULL DÖNME İHTİMALİ VAR!!
+	// if (!commands) 
 	// {
 	// 	printf("Error: Parsing failed\n");
 	// 	//free_tokens_advanced(&tokens);
@@ -44,18 +44,18 @@ static int	process_input(char *input, t_global *global)
 	// 	return (0);
 	// }
 	// 3. DEBUG: Token'ları ve komutları yazdır
-	// printf("\n=== TOKENS ===\n");
-	// print_tokens_advanced(tokens);
-	// printf("\n=== PARSED COMMANDS ===\n");
-	// print_commands_debug(commands);
-	// printf("\n==================\n\n");
+	printf("\n=== TOKENS ===\n");
+	print_tokens_advanced(tokens);
+	printf("\n=== PARSED COMMANDS ===\n");
+	print_commands_debug(commands);
+	printf("\n==================\n\n");
 	global->tokens = tokens;
 	global->commands = commands;
 	// 4. EXECUTION: Komutları çalıştır
 	if (commands)
 		global->exit_status = execute_commands(commands, global);
 	if (global->input_line)
-		global->input_line = NULL;
+		global->input_line = NULL;	
 	return (0);
 }
 
@@ -92,6 +92,8 @@ t_global	*get_global(void)
 // argc sayısı check
 int	main(int argc, char **argv, char **envp)
 {
+	printf("\nDEBUG: Main process PID: %d\n", getpid());
+
 	t_global	*global;
 
 	(void)argc;

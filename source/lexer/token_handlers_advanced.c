@@ -16,14 +16,14 @@
 static t_token_new	*handle_input_redirect(t_lexer_new *lexer)
 {
 	advance_lexer(lexer);
-	skip_whitespace_advanced(lexer);
+	// skip_whitespace_advanced(lexer);
 	if (lexer->current_char == '<')
 	{
 		advance_lexer(lexer);
 		skip_whitespace_advanced(lexer);
 		/* Burada returnde value dönüp çıktıyı değiştiricez */
-		if (!ft_isprint(lexer->current_char) || lexer->current_char == '|')
-			return (NULL);
+		// if (!ft_isprint(lexer->current_char) || lexer->current_char == '|')
+		// 	return (NULL);
 		return (create_token_advanced(T_HEREDOC, "<<"));
 	}
 	/* Burada returnde value dönüp çıktıyı değiştiricez */
@@ -35,14 +35,14 @@ static t_token_new	*handle_input_redirect(t_lexer_new *lexer)
 static t_token_new	*handle_output_redirect(t_lexer_new *lexer)
 {
 	advance_lexer(lexer);
-	skip_whitespace_advanced(lexer);
+	// skip_whitespace_advanced(lexer);
 	if (lexer->current_char == '>')
 	{
 		advance_lexer(lexer);
 		skip_whitespace_advanced(lexer);
 		/* Burada returnde value dönüp çıktıyı değiştiricez */
-		if (!ft_isprint(lexer->current_char) || lexer->current_char == '|')
-			return (NULL);
+		// if (!ft_isprint(lexer->current_char) || lexer->current_char == '|')
+		// 	return (NULL);
 		return (create_token_advanced(T_APPEND, ">>"));
 	}
 	/* Burada returnde value dönüp çıktıyı değiştiricez */

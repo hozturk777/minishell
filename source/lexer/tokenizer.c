@@ -169,11 +169,11 @@ static int	process_token(t_list **tokens, t_token_new *token)
 		ft_lstadd_back(tokens, ft_lstnew(token));
 		return (1);
 	}
-	else if (!token)
-	{
-		printf("Error: Syntax Error\n");
-		return (0);
-	}
+	// else if (!token)
+	// {
+	// 	// printf("Error: Syntax Error\n");
+	// 	return (0);
+	// }
 	return (1);
 }
 
