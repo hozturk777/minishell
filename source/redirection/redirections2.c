@@ -96,7 +96,6 @@ int	handle_heredoc(t_redirect *redirect)
 	if (redirect->fd > 2)
 	{
 		register_heredoc_fd(redirect->fd);
-		printf("DEBUG: Registered heredoc FD %d\n", redirect->fd);
 	}
 	
 	return (redirect->fd);

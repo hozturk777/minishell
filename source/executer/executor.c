@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hasivaci <hasivaci@student.42kocaeli.co    +#+  +:+       +#+        */
+/*   By: hsyn <hsyn@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/24 12:00:00 by huozturk          #+#    #+#             */
 /*   Updated: 2025/09/30 21:04:50 by hasivaci         ###   ########.fr       */
@@ -197,7 +197,7 @@ pid_t	execute_pipeline_command_async(t_command *cmd, t_global *global, int prev_
 		// Child'da kullanılmayan heredoc FD'leri kapat
 		close_unused_heredoc_fds(cmd);
 		close_all_heredoc_fds();
-
+		
 		// AÇIK FD BURADA DEĞİL
 		
 		// printf("prev_fd: %d - pipe_Fd[0]: %d - pipe_fd[1]: %d \n", prev_fd, pipe_fd[0], pipe_fd[1]);
@@ -725,6 +725,3 @@ pid_t	execute_pipeline_command_async(t_command *cmd, t_global *global, int prev_
 //     // }
 //     return (last_status);
 // }
-
-
-

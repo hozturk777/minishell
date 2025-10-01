@@ -44,11 +44,11 @@ static int	process_input(char *input, t_global *global)
 	// 	return (0);
 	// }
 	// 3. DEBUG: Token'ları ve komutları yazdır
-	printf("\n=== TOKENS ===\n");
-	print_tokens_advanced(tokens);
-	printf("\n=== PARSED COMMANDS ===\n");
-	print_commands_debug(commands);
-	printf("\n==================\n\n");
+	// printf("\n=== TOKENS ===\n");
+	// print_tokens_advanced(tokens);
+	// printf("\n=== PARSED COMMANDS ===\n");
+	// print_commands_debug(commands);
+	// printf("\n==================\n\n");
 	global->tokens = tokens;
 	global->commands = commands;
 	// 4. EXECUTION: Komutları çalıştır

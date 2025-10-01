@@ -12,6 +12,8 @@
 
 #include "../../lib/minishell.h"
 
+static int	execute_command_in_child(t_command *cmd, t_global *global);
+
 /* ************************************************************************** */
 /*                            MAIN EXECUTOR FUNCTION                         */
 /* ************************************************************************** */
@@ -40,6 +42,22 @@ int	execute_single_command(t_command *cmd, t_global *global)
 	if (!cmd || !cmd->args || !cmd->args[0])
 		return (1);
 
+	// Single command'da da heredoc varsa child process'te çalıştır
+	if (cmd->redirections)
+	{
+		t_list *redirect_node = cmd->redirections;
+		while (redirect_node)
+		{
+			t_redirect *redirect = (t_redirect *)redirect_node->content;
+			if (redirect && redirect->type == T_HEREDOC)
+			{
+				// Heredoc var, child process'te çalıştır
+				return (execute_command_in_child(cmd, global));
+			}
+			redirect_node = redirect_node->next;
+		}
+	}
+	
 	if (is_builtin(cmd->args[0]))
 		return (execute_builtin(cmd, global));
 	return (execute_external_command(cmd, global));
@@ -101,5 +119,70 @@ int	execute_redirect_command(t_command *cmd, t_global *global)
 		return (wait_for_redirect_process(pid));
 	}
 	/* Fork failed */
+	return (1);
+}
+
+/* ************************************************************************** */
+/*                            CHILD PROCESS EXECUTION                        */
+/* ************************************************************************** */
+
+static int	execute_command_in_child(t_command *cmd, t_global *global)
+{
+	pid_t	pid;
+	int		status;
+	int		exit_status;
+
+	pid = fork();
+	if (pid == 0)
+	{
+		// Child process - heredoc'ları güvenle işleyebiliriz
+		setup_child_signals();
+		global->in_child = 1;
+		
+		if (cmd->redirections)
+			setup_redirections(cmd);
+		
+		if (is_builtin(cmd->args[0]))
+		{
+			exit_status = execute_builtin(cmd, global);
+			cleanup_and_exit();
+			exit(exit_status);
+		}
+		else
+		{
+			char *path = find_command_path(cmd->args[0], global->env_list);
+			if (!path)
+			{
+				write(STDERR_FILENO, "minishell: ", 11);
+				write(STDERR_FILENO, cmd->args[0], ft_strlen(cmd->args[0]));
+				write(STDERR_FILENO, ": command not found\n", 20);
+				cleanup_and_exit();
+
+				exit(127);
+			}
+			execve(path, cmd->args, env_list_to_array(global->env_list));
+			cleanup_and_exit();
+
+			perror("execve");
+			exit(127);
+		}
+	}
+	else if (pid > 0)
+	{
+		waitpid(pid, &status, 0);
+		if (WIFSIGNALED(status))
+		{
+			int signal_num = WTERMSIG(status);
+			if (signal_num == SIGINT)
+				exit_status = 130;
+			else if (signal_num == SIGQUIT)
+				exit_status = 131;
+			else
+				exit_status = 128 + signal_num;
+		}
+		else
+			exit_status = WEXITSTATUS(status);
+		return (exit_status);
+	}
 	return (1);
 }

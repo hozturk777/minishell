@@ -53,8 +53,8 @@ static void	restore_file_descriptors(t_command *cmd, int original_stdout, int or
         }
         if (original_stdin != -1)
 		{
-            dup2(original_stdout, STDOUT_FILENO);
-            close(original_stdout);	
+            dup2(original_stdin, STDIN_FILENO);
+            close(original_stdin);	
 		}
 	}
 }
