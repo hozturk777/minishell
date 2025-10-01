@@ -6,7 +6,7 @@
 /*   By: hasivaci <hasivaci@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 12:00:00 by huozturk          #+#    #+#             */
-/*   Updated: 2025/09/29 19:29:58 by hasivaci         ###   ########.fr       */
+/*   Updated: 2025/09/30 20:30:23 by hasivaci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -156,7 +156,7 @@ void			advance_lexer(t_lexer_new *lexer);						/* Sonraki karaktere geç */
 t_env			*create_env_node(char *key, char *value);	/* Çevre değişkeni düğümü oluştur */
 void			add_env_node(t_env **env_list, t_env *new_node);		/* Çevre düğümünü listeye ekle */
 t_env			*find_env_node(t_env *env_list, char *key);				/* Anahtar ile çevre değişkeni bul */
-void			free_env_list(t_env *env_list);							/* Çevre listesini serbest bırak */
+// void			free_env_list(t_env *env_list);							/* Çevre listesini serbest bırak */
 t_env			*init_env_from_envp(char **envp);						/* Envp'den çevre başlat */
 
 // ========== TOKEN İŞLEYİCİ FONKSIYONLARI ==========
@@ -220,6 +220,7 @@ void			expand_command_args(t_command *cmd, t_global *global);	/* Komut argümanl
 void			filter_empty_args(t_command *cmd);						/* Boş argümanları filtrele */
 int				count_non_empty_args(char **args);						/* Boş olmayan argüman sayısı */
 int				is_single_quoted_literal(char *str);					/* Tek tırnaklı literal mi kontrol et */
+int				is_double_quoted_literal(char *str);
 char			*extract_single_quote_content(char *str);				/* Tek tırnaklı içerik çıkart */
 void			filter_empty_args(t_command *cmd);						/* Boş argümanları filtrele */
 int				count_non_empty_args(char **args);						/* Boş olmayan argüman sayısı */
@@ -283,6 +284,8 @@ char			*ft_strjoin_char(char const *s1, char const s2);
 void			skip_whitespace_advanced(t_lexer_new *lexer);
 void			handle_multiple_heredocs(t_command *cmd);
 int				execute_redirect_command(t_command *cmd, t_global *global);
+int				check_quote_balance(char *input);
+int				preprocess_heredocs(t_command *commands, t_global *global);
 
 
 

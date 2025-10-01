@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hsyn <hsyn@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: hasivaci <hasivaci@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/28 17:38:23 by hasivaci          #+#    #+#             */
-/*   Updated: 2025/09/21 21:45:10 by hsyn             ###   ########.fr       */
+/*   Updated: 2025/09/30 20:43:03 by hasivaci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,20 +20,18 @@ static int	process_input(char *input, t_global *global)
 	if (!input || ft_strlen(input) == 0)
 		return (0);
 	add_history(input);
-	input = ft_strtrim(input, " "); // Düzenlenecek whitespace eklenecek & NULL check eklenecek
+	input = ft_strtrim(input, " ");
+		// Düzenlenecek whitespace eklenecek & NULL check eklenecek
 	global->input_line = ft_strdup(input);
-	
 	// 1. LEXER: Input'u token'lara çevir
 	tokens = tokenize_advanced(input, global);
-	// if (!tokens)
-	// {
-	// 	printf("Error: Tokenization failed\n");
-	// 	return (0);
-	// }
-	
+	if (!tokens)
+	{
+		global->exit_status = 2;
+		return (0);
+	}
 	// printf("\n=== TOKENS ===\n");
 	// print_tokens_advanced(tokens);
-
 	// 2. PARSER: Token'ları komut yapılarına çevir
 	commands = parse_tokens_to_commands(tokens, global);
 	// if (!commands)
@@ -41,12 +39,10 @@ static int	process_input(char *input, t_global *global)
 	// 	printf("Error: Parsing failed\n");
 	// 	//free_tokens_advanced(&tokens);
 	// 	if (global->input_line)
-    //         free(global->input_line);
-    //     global->input_line = NULL;
+	//         free(global->input_line);
+	//     global->input_line = NULL;
 	// 	return (0);
 	// }
-
-
 	// 3. DEBUG: Token'ları ve komutları yazdır
 	// printf("\n=== TOKENS ===\n");
 	// print_tokens_advanced(tokens);
@@ -55,32 +51,11 @@ static int	process_input(char *input, t_global *global)
 	// printf("\n==================\n\n");
 	global->tokens = tokens;
 	global->commands = commands;
-	
 	// 4. EXECUTION: Komutları çalıştır
 	if (commands)
-	{
 		global->exit_status = execute_commands(commands, global);
-	}
-	
-	// 5. CLEANUP: Memory'yi temizle
-	// global->tokens = tokens;
-	// global->commands = commands;
-	// global->redirect = commands->redirections;
-	//free_tokens_advanced(&global->tokens);
-	//free_commands_list(global->commands);
-	// global->commands = NULL;
-	
 	if (global->input_line)
-	{
-		// free(global->input_line);
 		global->input_line = NULL;
-	}
-	
-	// if (ft_strncmp(input, "exit", 4) == 0)
-	// {
-	// 	clear_garbage();
-	// 	return (1);
-	// }
 	return (0);
 }
 
@@ -98,24 +73,24 @@ static void	run_shell_loop(t_global *global)
 			// EOF (Ctrl+D) algılandı
 			handle_eof();
 			// rl_clear_history();
-			cleanup_and_exit();  // FD'leri kapat ve garbage collect
+			cleanup_and_exit(); // FD'leri kapat ve garbage collect
 			break ;
 		}
 		should_exit = process_input(input, global);
 		free(input);
 	}
-	//clear_garbage();
+	// clear_garbage();
 }
 
-t_global *get_global(void)
+t_global	*get_global(void)
 {
 	static t_global	minishell;
 
 	return (&minishell);
 }
 
-
-int	main(int argc, char **argv, char **envp) // argc sayısı check
+// argc sayısı check
+int	main(int argc, char **argv, char **envp)
 {
 	t_global	*global;
 
@@ -126,25 +101,18 @@ int	main(int argc, char **argv, char **envp) // argc sayısı check
 	if (!global)
 	{
 		printf("Error: Failed to initialize global state\n");
-		cleanup_and_exit();  // FD'leri kapat ve garbage collect
+		cleanup_and_exit(); // FD'leri kapat ve garbage collect
 		return (1);
 	}
-	
 	// Exit cleanup handler kaydet
 	// atexit(cleanup_and_exit);
-	
 	// Sinyalleri ayarla (ARAŞTIRILACAK)
 	setup_signals();
-	
 	print_welcome_advanced();
 	debug_print("Global state initialized successfully");
 	debug_print("Signal handlers set up successfully");
-	
 	run_shell_loop(global);
-	
 	printf(GREEN "Goodbye!" RESET "\n");
-	// free_global(global);
-	
-	cleanup_and_exit();  // FD'leri kapat ve garbage collect
+	cleanup_and_exit(); // FD'leri kapat ve garbage collect
 	return (0);
 }

@@ -26,16 +26,26 @@ MINISHELL_SRCS		= $(SRC_DIR)main.c \
 					  $(UTL_DIR)global_state.c \
 					  $(ENV_DIR)environment.c \
 					  $(ENV_DIR)env_utils.c \
+					  $(ENV_DIR)env_utils2.c \
+					  $(ENV_DIR)path_utils.c \
 					  $(UTL_DIR)debug.c \
 					  $(UTL_DIR)debug_utils.c \
 					  $(EXPA_DIR)variable_expansion.c \
 					  $(EXPA_DIR)quote_expansion.c \
+					  $(EXPA_DIR)expansion_utils.c \
+					  $(EXPA_DIR)argument_processor.c \
 					  $(SIG_DIR)signal_handler.c \
 					  $(SIG_DIR)sigint.c \
 					  $(BUILD_DIR)builtins.c \
+					  $(BUILD_DIR)path_built.c \
+					  $(BUILD_DIR)builtin_export.c \
+					  $(BUILD_DIR)echo_builtin.c \
+					  $(BUILD_DIR)builtins_utils.c \
 					  $(BUILD_DIR)builtins2.c \
 					  $(EXEC_DIR)executor.c \
-					  $(ENV_DIR)path_utils.c \
+					  $(EXEC_DIR)execute_external.c \
+					  $(EXEC_DIR)executor_utils.c \
+					  $(EXEC_DIR)pipeline_execution.c \
 					  $(REDIRECT_DIR)redirections.c \
 					  $(REDIRECT_DIR)redirections2.c \
 					  $(PAR_DIR)parser.c \

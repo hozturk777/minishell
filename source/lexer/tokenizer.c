@@ -6,45 +6,45 @@
 /*   By: hasivaci <hasivaci@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 12:00:00 by huozturk          #+#    #+#             */
-/*   Updated: 2025/09/29 19:30:27 by hasivaci         ###   ########.fr       */
+/*   Updated: 2025/09/30 21:24:25 by hasivaci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../lib/minishell.h"
 
-void	skip_whitespace_advanced(t_lexer_new *lexer)
-{
-	while (lexer->current_char == ' ' || lexer->current_char == '\t'
-		|| lexer->current_char == '\n')
-		advance_lexer(lexer);
-}
+// void	skip_whitespace_advanced(t_lexer_new *lexer)
+// {
+// 	while (lexer->current_char == ' ' || lexer->current_char == '\t'
+// 		|| lexer->current_char == '\n')
+// 		advance_lexer(lexer);
+// }
 
-static int	check_quote_balance(char *input, int *single_quote_count)
-{
-	int	i;
-	int	single_quotes;
-	int	double_quotes;
-	int	dollar_flag;
+// static int	check_quote_balance(char *input, int *single_quote_count)
+// {
+// 	int	i;
+// 	int	single_quotes;
+// 	int	double_quotes;
+// 	int	dollar_flag;
 
-	i = 0;
-	single_quotes = 0;
-	double_quotes = 0;
-	dollar_flag = 1;
-	while (input[i])
-	{
-		if (input[i] == '\'')
-			single_quotes++;
-		else if (input[i] == '"')
-			double_quotes++;
-		if (input[i] == '\'' && dollar_flag)
-			(*single_quote_count)++;
-		if (input[i] == '$')
-			dollar_flag = 0;
-		i++;
-	}
-	// Both single and double quotes must be even
-	return (single_quotes % 2 == 0 && double_quotes % 2 == 0);
-}
+// 	i = 0;
+// 	single_quotes = 0;
+// 	double_quotes = 0;
+// 	dollar_flag = 1;
+// 	while (input[i])
+// 	{
+// 		if (input[i] == '\'')
+// 			single_quotes++;
+// 		else if (input[i] == '"')
+// 			double_quotes++;
+// 		if (input[i] == '\'' && dollar_flag)
+// 			(*single_quote_count)++;
+// 		if (input[i] == '$')
+// 			dollar_flag = 0;
+// 		i++;
+// 	}
+// 	// Both single and double quotes must be even
+// 	return (single_quotes % 2 == 0 && double_quotes % 2 == 0);
+// }
 
 static t_token_new	*create_token_by_type(t_lexer_new *lexer)
 {
@@ -73,13 +73,12 @@ static void	handle_post_token_processing(t_lexer_new *lexer, t_token_new *token)
 	}
 }
 
-static t_token_new	*get_next_token(t_lexer_new *lexer, int single_quote_count)
+static t_token_new	*get_next_token(t_lexer_new *lexer)
 {
 	t_token_new	*token;
 
 	/* single_quote_count = 0; */
 	/* combined_value = 0; */
-	single_quote_count = 0;
 	/* next_token = NULL; */
 	token = NULL;
 	lexer->first_word_check = 0;
@@ -172,7 +171,7 @@ static int	process_token(t_list **tokens, t_token_new *token)
 	}
 	else if (!token)
 	{
-		printf("Error: Unclosed quote detected\n");
+		printf("Error: Syntax Error\n");
 		return (0);
 	}
 	return (1);
@@ -183,10 +182,7 @@ t_list	*tokenize_advanced(char *input, t_global *global)
 	t_lexer_new	*lexer;
 	t_list		*tokens;
 	t_token_new	*token;
-	int			single_quote_count;
-
-	single_quote_count = 0;
-	if (!check_quote_balance(input, &single_quote_count))
+	if (!check_quote_balance(input))
 	{
 		printf("Error: Unbalanced quotes detected\n");
 		return (NULL);
@@ -197,12 +193,10 @@ t_list	*tokenize_advanced(char *input, t_global *global)
 	tokens = NULL;
 	while (lexer->current_char != '\0')
 	{
-		token = get_next_token(lexer, single_quote_count);
+		token = get_next_token(lexer);
 		global->echo_flag = 0;
 		if (!process_token(&tokens, token))
 			return (NULL);
-		if (token && token->value && !token->value[0])
-			break ;
 	}
 	return (tokens);
 }
