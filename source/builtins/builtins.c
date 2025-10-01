@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hasivaci <hasivaci@student.42kocaeli.co    +#+  +:+       +#+        */
+/*   By: abakirca <abakirca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/28 17:39:03 by hasivaci          #+#    #+#             */
-/*   Updated: 2025/09/30 20:29:08 by hasivaci         ###   ########.fr       */
+/*   Updated: 2025/10/01 18:47:18 by hasivaci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,13 +48,15 @@ static void	restore_file_descriptors(t_command *cmd, int original_stdout, int or
     {
         if (original_stdout != -1)
         {
+			// printf("Restoring stdout fd: %d\n", original_stdout);
             dup2(original_stdout, STDOUT_FILENO);
             close(original_stdout);
         }
         if (original_stdin != -1)
 		{
+			// printf("Restoring stdin fd: %d\n", original_stdin);
             dup2(original_stdin, STDIN_FILENO);
-            close(original_stdin);	
+            close(original_stdin);
 		}
 	}
 }
@@ -80,24 +82,24 @@ static int	execute_builtin_command(t_command *cmd, t_global *global)
 }
 
 
-int	execute_builtin(t_command *cmd, t_global *global)
+int	execute_builtin(t_command *cmd, t_global *global, int *originals)
 {
-    int	original_stdout;
-    int	original_stdin;
+    // int	original_stdout;
+    // int	original_stdin;
     int	result;
 
     if (!cmd || !cmd->args || !cmd->args[0])
         return (1);
-    original_stdout = -1;
-    original_stdin = -1;
+    // original_stdout = -1;
+    // original_stdin = -1;
     if (cmd->redirections)
     {
-        original_stdout = dup(STDOUT_FILENO);
-        original_stdin = dup(STDIN_FILENO);
+        // original_stdout = dup(STDOUT_FILENO);
+        // original_stdin = dup(STDIN_FILENO);
         setup_redirections(cmd);
     }
     result = execute_builtin_command(cmd, global);
-    restore_file_descriptors(cmd, original_stdout, original_stdin);
+    restore_file_descriptors(cmd, originals[1], originals[0]);
     return (result);
 }
 

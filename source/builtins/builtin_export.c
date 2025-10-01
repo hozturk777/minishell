@@ -72,6 +72,8 @@ static int	process_export_argument(char **args, int i, t_global *global)
 int	builtin_export(char **args, t_global *global)
 {
 	int i;
+	int h;
+	char *equal_pos;
 
 	if (!args[1])
 	{
@@ -81,6 +83,16 @@ int	builtin_export(char **args, t_global *global)
 	i = 1;
 	while (args[i])
 	{
+		equal_pos = ft_strchr(args[i], '=');
+		h = -1;		
+		while (args[i][++h] && (equal_pos != NULL || &args[i][h] < equal_pos))
+		{
+			if (args[i][h] == '-')
+            {
+                printf("export: `%s': not a valid identifier\n", args[i]);
+                return(2);
+            }
+		}
 		i = process_export_argument(args, i, global);
 	}
 	return (0);

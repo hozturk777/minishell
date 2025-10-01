@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hsyn <hsyn@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: abakirca <abakirca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/24 12:00:00 by huozturk          #+#    #+#             */
-/*   Updated: 2025/09/30 21:04:50 by hasivaci         ###   ########.fr       */
+/*   Updated: 2025/10/01 18:45:21 by hasivaci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -177,6 +177,7 @@ pid_t	execute_pipeline_command_async(t_command *cmd, t_global *global, int prev_
 	int			exit_num;
 	t_redirect	*redirect;
 	t_list		*node;
+	int			originals[2];
 
 	// Pipeline'da tüm komutlar (built-in dahil) child process'te çalışmalı
 	node = cmd->redirections; // burası açıkken 'echo hello >> test.txt | cat test.txt' çalışmıyor kapalıyken de 'echo hello | <<end' command not found veriyor!!
@@ -187,8 +188,9 @@ pid_t	execute_pipeline_command_async(t_command *cmd, t_global *global, int prev_
 		// Child process - sinyalleri default davranışa çevir
 		setup_child_signals();
 		global->in_child = 1;
-		
 		// printf("ARGS $%s$\n", cmd->args[0]);
+		originals[0] = dup(STDIN_FILENO);
+		originals[1] = dup(STDOUT_FILENO);
 		setup_pipeline_fds(cmd, prev_fd, pipe_fd);
 		// printf("ARGS $%s$\n", cmd->args[0]);
 
@@ -197,7 +199,7 @@ pid_t	execute_pipeline_command_async(t_command *cmd, t_global *global, int prev_
 		// Child'da kullanılmayan heredoc FD'leri kapat
 		close_unused_heredoc_fds(cmd);
 		close_all_heredoc_fds();
-		
+
 		// AÇIK FD BURADA DEĞİL
 		
 		// printf("prev_fd: %d - pipe_Fd[0]: %d - pipe_fd[1]: %d \n", prev_fd, pipe_fd[0], pipe_fd[1]);
@@ -224,7 +226,7 @@ pid_t	execute_pipeline_command_async(t_command *cmd, t_global *global, int prev_
 
 		if (is_builtin(cmd->args[0]))
 		{
-			execute_builtin(cmd, global);
+			execute_builtin(cmd, global, originals);
 			exit_num = global->exit_status;
 			cleanup_and_exit();
 			exit(exit_num);
@@ -255,19 +257,25 @@ pid_t	execute_pipeline_command_async(t_command *cmd, t_global *global, int prev_
 				redirect = (t_redirect *)node->content;
 				if (redirect->type == T_HEREDOC)
 				{
-				 cleanup_and_exit();
-				 exit(0);
+					close(originals[0]);
+					close(originals[1]);
+					cleanup_and_exit();
+					exit(0);
 				}
 				node = node->next;
 			}
 			
             printf("minishell: %s: command not found\n", cmd->args[0]);
+			close(originals[0]);
+			close(originals[1]);
             cleanup_and_exit();
             exit(127);
         }
 		execve(path, cmd->args, env_list_to_array(global->env_list));
 		perror("execve");
 		cleanup_and_exit();
+		close(originals[0]);
+		close(originals[1]);
 		exit(127);
 	}
 	else if (pid > 0)

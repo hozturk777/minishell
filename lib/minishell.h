@@ -227,7 +227,7 @@ int				count_non_empty_args(char **args);						/* Boş olmayan argüman sayısı
 
 // ========== BUILT-IN FONKSIYONLARI ==========
 int				is_builtin(char *command);								/* Built-in komut mu kontrol et */
-int				execute_builtin(t_command *cmd, t_global *global);		/* Built-in komut çalıştır */
+int				execute_builtin(t_command *cmd, t_global *global, int *origin);		/* Built-in komut çalıştır */
 // int				builtin_pwd(void);										/* pwd built-in */
 int				builtin_pwd_global(t_global *global);					/* pwd built-in with global env */
 int				builtin_echo(char **args);								/* echo built-in */

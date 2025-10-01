@@ -115,7 +115,8 @@ int	check_quote_balance(char *input)
 				i++;
 			}
 		}
-		i++;
+		else
+			i++;
 	}
 	
 	// Both single and double quotes must be even
