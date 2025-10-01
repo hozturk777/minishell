@@ -70,6 +70,7 @@ void	register_heredoc_fd(int fd)
 	{
 		global->heredoc_fds[global->heredoc_fd_count] = fd;
 		global->heredoc_fd_count++;
+		debug_print("Registered heredoc FD");
 	}
 	else
 	{

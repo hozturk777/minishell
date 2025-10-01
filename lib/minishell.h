@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hasivaci <hasivaci@student.42kocaeli.co    +#+  +:+       +#+        */
+/*   By: abakirca <abakirca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 12:00:00 by huozturk          #+#    #+#             */
-/*   Updated: 2025/09/30 20:30:23 by hasivaci         ###   ########.fr       */
+/*   Updated: 2025/10/01 18:29:40 by abakirca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -227,7 +227,7 @@ int				count_non_empty_args(char **args);						/* Boş olmayan argüman sayısı
 
 // ========== BUILT-IN FONKSIYONLARI ==========
 int				is_builtin(char *command);								/* Built-in komut mu kontrol et */
-int				execute_builtin(t_command *cmd, t_global *global, int *origin);		/* Built-in komut çalıştır */
+int				execute_builtin(t_command *cmd, t_global *global, int *originals);		/* Built-in komut çalıştır */
 // int				builtin_pwd(void);										/* pwd built-in */
 int				builtin_pwd_global(t_global *global);					/* pwd built-in with global env */
 int				builtin_echo(char **args);								/* echo built-in */
