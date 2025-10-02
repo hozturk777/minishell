@@ -26,8 +26,8 @@ static t_token_new	*handle_input_redirect(t_lexer_new *lexer)
 		return (create_token_advanced(T_HEREDOC, "<<"));
 	}
 	/* Burada returnde value dönüp çıktıyı değiştiricez */
-	else if (!ft_isprint(lexer->current_char) || lexer->current_char == '|')
-		return (NULL);
+	// else if (!ft_isprint(lexer->current_char) || lexer->current_char == '|')
+		// return (NULL);
 	return (create_token_advanced(T_REDIRECT_IN, "<"));
 }
 
@@ -44,8 +44,8 @@ static t_token_new	*handle_output_redirect(t_lexer_new *lexer)
 		return (create_token_advanced(T_APPEND, ">>"));
 	}
 	/* Burada returnde value dönüp çıktıyı değiştiricez */
-	else if (!ft_isprint(lexer->current_char) || lexer->current_char == '|')
-		return (NULL);
+	// else if (!ft_isprint(lexer->current_char) || lexer->current_char == '|')
+	// 	return (NULL);
 	return (create_token_advanced(T_REDIRECT_OUT, ">"));
 }
 

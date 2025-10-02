@@ -25,7 +25,7 @@ static char	*create_temp_filename(int heredoc_count)
 	char	*temp2;
 	char	*result;
 
-	pid_str = ft_itoa(getpid());
+	pid_str = ft_itoa(getpid()); // KALDIRILCAK
 	count_str = ft_itoa(heredoc_count);
 	if (!pid_str || !count_str)
 	{

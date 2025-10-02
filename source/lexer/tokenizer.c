@@ -170,7 +170,10 @@ static int	process_token(t_list **tokens, t_token_new *token)
 		return (1);
 	}
 	else if (!token)
+	{
+		printf("Token Error\n");
 		return (0);
+	}
 	return (1);
 }
 
