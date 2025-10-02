@@ -10,13 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-
 #include "../../lib/minishell.h"
-
-
-/************************************************************************** */
-/*                            QUOTE PROCESSING HELPER                        */
-/* ************************************************************************** */
 
 static char	*extract_inner_content(char *str, int len)
 {
@@ -54,47 +48,6 @@ char	*remove_quotes(char *str)
 	return (ft_strdup(str));
 }
 
-
-// char	*remove_quotes(char *str)
-// {
-// 	int		len;
-// 	int		i;
-// 	int 	j;
-// 	char	*result;
-// 	//char	quote_char;
-
-// 	if (!str)
-// 		return (NULL);
-// 	len = ft_strlen(str);
-// 	if (len < 2)
-// 		return (ft_strdup(str));
-// 	if ((str[0] == '"' && str[len - 1] == '"') ||
-// 		(str[0] == '\'' && str[len - 1] == '\''))
-// 	{
-// 		// //quote_char = str[0];
-// 		// result = ft_substr(str, 1, len - 2);
-// 		// return (result);
-// 		result = halloc(len - 1);  // halloc kullanıyor
-//         if (!result)
-//             return (NULL);
-//         i = 1;
-//         j = 0;
-//         while (i < len - 1)
-//         {
-//             result[j] = str[i];
-//             i++;
-//             j++;
-//         }
-//         result[j] = '\0';
-//         return (result);
-// 	}
-// 	return (ft_strdup(str));
-// }
-
-/* ************************************************************************** */
-/*                            EXIT BUILT-IN                                  */
-/* ************************************************************************** */
-
 int	builtin_exit(char **args)
 {
 	int	exit_code;
@@ -112,7 +65,7 @@ int	builtin_exit(char **args)
 			if (!ft_isdigit(args[1][i]))
 			{
 				printf("minishell: exit: %s: numeric argument required\n", args[1]);
-				cleanup_and_exit();  // FD'leri kapat ve garbage collect
+				cleanup_and_exit();
 				exit(2);
 			}
 			i++;
@@ -124,13 +77,9 @@ int	builtin_exit(char **args)
 			return (0);
 		}
 	}
-	cleanup_and_exit();  // FD'leri kapat ve garbage collect
+	cleanup_and_exit();
 	exit(exit_code);
 }
-
-/* ************************************************************************** */
-/*                            ENV BUILT-IN                                   */
-/* ************************************************************************** */
 
 int	builtin_env(t_env *env_list)
 {
@@ -147,9 +96,7 @@ int	builtin_env(t_env *env_list)
 	else if (global->commands->args[1])
 	{
 		printf("env: '%s': No such file or directory\n", global->commands->args[1]);	
-		return (127);
-		//	env: ‘dsadsa’: No such file or directory
-	
+		return (127);	
 	}
 	while (current)
 	{
