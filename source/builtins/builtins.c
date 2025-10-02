@@ -59,6 +59,11 @@ static void	restore_file_descriptors(t_command *cmd, int original_stdout, int or
             close(original_stdin);
 		}
 	}
+	else
+	{
+		close(original_stdin);
+		close(original_stdout);
+	}
 }
 
 static int	execute_builtin_command(t_command *cmd, t_global *global)
