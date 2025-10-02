@@ -20,7 +20,7 @@ static int	process_input(char *input, t_global *global)
 	if (!input || ft_strlen(input) == 0)
 		return (0);
 	add_history(input);
-	input = ft_strtrim(input, " ");
+	input = ft_strtrim(input, " \t\n");
 		// Düzenlenecek whitespace eklenecek & NULL check eklenecek
 	global->input_line = ft_strdup(input);
 	// 1. LEXER: Input'u token'lara çevir

@@ -3,6 +3,8 @@
 		"minishell.h": "c",
 		"token_enum.h": "c",
 		"stdlib.h": "c",
-		"libft.h": "c"
+		"libft.h": "c",
+		"cstddef": "c",
+		"ioctl.h": "c"
 	}
 }

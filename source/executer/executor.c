@@ -166,10 +166,39 @@ static void	close_unused_heredoc_fds(t_command *cmd)
 	}
 }
 
-/* ************************************************************************** */
-/*                            ASYNC PIPELINE COMMAND EXECUTION              */
-/* ************************************************************************** */
-// YORUM satırları kaldırıınca 52 satır kod bloğu;
+static int	heredoc_check(t_command	*command)
+{
+	t_command	*command_temp;
+	t_redirect	*redirect;
+	t_list	*node;
+
+	command_temp = command->next;
+	if (!command_temp)
+		return (0);
+	node = command_temp->redirections;
+	redirect = NULL;
+
+	while (command_temp)
+	{
+		// redirect = (t_redirect *)node->content;
+
+		node = command_temp->redirections;
+		if (node)
+			redirect = (t_redirect *)node->content;
+		if (redirect)
+		{
+			while (redirect)
+			{
+				if (redirect->type == T_HEREDOC)
+					return (1);
+				redirect = redirect->next;
+			}
+		}
+		command_temp = command_temp->next;
+	}
+	return (0);
+}
+
 pid_t	execute_pipeline_command_async(t_command *cmd, t_global *global, int prev_fd, int *pipe_fd)
 {
 	pid_t		pid;
@@ -202,55 +231,26 @@ pid_t	execute_pipeline_command_async(t_command *cmd, t_global *global, int prev_
 		close(originals[1]);
 		close_all_heredoc_fds();
 
-		// AÇIK FD BURADA DEĞİL
-		
-		// printf("prev_fd: %d - pipe_Fd[0]: %d - pipe_fd[1]: %d \n", prev_fd, pipe_fd[0], pipe_fd[1]);
-
-		// if (prev_fd > 0)
-		// {
-		// 	close(prev_fd);
-		// 	prev_fd = -1;
-		// }
-		// if (pipe_fd[0] > 0)
-		// {
-		// 	close(pipe_fd[0]);
-		// 	pipe_fd[0] = -1;
-		// }
-		// if (pipe_fd[1] > 0)
-		// {
-		// 	close(pipe_fd[1]);
-		// 	pipe_fd[1] = -1;
-		// }
-		// printf("prev_fd: %d - pipe_Fd[0]: %d - pipe_fd[1]: %d \n", prev_fd, pipe_fd[0], pipe_fd[1]);
-		
-		// printf("ARGS[0]: $%s$\n", cmd->args[0]);
-
-
-		if (is_builtin(cmd->args[0]))
+		if (is_builtin(cmd->args[0])) // pipe ? yes : no && ileride ki herhangi bir commandda heredoc var mı check varsa if yoksa else
 		{
-			execute_builtin(cmd, global, originals);
-			exit_num = global->exit_status;
-			cleanup_and_exit();
-			exit(exit_num);
+			
+			if (heredoc_check(cmd) && !isatty(STDOUT_FILENO))
+			{
+				cleanup_and_exit();
+				exit(0);
+			}
+			else
+			{
+
+				execute_builtin(cmd, global, originals);
+				exit_num = global->exit_status;
+				cleanup_and_exit();
+				exit(exit_num);
+			}
 		}
 		
-
+        
 		path = find_command_path(cmd->args[0], global->env_list);
-
-		// t_redirect *redirect;
-		// redirect = (t_redirect *)cmd->redirections->content;
-		// if (!path)
-		// {
-		// 	if (redirect->type == T_HEREDOC)
-		// 	{
-		// 		cleanup_and_exit();
-		// 		exit(0);
-		// 	}
-			
-		// 	printf("minishell: %s: command not found\n", cmd->args[0]);
-		// 	cleanup_and_exit();
-		// 	exit(127);
-		// }
 		
         if (!path)
         {
