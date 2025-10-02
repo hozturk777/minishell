@@ -169,11 +169,8 @@ static int	process_token(t_list **tokens, t_token_new *token)
 		ft_lstadd_back(tokens, ft_lstnew(token));
 		return (1);
 	}
-	// else if (!token)
-	// {
-	// 	// printf("Error: Syntax Error\n");
-	// 	return (0);
-	// }
+	else if (!token)
+		return (0);
 	return (1);
 }
 
@@ -191,7 +188,7 @@ t_list	*tokenize_advanced(char *input, t_global *global)
 	if (!lexer)
 		return (NULL);
 	tokens = NULL;
-	while (lexer->current_char != '\0')
+	while (lexer->current_char)
 	{
 		token = get_next_token(lexer);
 		global->echo_flag = 0;

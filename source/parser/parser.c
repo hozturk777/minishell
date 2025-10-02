@@ -59,7 +59,7 @@ int	check_syntax(t_list **token_node)
 			token_temp = token_temp->next;
 			if (!token_temp)
 			{
-				printf("minishell: syntax error near unexpected token `newline'");
+				printf("minishell: syntax error near unexpected token `newline'\n");
 				return (1);
 			}
 			token_test = (t_token_new *)token_temp->content;
@@ -70,7 +70,7 @@ int	check_syntax(t_list **token_node)
 			}
 			if (token_test->type != T_WORD)
 			{
-				printf("minishell: syntax error near unexpected token `%s'", token_test->value);
+				printf("minishell: syntax error near unexpected token `%s'\n", token_test->value);
 				return (1);
 			}
 			continue;
@@ -80,13 +80,13 @@ int	check_syntax(t_list **token_node)
 			token_temp = token_temp->next;
 			if (!token_temp)
 			{
-				printf("minishell: syntax error near unexpected token `newline'");
+				printf("minishell: syntax error near unexpected token `newline'\n");
 				return (1);
 			}
 			token_test = (t_token_new *)token_temp->content;
 			if (token_test->type != T_WORD && token_test->type != T_CMD)
 			{
-				printf("minishell: syntax error near unexpected token `%s'", token_test->value);
+				printf("minishell: syntax error near unexpected token `%s'\n", token_test->value);
 				return (1);
 			}
 			continue;
@@ -149,6 +149,11 @@ void	parse_redirection(t_command *cmd, t_list **token_node, t_global *global)
     if (*token_node)
     {
         file_token = (t_token_new *)(*token_node)->content;
+		if (file_token->type == T_WHITESPACE)
+		{
+			*token_node = (*token_node)->next;
+	        file_token = (t_token_new *)(*token_node)->content;
+		}
         redirect->filename = ft_strdup(file_token->value); // burada strdup da garbage collector lazım;
     }
     add_redirect_to_command(cmd, redirect);

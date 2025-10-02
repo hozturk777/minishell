@@ -34,6 +34,11 @@ static int	process_input(char *input, t_global *global)
 	// print_tokens_advanced(tokens);
 	// 2. PARSER: Token'ları komut yapılarına çevir
 	commands = parse_tokens_to_commands(tokens, global); // NULL DÖNME İHTİMALİ VAR!!
+	if (!commands)
+	{
+		global->exit_status = 2;
+		return (0);
+	}
 	// if (!commands) 
 	// {
 	// 	printf("Error: Parsing failed\n");
@@ -44,11 +49,11 @@ static int	process_input(char *input, t_global *global)
 	// 	return (0);
 	// }
 	// 3. DEBUG: Token'ları ve komutları yazdır
-	// printf("\n=== TOKENS ===\n");
-	// print_tokens_advanced(tokens);
-	// printf("\n=== PARSED COMMANDS ===\n");
-	// print_commands_debug(commands);
-	// printf("\n==================\n\n");
+	printf("\n=== TOKENS ===\n");
+	print_tokens_advanced(tokens);
+	printf("\n=== PARSED COMMANDS ===\n");
+	print_commands_debug(commands);
+	printf("\n==================\n\n");
 	global->tokens = tokens;
 	global->commands = commands;
 	// 4. EXECUTION: Komutları çalıştır

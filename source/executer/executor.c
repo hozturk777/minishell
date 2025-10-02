@@ -198,6 +198,8 @@ pid_t	execute_pipeline_command_async(t_command *cmd, t_global *global, int prev_
 		
 		// Child'da kullanılmayan heredoc FD'leri kapat
 		close_unused_heredoc_fds(cmd);
+		close(originals[0]);
+		close(originals[1]);
 		close_all_heredoc_fds();
 
 		// AÇIK FD BURADA DEĞİL

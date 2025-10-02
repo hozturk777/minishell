@@ -16,7 +16,6 @@
 static t_token_new	*handle_input_redirect(t_lexer_new *lexer)
 {
 	advance_lexer(lexer);
-	// skip_whitespace_advanced(lexer);
 	if (lexer->current_char == '<')
 	{
 		advance_lexer(lexer);
@@ -35,7 +34,6 @@ static t_token_new	*handle_input_redirect(t_lexer_new *lexer)
 static t_token_new	*handle_output_redirect(t_lexer_new *lexer)
 {
 	advance_lexer(lexer);
-	// skip_whitespace_advanced(lexer);
 	if (lexer->current_char == '>')
 	{
 		advance_lexer(lexer);

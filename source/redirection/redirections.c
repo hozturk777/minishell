@@ -153,7 +153,7 @@ void	handle_single_redirection(t_redirect *redirect)
 	if (redirect->type == T_REDIRECT_IN)
 		dup2(fd, STDIN_FILENO);
 	else
-		dup2(fd, STDOUT_FILENO);
+		dup2(fd, STDOUT_FILENO);	
 	close(fd);
 }
 
