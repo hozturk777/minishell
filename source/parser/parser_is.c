@@ -19,7 +19,7 @@ int	is_command_start(t_list *token_node)
     if (!token_node)
         return (0);
     token = (t_token_new *)token_node->content;
-    return (token->type == T_WORD || token->type == T_CMD || token->type == T_HEREDOC || token->type == T_REDIRECT_OUT || token->type == T_REDIRECT_IN);
+    return (token->type == T_WORD || token->type == T_CMD || token->type == T_HEREDOC || token->type == T_REDIRECT_OUT || token->type == T_REDIRECT_IN || token->type == T_APPEND || token->type == T_DOUBLE_QUOTE || token->type == T_SINGLE_QUOTE);
 }
 
 int	is_pipe_token(t_list *token_node)

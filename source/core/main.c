@@ -24,6 +24,15 @@ static int	process_input(char *input, t_global *global)
 		return (0);
 	add_history(input);
 	input = ft_strtrim(input, " \t\n");
+	if (!input[0])
+		return (0);
+	if (input[0] == '|' || input[ft_strlen(input) - 1] == '|')
+	{
+		printf("minishell: syntax error near unexpected token `|'\n");
+		global->exit_status = 2;
+		return (0);
+	}
+	
 	global->input_line = ft_strdup(input);
 	
 	tokens = tokenize_advanced(input, global);
@@ -32,8 +41,8 @@ static int	process_input(char *input, t_global *global)
 		global->exit_status = 2;
 		return (0);
 	}
-	printf("\n=== TOKENS ===\n");
-	print_tokens_advanced(tokens);
+	// printf("\n=== TOKENS ===\n");
+	// print_tokens_advanced(tokens);
 	commands = parse_tokens_to_commands(tokens, global);
 	if (!commands)
 	{

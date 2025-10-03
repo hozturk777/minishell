@@ -37,7 +37,14 @@ int	execute_single_command(t_command *cmd, t_global *global)
 	originals[0] = dup(STDIN_FILENO);
 	originals[1] = dup(STDOUT_FILENO);
 	if (is_builtin(cmd->args[0]))
+	{
+		if (!ft_strcmp(cmd->args[0], "exit"))
+		{
+			close(originals[0]);
+			close(originals[1]);
+		}
 		return (execute_builtin(cmd, global, originals));
+	}
 	close(originals[0]);
 	close(originals[1]);
 	return (execute_external_command(cmd, global));

@@ -39,7 +39,7 @@ int	is_single_quoted_literal(char *str)
 {
 	if (!str)
 		return (0);
-	return (ft_strnstr(str, "__SINGLE_QUOTE__", ft_strlen(str)) != NULL);
+	return (ft_strnstr(str, "\'", ft_strlen(str)) != NULL);
 }
 
 int	is_double_quoted_literal(char *str)
@@ -59,13 +59,13 @@ char	*extract_single_quote_content(char *str)
 	if (!str)
 		return (NULL);
 	
-	start = ft_strnstr(str, "__SINGLE_QUOTE__", ft_strlen(str));
+	start = ft_strnstr(str, "\'", ft_strlen(str));
 	if (!start)
 		return (ft_strdup(str));
 	
-	start += ft_strlen("__SINGLE_QUOTE__");
+	start += ft_strlen("\'");
 	
-	end = ft_strnstr(start, "__END_SINGLE_QUOTE__", ft_strlen(start));
+	end = ft_strnstr(start, "\'", ft_strlen(start));
 	if (!end)
 		return (ft_strdup(start));
 	

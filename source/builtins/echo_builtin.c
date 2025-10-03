@@ -120,6 +120,18 @@ int	builtin_echo(char **args)
 				process_escape_sequences(processed_arg);
 				enable_escape = 0;
 			}
+			while (processed_arg && !ft_strcmp(processed_arg, " "))
+			{
+				if (!ft_strcmp(args[j + 1], " "))
+				{
+					j++;
+					processed_arg = args[j];
+				}
+				else
+				{
+					break;
+				}
+			}
 			printf("%s", processed_arg);
 		}
 		j++;
