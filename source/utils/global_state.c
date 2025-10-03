@@ -106,4 +106,5 @@ void	cleanup_and_exit(void)
 {
 	close_all_heredoc_fds();
 	clear_garbage();
+	rl_clear_history();
 }

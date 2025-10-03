@@ -215,39 +215,14 @@ int	execute_pipeline(t_command *commands, t_global *global)
     int		cmd_count;
     int		last_status;
 
-    // Pre-process heredocs in main process BEFORE forking
     if (preprocess_heredocs(commands, global) == -1)
         return (1);
-    // Count commands
     cmd_count = count_pipeline_commands(commands);
     pids = halloc(sizeof(pid_t) * cmd_count);
     if (!pids)
         return (1);
-    // Execute all pipeline commands
     if (execute_all_pipeline_commands(commands, global, pids, cmd_count) == -1)
         return (1);
-    // Wait for all processes and get last status
     last_status = wait_for_all_pipeline_processes(pids, cmd_count);
-    // Cleanup heredoc FDs in parent process - MUTLAKA ÇALIŞTIR
-    // current = commands;
-    // while (current)
-    // {
-    // 	if (current->redirections)
-    // 	{
-    // 		t_list *node = current->redirections;
-    // 		while (node)
-    // 		{
-    // 			t_redirect *redirect = (t_redirect *)node->content;
-    // 			if (redirect && redirect->type == T_HEREDOC && redirect->fd > 2)
-    // 			{
-    // 				printf("FAFAFADEBUG: Closing heredoc FD %d in parent\n", redirect->fd);
-    // 				close(redirect->fd);
-    // 				redirect->fd = -1;
-    // 			}
-    // 			node = node->next;
-    // 		}
-    // 	}
-    // 	current = current->next;
-    // }
     return (last_status);
 }

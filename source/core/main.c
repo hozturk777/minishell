@@ -20,7 +20,7 @@ static int	process_input(char *input, t_global *global)
 	if (!input || ft_strlen(input) == 0)
 		return (0);
 	add_history(input);
-	input = ft_strtrim(input, " ");
+	input = ft_strtrim(input, " \t\n");
 		// Düzenlenecek whitespace eklenecek & NULL check eklenecek
 	global->input_line = ft_strdup(input);
 	// 1. LEXER: Input'u token'lara çevir
@@ -30,11 +30,16 @@ static int	process_input(char *input, t_global *global)
 		global->exit_status = 2;
 		return (0);
 	}
-	// printf("\n=== TOKENS ===\n");
-	// print_tokens_advanced(tokens);
+	printf("\n=== TOKENS ===\n");
+	print_tokens_advanced(tokens);
 	// 2. PARSER: Token'ları komut yapılarına çevir
-	commands = parse_tokens_to_commands(tokens, global);
-	// if (!commands)
+	commands = parse_tokens_to_commands(tokens, global); // NULL DÖNME İHTİMALİ VAR!!
+	if (!commands)
+	{
+		global->exit_status = 2;
+		return (0);
+	}
+	// if (!commands) 
 	// {
 	// 	printf("Error: Parsing failed\n");
 	// 	//free_tokens_advanced(&tokens);
@@ -55,7 +60,7 @@ static int	process_input(char *input, t_global *global)
 	if (commands)
 		global->exit_status = execute_commands(commands, global);
 	if (global->input_line)
-		global->input_line = NULL;
+		global->input_line = NULL;	
 	return (0);
 }
 
@@ -92,6 +97,8 @@ t_global	*get_global(void)
 // argc sayısı check
 int	main(int argc, char **argv, char **envp)
 {
+	printf("\nDEBUG: Main process PID: %d\n", getpid());
+
 	t_global	*global;
 
 	(void)argc;

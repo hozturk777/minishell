@@ -3,19 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   builtins.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hasivaci <hasivaci@student.42kocaeli.co    +#+  +:+       +#+        */
+/*   By: abakirca <abakirca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/28 17:39:03 by hasivaci          #+#    #+#             */
-/*   Updated: 2025/09/30 20:29:08 by hasivaci         ###   ########.fr       */
+/*   Updated: 2025/10/01 18:47:18 by abakirca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../lib/minishell.h"
 
-/* ************************************************************************** */
-/*                            BUILT-IN KONTROL FONKSIYONU                    */
-/* ************************************************************************** */
-// Define olarak ya da enum olarak eklenecek her biri
 int	is_builtin(char *command)
 {
 	if (!command)
@@ -37,11 +33,6 @@ int	is_builtin(char *command)
 	return (0);
 }
 
-/* ************************************************************************** */
-/*                            BUILT-IN EXECUTOR                              */
-/* ************************************************************************** */
-
-
 static void	restore_file_descriptors(t_command *cmd, int original_stdout, int original_stdin)
 {
     if (cmd->redirections)
@@ -53,9 +44,14 @@ static void	restore_file_descriptors(t_command *cmd, int original_stdout, int or
         }
         if (original_stdin != -1)
 		{
-            dup2(original_stdout, STDOUT_FILENO);
-            close(original_stdout);	
+            dup2(original_stdin, STDIN_FILENO);
+            close(original_stdin);
 		}
+	}
+	else
+	{
+		close(original_stdin);
+		close(original_stdout);
 	}
 }
 
@@ -80,102 +76,24 @@ static int	execute_builtin_command(t_command *cmd, t_global *global)
 }
 
 
-int	execute_builtin(t_command *cmd, t_global *global)
+int	execute_builtin(t_command *cmd, t_global *global, int *originals)
 {
-    int	original_stdout;
-    int	original_stdin;
+
     int	result;
 
     if (!cmd || !cmd->args || !cmd->args[0])
         return (1);
-    original_stdout = -1;
-    original_stdin = -1;
+
     if (cmd->redirections)
     {
-        original_stdout = dup(STDOUT_FILENO);
-        original_stdin = dup(STDIN_FILENO);
+
         setup_redirections(cmd);
     }
     result = execute_builtin_command(cmd, global);
-    restore_file_descriptors(cmd, original_stdout, original_stdin);
+    restore_file_descriptors(cmd, originals[1], originals[0]);
     return (result);
 }
 
-
-
-// int	execute_builtin(t_command *cmd, t_global *global)
-// {
-// 	int	original_stdout;
-// 	int	original_stdin;
-// 	int	result;
-
-// 	if (!cmd || !cmd->args || !cmd->args[0])
-// 		return (1);
-	
-// 	// Redirection varsa file descriptor'ları kaydet ve setup et
-// 	original_stdout = -1;
-// 	original_stdin = -1;
-// 	if (cmd->redirections)
-// 	{
-// 		original_stdout = dup(STDOUT_FILENO);
-// 		original_stdin = dup(STDIN_FILENO);
-// 		setup_redirections(cmd);
-// 	}
-// 	if (ft_strcmp(cmd->args[0], "pwd") == 0)
-// 		result = builtin_pwd_global(global);
-// 	else if (ft_strcmp(cmd->args[0], "echo") == 0)
-// 		result = builtin_echo(cmd->args);
-// 	else if (ft_strcmp(cmd->args[0], "env") == 0)
-// 		result = builtin_env(global->env_list);
-// 	else if (ft_strcmp(cmd->args[0], "exit") == 0)
-// 		result = builtin_exit(cmd->args);
-// 	else if (ft_strcmp(cmd->args[0], "cd") == 0)
-// 		result = builtin_cd(cmd->args, global);
-// 	else if (ft_strcmp(cmd->args[0], "export") == 0)
-// 		result = builtin_export(cmd->args, global);
-// 	else if (ft_strcmp(cmd->args[0], "unset") == 0)
-// 		result = builtin_unset(cmd->args, global);
-// 	else
-// 		result = 1;
-	
-// 	// File descriptor'ları eski haline getir
-// 	if (cmd->redirections)
-// 	{
-// 		if (original_stdout != -1)
-// 		{
-// 			dup2(original_stdout, STDOUT_FILENO);
-// 			close(original_stdout);
-// 		}
-// 		if (original_stdin != -1)
-// 		{
-// 			dup2(original_stdin, STDIN_FILENO);
-// 			close(original_stdin);
-// 		}
-// 	}
-	
-// 	return (result);
-// }
-
-/* ************************************************************************** */
-/*                            PWD BUILT-IN                                   */
-/* ************************************************************************** */
-
-// int	builtin_pwd(void)
-// {
-// 	char	*cwd;
-
-// 	cwd = getcwd(NULL, 0);
-// 	if (!cwd)
-// 	{
-// 		printf("pwd: error retrieving current directory: No such file or directory\n");
-// 		return (1);
-// 	}
-// 	printf("%s\n", cwd);
-// 	// free(cwd);
-// 	return (0);
-// }
-
-/* PWD built-in with global support */
 int	builtin_pwd_global(t_global *global)
 {
 	t_command	*cmd;

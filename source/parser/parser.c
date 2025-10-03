@@ -29,6 +29,11 @@ t_command	*parse_tokens_to_commands(t_list *tokens, t_global *global)
         if (is_command_start(token_node)) // Token word ise
         {
             current = parse_single_command(&token_node, global);
+			if (!current)
+			{
+				return (NULL);
+			}
+			
             if (!head)
                 head = current;
             else
@@ -39,6 +44,57 @@ t_command	*parse_tokens_to_commands(t_list *tokens, t_global *global)
     }
 		
     return (head);
+}
+int	check_syntax(t_list **token_node)
+{
+	t_list		*token_temp;
+	t_token_new	*token_test;
+
+	token_temp = *token_node;
+	while (token_temp)
+	{
+	    token_test = (t_token_new *)token_temp->content;
+		if (token_test->type == T_REDIRECT_IN || token_test->type == T_REDIRECT_OUT || token_test->type == T_APPEND)
+		{
+			token_temp = token_temp->next;
+			if (!token_temp)
+			{
+				printf("minishell: syntax error near unexpected token `newline'\n");
+				return (1);
+			}
+			token_test = (t_token_new *)token_temp->content;
+			if (token_test->type == T_WHITESPACE)
+			{
+				token_temp = token_temp->next;
+				token_test = (t_token_new *)token_temp->content;
+			}
+			if (token_test->type != T_WORD)
+			{
+				printf("minishell: syntax error near unexpected token `%s'\n", token_test->value);
+				return (1);
+			}
+			continue;
+		}
+		else if (token_test->type == T_HEREDOC)
+		{
+			token_temp = token_temp->next;
+			if (!token_temp)
+			{
+				printf("minishell: syntax error near unexpected token `newline'\n");
+				return (1);
+			}
+			token_test = (t_token_new *)token_temp->content;
+			if (token_test->type != T_WORD && token_test->type != T_CMD)
+			{
+				printf("minishell: syntax error near unexpected token `%s'\n", token_test->value);
+				return (1);
+			}
+			continue;
+		}
+		
+		token_temp = token_temp->next;
+	}
+	return (0);
 }
 
 t_command	*parse_single_command(t_list **token_node, t_global *global)
@@ -53,6 +109,10 @@ t_command	*parse_single_command(t_list **token_node, t_global *global)
         return (NULL);
     args_list = NULL;
     current = *token_node;
+	if (check_syntax(token_node))
+	{
+		return (NULL);
+	}
     while (current && !is_pipe_token(current)) // Pipelar arasını word ve redirectleri ayırma işlemi
     {
         if (is_redirect_token(current)) // Redirect var ise yönlendirmeyi yapıyor
@@ -89,6 +149,11 @@ void	parse_redirection(t_command *cmd, t_list **token_node, t_global *global)
     if (*token_node)
     {
         file_token = (t_token_new *)(*token_node)->content;
+		if (file_token->type == T_WHITESPACE)
+		{
+			*token_node = (*token_node)->next;
+	        file_token = (t_token_new *)(*token_node)->content;
+		}
         redirect->filename = ft_strdup(file_token->value); // burada strdup da garbage collector lazım;
     }
     add_redirect_to_command(cmd, redirect);

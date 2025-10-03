@@ -80,13 +80,35 @@ static char	*determine_cd_path(char **args, t_global *global)
         return (args[1]);
 }
 
+// int	builtin_cd(char **args, t_global *global)
+// {
+//     char	*path;
+//     char	*old_pwd;
+
+//     old_pwd = get_env_value(global->env_list, "PWD");
+//     path = determine_cd_path(args, global); // cd girildiğinde home dizinine gitmek için
+//     if (!path)
+//         return (1);
+//     if (args && args[1] && args[2])
+//     {
+//         printf("minishell: cd: too many arguments\n");
+//         return (1);
+//     }
+//     if (chdir(path) != 0) // chdir dizin değiştirmek için başarılı: 0 hata: -1
+//         return (handle_chdir_failure(path, old_pwd, global));
+//     update_pwd_variables(old_pwd, path, global); // old pwd güncellemek için
+//     return (0);
+// }
+
+
+
 int	builtin_cd(char **args, t_global *global)
 {
     char	*path;
     char	*old_pwd;
-
+    char    *cwd;
     old_pwd = get_env_value(global->env_list, "PWD");
-    path = determine_cd_path(args, global); // cd girildiğinde home dizinine gitmek için
+    path = determine_cd_path(args, global);
     if (!path)
         return (1);
     if (args && args[1] && args[2])
@@ -94,9 +116,17 @@ int	builtin_cd(char **args, t_global *global)
         printf("minishell: cd: too many arguments\n");
         return (1);
     }
-    if (chdir(path) != 0) // chdir dizin değiştirmek için başarılı: 0 hata: -1
+    if (chdir(path) != 0)
         return (handle_chdir_failure(path, old_pwd, global));
-    update_pwd_variables(old_pwd, path, global); // old pwd güncellemek için
+    cwd = getcwd(NULL, 0);
+    if (!cwd)
+    {
+        printf("cd: error retrieving current directory: getcwd: cannot access parent directories: No such file or directory\n");
+        return (1);
+    }
+	update_pwd_variables(old_pwd, path, global);
+    set_env_var(global, "OLDPWD", old_pwd);
+    set_env_var(global, "PWD", cwd);
     return (0);
 }
 

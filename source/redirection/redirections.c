@@ -139,8 +139,8 @@ static int	open_redirection_file(t_redirect *redirect)
 	if (fd == -1)
 	{
 		perror(redirect->filename);
-		cleanup_and_exit();
-		exit(1);
+		// cleanup_and_exit();
+		// exit(1);
 	}
 	return (fd);
 }
@@ -154,7 +154,10 @@ void	handle_single_redirection(t_redirect *redirect)
 		dup2(fd, STDIN_FILENO);
 	else
 		dup2(fd, STDOUT_FILENO);
-	close(fd);
+	if (fd > 2)
+	{
+		close(fd);
+	}	
 }
 
 // // void	handle_single_redirection(t_redirect *redirect)

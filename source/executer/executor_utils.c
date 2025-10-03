@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor_utils.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hasivaci <hasivaci@student.42kocaeli.co    +#+  +:+       +#+        */
+/*   By: abakirca <abakirca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/30 20:47:26 by hasivaci          #+#    #+#             */
-/*   Updated: 2025/09/30 20:49:55 by hasivaci         ###   ########.fr       */
+/*   Updated: 2025/10/01 18:32:10 by abakirca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,9 +39,13 @@ int	execute_single_command(t_command *cmd, t_global *global)
 	}
 	if (!cmd || !cmd->args || !cmd->args[0])
 		return (1);
-
+	int originals[2];
+	originals[0] = dup(STDIN_FILENO);
+	originals[1] = dup(STDOUT_FILENO);
 	if (is_builtin(cmd->args[0]))
-		return (execute_builtin(cmd, global));
+		return (execute_builtin(cmd, global, originals));
+	close(originals[0]);
+	close(originals[1]);
 	return (execute_external_command(cmd, global));
 }
 
