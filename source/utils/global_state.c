@@ -12,9 +12,6 @@
 
 #include "../../lib/minishell.h"
 
-// Global değişken - sinyal handler'lar için
-// t_global	*g_global = NULL;
-
 static void	update_shlvl(t_env *env)
 {
 	int	value;
@@ -23,12 +20,11 @@ static void	update_shlvl(t_env *env)
 	value++;
 	set_env_var(get_global(), "SHLVL", ft_itoa(value));
 }
- // bzero YAPILCAK
+
 t_global	*init_global(char **envp, t_global *global)
 {
 	int	i;
 
-	// global = (t_global *)halloc(sizeof(t_global));
 	if (!global)
 		return (NULL);
 	global->tokens = NULL;
@@ -46,10 +42,6 @@ t_global	*init_global(char **envp, t_global *global)
 	i = 0;
 	while (i < MAX_HEREDOC_FDS)
 		global->heredoc_fds[i++] = -1;
-
-	// Global değişkeni ayarla
-	// g_global = global;
-
 	return (global);
 }
 
@@ -75,7 +67,6 @@ void	register_heredoc_fd(int fd)
 	else
 	{
 		debug_print("WARNING: Max heredoc FDs reached, cannot register more");
-		// FD'yi yine de kapat ki leak olmasın
 		close(fd);
 	}
 }

@@ -37,10 +37,6 @@ static char	*create_temp_filename(int heredoc_count)
 	return (result);
 }
 
-/* ************************************************************************** */
-/*                            PIPELINE FD SETUP                              */
-/* ************************************************************************** */
-
 void	setup_pipeline_fds(t_command *cmd, int prev_fd, int *pipe_fd)
 {
 	if (prev_fd != 0)
@@ -91,13 +87,10 @@ int	handle_heredoc(t_redirect *redirect)
 	close(redirect->fd);
 	redirect->fd = open(temp_filename, O_RDONLY);
 	unlink(temp_filename);
-	
-	// Heredoc FD'yi global state'e kaydet
 	if (redirect->fd > 2)
 	{
 		register_heredoc_fd(redirect->fd);
 		printf("DEBUG: Registered heredoc FD %d\n", redirect->fd);
 	}
-	
 	return (redirect->fd);
 }

@@ -12,10 +12,6 @@
 
 #include "../../lib/minishell.h"
 
-/* ************************************************************************** */
-/*                            PATH RESOLUTION HELPER                         */
-/* ************************************************************************** */
-
 char	*find_existing_parent(char *path)
 {
 	char	*current_path;
@@ -54,7 +50,7 @@ static char	*process_path_logic(char *clean_pwd, char *path)
 
     if (ft_strcmp(path, ".") == 0)
         return (ft_strdup(clean_pwd));
-    if (ft_strcmp(path, "..") == 0) // Bakılacak
+    if (ft_strcmp(path, "..") == 0)
     {
         last_slash = ft_strrchr(clean_pwd, '/');
         if (last_slash && last_slash != clean_pwd)
@@ -73,7 +69,6 @@ static char	*clean_trailing_slash(char *current_pwd)
 {
     int	len;
 
-    /* Remove trailing slash from current_pwd */
     len = ft_strlen(current_pwd);
     if (len > 1 && current_pwd[len - 1] == '/')
         return (ft_substr(current_pwd, 0, len - 1));
@@ -100,51 +95,3 @@ char	*resolve_logical_path(char *current_pwd, char *path)
     result = process_path_logic(clean_pwd, path);
     return (result);
 }
-
-
-// char	*resolve_logical_path(char *current_pwd, char *path)
-// {
-// 	char	*resolved;
-// 	char	*temp;
-// 	char	*last_slash;
-// 	char	*clean_pwd;
-// 	int		len;
-
-// 	if (!path)
-// 		return (NULL);
-// 	if (path[0] == '/') // Neden var ?
-// 		return (ft_strdup(path));
-// 	if (!current_pwd)
-// 		return (ft_strdup(path));
-	
-// 	/* Remove trailing slash from current_pwd */
-// 	len = ft_strlen(current_pwd);
-// 	if (len > 1 && current_pwd[len - 1] == '/')
-// 		clean_pwd = ft_substr(current_pwd, 0, len - 1);
-// 	else
-// 		clean_pwd = ft_strdup(current_pwd);
-	
-// 	if (!clean_pwd)
-// 		return (NULL);
-		
-// 	if (ft_strcmp(path, ".") == 0)
-// 		return (clean_pwd);
-// 	if (ft_strcmp(path, "..") == 0) // Bakılacak
-// 	{
-// 		last_slash = ft_strrchr(clean_pwd, '/');
-// 		if (last_slash && last_slash != clean_pwd)
-// 		{
-// 			temp = ft_substr(clean_pwd, 0, last_slash - clean_pwd);
-			
-// 			return (temp);
-// 		}
-		
-// 		return (ft_strdup("/"));
-// 	}
-// 	temp = ft_strjoin(clean_pwd, "/");
-	
-// 	if (!temp)
-// 		return (NULL);
-// 	resolved = ft_strjoin(temp, path);
-// 	return (resolved);
-// }

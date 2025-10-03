@@ -25,7 +25,6 @@ void	expand_command_args(t_command *cmd, t_global *global)
 	i = 0;
 	while (cmd->args[i])
 	{
-		// Check if this is a single-quoted token (no expansion needed)
 		if (is_double_quoted_literal(cmd->args[i]))
 		{
 			expanded = expand_with_quotes(cmd->args[i], global);
@@ -34,7 +33,6 @@ void	expand_command_args(t_command *cmd, t_global *global)
 		}
 		else if (is_single_quoted_literal(cmd->args[i]))
 		{
-			// Remove the marker and keep content as-is (no expansion)
 			clean_str = extract_single_quote_content(cmd->args[i]);
 			cmd->args[i] = clean_str;
 		}

@@ -190,7 +190,7 @@ void			debug_print(char *msg);									/* Debug mesajı yazdır */
 
 // ========== PARSER FONKSIYONLARI ==========
 t_command		*parse_single_command(t_list **token_node, t_global *global);
-void			parse_redirection(t_command *cmd, t_list **token_node, t_global *global);
+// void			parse_redirection(t_command *cmd, t_list **token_node, t_global *global);
 int				is_command_start(t_list *token_node);
 int				is_pipe_token(t_list *token_node);
 int				is_redirect_token(t_list *token_node);

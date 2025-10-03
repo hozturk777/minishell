@@ -12,50 +12,6 @@
 
 #include "../../lib/minishell.h"
 
-/**
- * SIGINT (Ctrl+C) sinyal handler'ı
- * - Interactive modda: Yeni prompt göster
- * - Child process'te: Process'i sonlandır
- */
-// void	sigint_handler(int sig)
-// {
-// 	(void)sig;
-// 	t_redirect *redirect;
-// 	t_global *g_global;
-
-// 	g_global = get_global();
-
-// 	if (g_global && g_global->in_child)
-// 	{
-// 		// Child process'te - default davranış
-// 		//buraya fd close gelmesi gerekioyor !!!!!!!!!!!!!!
-
-// 		while (g_global->commands->redirections)
-// 		{
-// 			redirect = (t_redirect *)g_global->commands->redirections->content;
-// 			// printf("REDİRECT: $%d$\n", redirect->fd);
-// 			if (redirect->fd > 0)
-// 			{
-// 				close(redirect->fd);
-// 			}
-// 			g_global->commands->redirections = g_global->commands->redirections->next;
-// 		}
-// 		clear_garbage();
-// 		exit(130); // 128 + SIGINT signal number (2)
-// 	}
-// 	else
-// 	{
-// 		// Parent process (interactive shell) - yeni satır ve prompt
-// 		write(STDOUT_FILENO, "\n", 1);
-// 		rl_on_new_line();
-// 		rl_replace_line("", 0);
-// 		rl_redisplay();
-
-// 		if (g_global)
-// 			g_global->exit_status = 130;
-// 	}
-// }
-
 #include "../../lib/minishell.h"
 
 void	sigint_handler_child_cleanup(t_command *cmd)
@@ -83,13 +39,10 @@ void	sigint_handler(int sig)
 	{
 		if (g_global->commands)
 			sigint_handler_child_cleanup(g_global->commands);
-		cleanup_and_exit();  // FD'leri kapat ve garbage collect
+		cleanup_and_exit();
 		exit(130);
 	}
-	
-	// Parent process'te de FD'leri kapat
 	close_all_heredoc_fds();
-	
 	write(STDOUT_FILENO, "\n", 1);
 	rl_on_new_line();
 	rl_replace_line("", 0);

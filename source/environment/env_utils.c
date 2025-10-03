@@ -38,8 +38,6 @@ static char	*extract_env_value(char *env_str)
 	return (value);
 }
 
-
-
 static t_env	*create_minimal_env(void)
 {
 	t_env	*env_list;
@@ -100,36 +98,3 @@ t_env	*init_env_from_envp(char **envp)
 	else
 		return (process_envp_entries(envp));
 }
-
-// t_env	*init_env_from_envp(char **envp)
-// {
-// 	t_env	*env_list;
-// 	t_env	*new_node;
-// 	char	*key;
-// 	char	*value;
-// 	int		i;
-
-// 	env_list = NULL; // new_node için de başlangıç değeri gerekebilir.
-// 	i = 0;
-// 	if (!envp || !envp[0])
-// 	{
-// 		return (create_minimal_env());
-// 	}
-// 	else
-// 	{
-// 		while (envp[i])
-// 		{
-// 			key = extract_env_key(envp[i]);
-// 			value = extract_env_value(envp[i]);
-// 			if (key && value)
-// 			{
-// 				new_node = create_env_node(key, value);
-// 				if (new_node)
-// 					add_env_node(&env_list, new_node);
-// 			}
-// 			i++;
-// 		}
-// 	}
-
-// 	return (env_list);
-// }

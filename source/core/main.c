@@ -21,9 +21,8 @@ static int	process_input(char *input, t_global *global)
 		return (0);
 	add_history(input);
 	input = ft_strtrim(input, " \t\n");
-		// Düzenlenecek whitespace eklenecek & NULL check eklenecek
 	global->input_line = ft_strdup(input);
-	// 1. LEXER: Input'u token'lara çevir
+	
 	tokens = tokenize_advanced(input, global);
 	if (!tokens)
 	{
@@ -32,23 +31,13 @@ static int	process_input(char *input, t_global *global)
 	}
 	printf("\n=== TOKENS ===\n");
 	print_tokens_advanced(tokens);
-	// 2. PARSER: Token'ları komut yapılarına çevir
-	commands = parse_tokens_to_commands(tokens, global); // NULL DÖNME İHTİMALİ VAR!!
+	commands = parse_tokens_to_commands(tokens, global);
 	if (!commands)
 	{
 		global->exit_status = 2;
 		return (0);
 	}
-	// if (!commands) 
-	// {
-	// 	printf("Error: Parsing failed\n");
-	// 	//free_tokens_advanced(&tokens);
-	// 	if (global->input_line)
-	//         free(global->input_line);
-	//     global->input_line = NULL;
-	// 	return (0);
-	// }
-	// 3. DEBUG: Token'ları ve komutları yazdır
+
 	// printf("\n=== TOKENS ===\n");
 	// print_tokens_advanced(tokens);
 	// printf("\n=== PARSED COMMANDS ===\n");
@@ -56,7 +45,6 @@ static int	process_input(char *input, t_global *global)
 	// printf("\n==================\n\n");
 	global->tokens = tokens;
 	global->commands = commands;
-	// 4. EXECUTION: Komutları çalıştır
 	if (commands)
 		global->exit_status = execute_commands(commands, global);
 	if (global->input_line)
@@ -75,16 +63,13 @@ static void	run_shell_loop(t_global *global)
 		input = readline(PROMPT);
 		if (!input)
 		{
-			// EOF (Ctrl+D) algılandı
 			handle_eof();
-			// rl_clear_history();
-			cleanup_and_exit(); // FD'leri kapat ve garbage collect
+			cleanup_and_exit();
 			break ;
 		}
 		should_exit = process_input(input, global);
 		free(input);
 	}
-	// clear_garbage();
 }
 
 t_global	*get_global(void)
@@ -108,18 +93,13 @@ int	main(int argc, char **argv, char **envp)
 	if (!global)
 	{
 		printf("Error: Failed to initialize global state\n");
-		cleanup_and_exit(); // FD'leri kapat ve garbage collect
+		cleanup_and_exit();
 		return (1);
 	}
-	// Exit cleanup handler kaydet
-	// atexit(cleanup_and_exit);
-	// Sinyalleri ayarla (ARAŞTIRILACAK)
 	setup_signals();
 	print_welcome_advanced();
-	debug_print("Global state initialized successfully");
-	debug_print("Signal handlers set up successfully");
 	run_shell_loop(global);
 	printf(GREEN "Goodbye!" RESET "\n");
-	cleanup_and_exit(); // FD'leri kapat ve garbage collect
+	cleanup_and_exit();
 	return (0);
 }

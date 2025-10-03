@@ -13,7 +13,6 @@
 
 #include "../../lib/minishell.h"
 
-// '$' var ise expanded için 1 dönecek
 int	needs_expansion(char *str)
 {
 	int	i;
@@ -25,11 +24,11 @@ int	needs_expansion(char *str)
 	in_single_quote = 0;
 	while (str[i])
 	{
-		if (str[i] == '\'' && !in_single_quote) // Tek tırnak açıldığında 1
+		if (str[i] == '\'' && !in_single_quote)
 			in_single_quote = 1;
-		else if (str[i] == '\'' && in_single_quote) // Tek tırnak kapandığında 0
+		else if (str[i] == '\'' && in_single_quote)
 			in_single_quote = 0;
-		else if (str[i] == '$' && !in_single_quote) // Eğer tek tırnak açık kalmadıysa ve $ geldiyse expanded işlemi için 1 döner
+		else if (str[i] == '$' && !in_single_quote)
 			return (1);
 		i++;
 	}
@@ -38,7 +37,6 @@ int	needs_expansion(char *str)
 
 int	is_single_quoted_literal(char *str)
 {
-	// Check if string has single quote marker
 	if (!str)
 		return (0);
 	return (ft_strnstr(str, "__SINGLE_QUOTE__", ft_strlen(str)) != NULL);
@@ -46,7 +44,6 @@ int	is_single_quoted_literal(char *str)
 
 int	is_double_quoted_literal(char *str)
 {
-	// Check if string has single quote marker
 	if (!str)
 		return (0);
 	return (ft_strnstr(str, "\"", ft_strlen(str)) != NULL);
@@ -62,14 +59,12 @@ char	*extract_single_quote_content(char *str)
 	if (!str)
 		return (NULL);
 	
-	// Find start marker
 	start = ft_strnstr(str, "__SINGLE_QUOTE__", ft_strlen(str));
 	if (!start)
 		return (ft_strdup(str));
 	
 	start += ft_strlen("__SINGLE_QUOTE__");
 	
-	// Find end marker
 	end = ft_strnstr(start, "__END_SINGLE_QUOTE__", ft_strlen(start));
 	if (!end)
 		return (ft_strdup(start));
@@ -86,14 +81,12 @@ char	*ft_strjoin_char(char const *s1, char const s2)
 
 	if (!s1 && !s2)
 		return (NULL);
-	// j = ft_strlen(s2);
 	i = ft_strlen(s1);
 	str = halloc(i + 2);
 	if (!str)
 	{
         clear_garbage();
 		exit(1);
-		// return (NULL);
 	}
 	ft_memcpy(str, s1, i);
 	ft_memcpy(str + i, &s2, 1);

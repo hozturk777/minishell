@@ -53,7 +53,6 @@ t_token_new	*create_token_advanced(t_token_types type, char *value)
 	
 	if (!token->value)
 	{
-		// free(token); // büyük ihtimalle bunlar silinecek
 		return (NULL);
 	}
 	token->len = ft_strlen(value);

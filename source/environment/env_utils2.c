@@ -12,9 +12,6 @@
 
 #include "../../lib/minishell.h"
 
-/* ************************************************************************** */
-/*                            ENVIRONMENT HELPER FUNCTIONS                   */
-/* ************************************************************************** */
 
 void	update_pwd_env(t_global *global)
 {
@@ -24,12 +21,8 @@ void	update_pwd_env(t_global *global)
 	if (cwd)
 	{
 		set_env_var(global, "PWD", cwd);
-		// free(cwd);
 	}
-	/* 
-	 * getcwd() başarısızsa PWD'yi değiştirme
-	 * Logical PWD'yi koru (bash davranışı)
-	 */
+
 }
 
 void	print_export_env(t_env *env_list)
