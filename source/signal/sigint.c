@@ -11,8 +11,8 @@
 /* ************************************************************************** */
 
 #include "../../lib/minishell.h"
-
-#include "../../lib/minishell.h"
+#include <readline/readline.h>
+#include <unistd.h>
 
 void	sigint_handler_child_cleanup(t_command *cmd)
 {

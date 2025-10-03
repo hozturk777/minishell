@@ -11,11 +11,9 @@
 /* ************************************************************************** */
 
 #include "../../lib/minishell.h"
-
-// kurtarma
-/* ************************************************************************** */
-/*                            MULTIPLE HEREDOC HANDLER                       */
-/* ************************************************************************** */
+#include <stdio.h>
+#include <unistd.h>
+#include <fcntl.h>	
 
 static int	process_heredoc_redirects(t_list *cur)
 {
@@ -56,13 +54,13 @@ void	handle_multiple_heredocs(t_command *cmd)
 	}
 }
 
-void	setup_redirections(t_command *cmd)
+int	setup_redirections(t_command *cmd)
 {
 	t_list		*current;
 	t_redirect	*redirect;
 
 	if (!cmd || !cmd->redirections)
-		return ;
+		return (0);
 	handle_multiple_heredocs(cmd);
 	current = cmd->redirections;
 	while (current)
@@ -70,10 +68,12 @@ void	setup_redirections(t_command *cmd)
 		redirect = (t_redirect *)current->content;
 		if (redirect && redirect->type != T_HEREDOC)
 		{
-			handle_single_redirection(redirect);
+			if(handle_single_redirection(redirect))
+				return (1);
 		}
 		current = current->next;
 	}
+	return (0);
 }
 
 static int	open_redirection_file(t_redirect *redirect)
@@ -93,11 +93,13 @@ static int	open_redirection_file(t_redirect *redirect)
 	return (fd);
 }
 
-void	handle_single_redirection(t_redirect *redirect)
+int	handle_single_redirection(t_redirect *redirect)
 {
 	int	fd;
 
-	fd = open_redirection_file(redirect);
+	fd = open_redirection_file(redirect);	
+	if (fd == -1)
+		return (1);
 	if (redirect->type == T_REDIRECT_IN)
 		dup2(fd, STDIN_FILENO);
 	else
@@ -105,5 +107,6 @@ void	handle_single_redirection(t_redirect *redirect)
 	if (fd > 2)
 	{
 		close(fd);
-	}	
+	}
+	return (0);
 }

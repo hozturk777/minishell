@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-
 #include "../../lib/minishell.h"
+#include <stdio.h>
 
 static void	handle_single_assignment(char *arg, t_global *global)
 {
@@ -37,8 +37,8 @@ static void	handle_single_assignment(char *arg, t_global *global)
 
 static void	handle_split_assignment(char **args, int i, t_global *global)
 {
-    char	*key;
-    int		key_len;
+	char	*key;
+	int		key_len;
 
     key_len = ft_strlen(args[i]) - 1;
     key = ft_substr(args[i], 0, key_len);

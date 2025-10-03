@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "../../lib/minishell.h"
+#include <stdio.h>
 
 static char	*get_token_type_name(t_token_types type)
 {

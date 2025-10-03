@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "../../lib/minishell.h"
+#include <unistd.h>
 
 static char	*extract_env_key(char *env_str)
 {
@@ -44,7 +45,7 @@ static t_env	*create_minimal_env(void)
 	t_env	*new_node;
 	char	*cwd;
 
-	cwd = getcwd(NULL, 0);
+	cwd = add_garbage(getcwd(NULL, 0));
 	if (cwd)
 	{
 		new_node = create_env_node("PWD", cwd);

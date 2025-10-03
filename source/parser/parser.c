@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "../../lib/minishell.h"
+#include <stdio.h>
 
 t_command	*parse_tokens_to_commands(t_list *tokens, t_global *global)
 {

@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include "../../lib/minishell.h"
-
+#include <stdio.h>
 
 static void	process_escape_sequences(char *str)
 {

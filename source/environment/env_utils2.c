@@ -11,18 +11,18 @@
 /* ************************************************************************** */
 
 #include "../../lib/minishell.h"
-
+#include <stdio.h>
+#include <unistd.h>
 
 void	update_pwd_env(t_global *global)
 {
 	char	*cwd;
 
-	cwd = getcwd(NULL, 0);
+	cwd = add_garbage(getcwd(NULL, 0));
 	if (cwd)
 	{
 		set_env_var(global, "PWD", cwd);
 	}
-
 }
 
 void	print_export_env(t_env *env_list)

@@ -11,6 +11,9 @@
 /* ************************************************************************** */
 
 #include "../../lib/minishell.h"
+#include <readline/history.h>
+#include <readline/readline.h>
+#include <unistd.h>
 
 static int	process_input(char *input, t_global *global)
 {

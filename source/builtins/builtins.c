@@ -11,6 +11,8 @@
 /* ************************************************************************** */
 
 #include "../../lib/minishell.h"
+#include <stdio.h>
+#include <unistd.h>
 
 int	is_builtin(char *command)
 {
@@ -86,8 +88,12 @@ int	execute_builtin(t_command *cmd, t_global *global, int *originals)
 
     if (cmd->redirections)
     {
-
-        setup_redirections(cmd);
+        if(setup_redirections(cmd))
+		{
+			close(originals[1]);
+			close(originals[0]);
+			return (1);
+		}
     }
     result = execute_builtin_command(cmd, global);
     restore_file_descriptors(cmd, originals[1], originals[0]);
@@ -119,7 +125,7 @@ int	builtin_pwd_global(t_global *global)
 		printf("%s\n", pwd_env);
 		return (0);
 	}
-	cwd = getcwd(NULL, 0);
+	cwd = add_garbage(getcwd(NULL, 0));
 	if (!cwd)
 	{
 		printf("pwd: error retrieving current directory: No such file or directory\n");

@@ -12,28 +12,29 @@
 
 
 #include "../../lib/minishell.h"
-
-/* ************************************************************************** */
-/*                            HEREDOC IMPLEMENTATION                         */
-/* ************************************************************************** */
+#include <readline/readline.h>
+#include <unistd.h>
+#include <fcntl.h>	
 
 static char	*create_temp_filename(int heredoc_count)
 {
-	char	*pid_str;
+	static	long long temp_filename = 1;
 	char	*count_str;
 	char	*temp1;
 	char	*temp2;
 	char	*result;
 
-	pid_str = ft_itoa(getpid()); // KALDIRILCAK
+	// pid_str = ft_itoa(getpid()); // KALDIRILCAK
+	// temp_filename = 1;
 	count_str = ft_itoa(heredoc_count);
-	if (!pid_str || !count_str)
+	if (!count_str)
 	{
 		return (NULL);
 	}
-	temp1 = ft_strjoin("/tmp/heredoc_", pid_str);
+	temp1 = ft_strjoin("/tmp/heredoc_", ft_lltoa(temp_filename));
 	temp2 = ft_strjoin(temp1, "_");
 	result = ft_strjoin(temp2, count_str);
+	temp_filename++;
 	return (result);
 }
 

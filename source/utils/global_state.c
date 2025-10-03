@@ -11,6 +11,8 @@
 /* ************************************************************************** */
 
 #include "../../lib/minishell.h"
+#include <unistd.h>
+#include <readline/readline.h>
 
 static void	update_shlvl(t_env *env)
 {

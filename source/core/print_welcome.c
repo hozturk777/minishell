@@ -11,6 +11,8 @@
 /* ************************************************************************** */
 
 #include "../../lib/minishell.h"
+#include <stdio.h>
+#include <unistd.h>
 
 void	print_welcome_advanced(void)
 {

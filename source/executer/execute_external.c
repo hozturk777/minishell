@@ -11,12 +11,19 @@
 /* ************************************************************************** */
 
 #include "../../lib/minishell.h"
+#include <stdio.h>
+#include <unistd.h>
+#include <sys/wait.h>
 
 static void	handle_external_child_process(t_command *cmd, t_global *global, char *path)
 {
     setup_child_signals();
     global->in_child = 1;
-    setup_redirections(cmd);
+    if(setup_redirections(cmd))
+	{
+	    cleanup_and_exit();
+		exit(2);
+	}
     execve(path, cmd->args, env_list_to_array(global->env_list));
     perror("execve");
     cleanup_and_exit();

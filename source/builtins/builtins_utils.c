@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "../../lib/minishell.h"
+#include <stdio.h>
 
 static char	*extract_inner_content(char *str, int len)
 {

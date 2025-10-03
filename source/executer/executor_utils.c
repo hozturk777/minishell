@@ -11,6 +11,8 @@
 /* ************************************************************************** */
 
 #include "../../lib/minishell.h"
+#include <unistd.h>
+#include <sys/wait.h>
 
 int	execute_commands(t_command *commands, t_global *global)
 {
@@ -45,8 +47,12 @@ static void	handle_redirect_child_process(t_command *cmd, t_global *global)
 {
     setup_child_signals();
     global->in_child = 1;
-    setup_redirections(cmd);
-    cleanup_and_exit();
+    if(setup_redirections(cmd))
+	{
+		cleanup_and_exit();
+		exit(2);
+	}
+	cleanup_and_exit();
     exit(0);
 }
 

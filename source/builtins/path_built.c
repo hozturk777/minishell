@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "../../lib/minishell.h"
+#include <unistd.h>
 
 char	*find_existing_parent(char *path)
 {

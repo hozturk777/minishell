@@ -12,61 +12,42 @@
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
-
-/* ************************************************************************** */
-/*                               TANIMLAMALAR                                 */
-/* ************************************************************************** */
-
-# define PROMPT "minishell$ "		/* Terminal prompt metni */
-# define GREEN "\033[1;92m"			/* Yeşil renk için ANSI kod */
-# define RESET "\033[0m"			/* Renk sıfırlama ANSI kodu */
+# define PROMPT "minishell$ "
+# define GREEN "\033[1;92m"
+# define RESET "\033[0m"
 # define MAX_HEREDOC_FDS 32			/* Maximum heredoc file descriptors per command */
-
-/* ************************************************************************** */
-/*                               DAHIL EDILEN DOSYALAR                       */
-/* ************************************************************************** */
 
 // # include "token_enum.h"
 # include "../include/libft/libft.h"	/* Libft fonksiyonları */
-# include <stdio.h>						/* printf, perror fonksiyonları */
+// # include <stdio.h>						/* printf, perror fonksiyonları */
 # include <stdlib.h>					/* halloc, free, exit fonksiyonları */
-# include <unistd.h>					/* write, read, access, fork fonksiyonları */
-# include <readline/readline.h>			/* readline fonksiyonu */
-# include <readline/history.h>			/* add_history, rl_clear_history fonksiyonları */
-# include <signal.h>					/* signal, sigaction, kill fonksiyonları */
-# include <sys/wait.h>					/* wait, waitpid, wait3, wait4 fonksiyonları */
-# include <fcntl.h>						/* open, close fonksiyonları */
-# include <errno.h>						/* Hata yönetimi */
-# include <string.h>					/* String manipülasyon fonksiyonları */
 
-/* ************************************************************************** */
-/*                               ENUM'LAR                                     */
-/* ************************************************************************** */
+// # include <unistd.h>					/* write, read, access, fork fonksiyonları */
+// # include <readline/readline.h>			/* readline fonksiyonu */
+// # include <readline/history.h>			/* add_history, rl_clear_history fonksiyonları */
+// # include <signal.h>					/* signal, sigaction, kill fonksiyonları */
+// # include <sys/wait.h>					/* wait, waitpid, wait3, wait4 fonksiyonları */
+# include <fcntl.h>						/* open, close fonksiyonları */
+// # include <errno.h>						/* Hata yönetimi */
+// # include <string.h>					/* String manipülasyon fonksiyonları */
 
 typedef struct s_global t_global;
-
-// Leksikal analiz için token türleri
 typedef enum e_token_types
 {
-	T_WORD,				/* Normal kelimeler: komutlar, argümanlar, dosya adları */
+	T_WORD,
 	T_CMD,
-	T_PIPE,				/* Pipe operatörü: | */
-	T_REDIRECT_IN,		/* Giriş yönlendirmesi: < */
-	T_REDIRECT_OUT,		/* Çıkış yönlendirmesi: > */
-	T_APPEND,			/* Ekleme yönlendirmesi: >> */
-	T_HEREDOC,			/* Here document: << */
-	T_SINGLE_QUOTE,		/* Tek tırnakla çevrili metin: 'metin' */
-	T_DOUBLE_QUOTE,		/* Çift tırnakla çevrili metin: "metin" */
-	T_ENV_VAR,			/* Çevre değişkeni: $VAR */
-	T_WHITESPACE,		/* Boşluk karakteri (genellikle atlanır) */
-	T_EOF				/* Girdi sonu */
+	T_PIPE,
+	T_REDIRECT_IN,
+	T_REDIRECT_OUT,
+	T_APPEND,
+	T_HEREDOC,
+	T_SINGLE_QUOTE,
+	T_DOUBLE_QUOTE,
+	T_ENV_VAR,
+	T_WHITESPACE,
+	T_EOF
 }	t_token_types;
 
-/* ************************************************************************** */
-/*                               YAPILAR                                      */
-/* ************************************************************************** */
-
-// Gelişmiş token yapısı
 typedef struct s_token_new
 {
 	t_token_types	type;			/* Token türü (T_WORD, T_PIPE, vb.) */
@@ -76,7 +57,6 @@ typedef struct s_token_new
 	int				expanded;		/* Değişken genişletmesi yapıldı mı (1=evet, 0=hayır) */
 }	t_token_new;
 
-// Çevre değişkeni yapısı
 typedef struct s_env
 {
 	char			*key;			/* Değişken adı (örn: "HOME", "PATH") */
@@ -84,7 +64,6 @@ typedef struct s_env
 	struct s_env	*next;			/* Bağlı listedeki sonraki çevre değişkeni */
 }	t_env;
 
-// Yönlendirme yapısı
 typedef struct s_redirect
 {
 	t_token_types		type;		/* Yönlendirme türü (T_REDIRECT_IN, T_REDIRECT_OUT, vb.) */
@@ -93,7 +72,6 @@ typedef struct s_redirect
 	struct s_redirect	*next;		/* Bağlı listedeki sonraki yönlendirme */
 }	t_redirect;
 
-// Komut yapısı
 typedef struct s_command
 {
 	char				**args;		/* Komut ve argümanlar dizisi (["ls", "-l", NULL]) */
@@ -264,8 +242,8 @@ char			**env_list_to_array(t_env *env_list);					/* Çevre listesini array'e çe
 int				count_env_nodes(t_env *env_list);						/* Çevre düğümlerini say */
 
 // ========== REDIRECTION FONKSIYONLARI ==========
-void			setup_redirections(t_command *cmd);					/* Yönlendirmeleri ayarla */
-void			handle_single_redirection(t_redirect *redirect);		/* Tek yönlendirme işle */
+int				setup_redirections(t_command *cmd);					/* Yönlendirmeleri ayarla */
+int				handle_single_redirection(t_redirect *redirect);		/* Tek yönlendirme işle */
 void			setup_pipeline_fds(t_command *cmd, int prev_fd, int *pipe_fd);	/* Pipeline fd ayarla */
 int	handle_heredoc(t_redirect *redirect);						/* Heredoc işle */
 char			*generate_temp_filename(void);							/* Geçici dosya adı oluştur */

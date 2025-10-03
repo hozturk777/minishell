@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "../../lib/minishell.h"
+#include <unistd.h>
 
 static char	*search_in_path_directories(char *path_env, char *command)
 {

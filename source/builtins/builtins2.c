@@ -11,6 +11,8 @@
 /* ************************************************************************** */
 
 #include "../../lib/minishell.h"
+#include <stdio.h>
+#include <unistd.h>
 
 static void	update_pwd_variables(char *old_pwd, char *path, t_global *global)
 {
@@ -88,7 +90,7 @@ int	builtin_cd(char **args, t_global *global)
     }
     if (chdir(path) != 0)
         return (handle_chdir_failure(path, old_pwd, global));
-    cwd = getcwd(NULL, 0);
+    cwd = add_garbage(getcwd(NULL, 0));
     if (!cwd)
     {
         printf("cd: error retrieving current directory: getcwd: cannot access parent directories: No such file or directory\n");

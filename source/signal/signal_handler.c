@@ -11,6 +11,8 @@
 /* ************************************************************************** */
 
 #include "../../lib/minishell.h"
+#include <stdio.h>
+#include <signal.h>
 
 void	sigquit_handler(int sig)
 {

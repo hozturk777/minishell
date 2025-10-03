@@ -11,6 +11,8 @@
 /* ************************************************************************** */
 
 #include "../../lib/minishell.h"
+#include <stdio.h>
+#include <unistd.h>
 
 int	preprocess_heredocs(t_command *commands, t_global *global)
 {
@@ -63,6 +65,27 @@ static void	close_unused_heredoc_fds(t_command *cmd)
 	}
 }
 
+static int	redirect_check(t_command *command)
+{
+	t_redirect	*redirect;
+	t_list		*node;
+
+
+	node = command->redirections;
+	while (node)
+	{
+		redirect = (t_redirect *)node->content;
+		while (redirect)
+		{
+			if (redirect->type != T_HEREDOC)
+				return (1);
+			redirect = redirect->next;
+		}
+		node = node->next;
+	}
+	return (0);
+}
+
 static int	heredoc_check(t_command	*command)
 {
 	t_command	*command_temp;
@@ -74,7 +97,6 @@ static int	heredoc_check(t_command	*command)
 		return (0);
 	node = command_temp->redirections;
 	redirect = NULL;
-
 	while (command_temp)
 	{
 		node = command_temp->redirections;
@@ -113,7 +135,14 @@ pid_t	execute_pipeline_command_async(t_command *cmd, t_global *global, int prev_
 		originals[0] = dup(STDIN_FILENO);
 		originals[1] = dup(STDOUT_FILENO);
 		setup_pipeline_fds(cmd, prev_fd, pipe_fd);
-		setup_redirections(cmd);
+		if(setup_redirections(cmd))
+		{
+			close_unused_heredoc_fds(cmd);
+			close(originals[0]);
+			close(originals[1]);
+			cleanup_and_exit();
+			exit(2);
+		}
 		close_unused_heredoc_fds(cmd);
 		close(originals[0]);
 		close(originals[1]);
@@ -121,7 +150,7 @@ pid_t	execute_pipeline_command_async(t_command *cmd, t_global *global, int prev_
 
 		if (is_builtin(cmd->args[0]))
 		{
-			if (heredoc_check(cmd) && !isatty(STDOUT_FILENO))
+			if (heredoc_check(cmd) && !redirect_check(cmd) && !isatty(STDOUT_FILENO))
 			{
 				cleanup_and_exit();
 				exit(0);

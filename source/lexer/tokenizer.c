@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "../../lib/minishell.h"
+#include <stdio.h>
 
 static t_token_new	*create_token_by_type(t_lexer_new *lexer)
 {

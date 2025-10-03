@@ -11,6 +11,9 @@
 /* ************************************************************************** */
 
 #include "../../lib/minishell.h"
+#include <stdio.h>
+#include <unistd.h>
+#include <sys/wait.h>
 
 static int	get_process_exit_status(int status)
 {
