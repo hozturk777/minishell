@@ -19,8 +19,10 @@ static int	process_heredoc_redirects(t_list *cur)
 {
 	t_redirect	*redirect;
 	int			last_heredoc_fd;
+	t_global 	*global;
 
 	last_heredoc_fd = -1;
+	global = get_global();
 	while (cur)
 	{
 		redirect = (t_redirect *)cur->content;
@@ -30,10 +32,13 @@ static int	process_heredoc_redirects(t_list *cur)
 			if (last_heredoc_fd != -1 && last_heredoc_fd != redirect->fd)
 				close(last_heredoc_fd);
 			
+			// debug_print(ft_itoa(global->in_child));
+			// debug_print(ft_itoa(getpid()));
 			if (redirect->fd > 0)
 				last_heredoc_fd = redirect->fd;
-			else
+			else if (global->in_child == 2)
 				last_heredoc_fd = handle_heredoc(redirect);
+			// debug_print("hüye götten");
 		}
 		cur = cur->next;
 	}
@@ -62,7 +67,7 @@ int	setup_redirections(t_command *cmd)
 	if (!cmd || !cmd->redirections)
 		return (0);
 	handle_multiple_heredocs(cmd);
-	current = cmd->redirections;
+	current = cmd->redirections; 
 	while (current)
 	{
 		redirect = (t_redirect *)current->content;

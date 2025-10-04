@@ -29,7 +29,7 @@ int	execute_single_command(t_command *cmd, t_global *global)
 
 	if ((!cmd || !cmd->args || !cmd->args[0]) && cmd->redirections)
 	{
-		return (execute_redirect_command(cmd, global));
+		return (execute_redirect_command(cmd, global, NULL));
 	}
 	if (!cmd || !cmd->args || !cmd->args[0])
 		return (1);
@@ -53,7 +53,7 @@ int	execute_single_command(t_command *cmd, t_global *global)
 static void	handle_redirect_child_process(t_command *cmd, t_global *global)
 {
     setup_child_signals();
-    global->in_child = 1;
+    global->in_child = 2;
     if(setup_redirections(cmd))
 	{
 		cleanup_and_exit();
@@ -72,23 +72,36 @@ static int	wait_for_redirect_process(pid_t pid)
     {
 		int signal_num = WTERMSIG(status);
         if (signal_num == SIGINT)
-		return (130);
+			return (130);
         else if (signal_num == SIGQUIT)
-		return (131);
+			return (131);
         else
-		return (128 + signal_num);
+			return (128 + signal_num);
     }
     return (WEXITSTATUS(status));
 }
 
-int	execute_redirect_command(t_command *cmd, t_global *global)
+int	execute_redirect_command(t_command *cmd, t_global *global, int *origin)
 {
 	pid_t	pid;
 
 	pid = fork();
 	if (pid == 0)
+	{
+		if (origin)
+		{
+			close(origin[0]);
+			close(origin[1]);
+		}
+		
 		handle_redirect_child_process(cmd, global);
+	}
 	else if (pid > 0)
+	{
+		global->in_child = 0;
 		return (wait_for_redirect_process(pid));
+	}
+	global->in_child = 0;
+
 	return (1);
 }

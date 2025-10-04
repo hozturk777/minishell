@@ -59,8 +59,15 @@ static void	process_heredoc_lines(t_redirect *redirect, int fd,
 {
 	char	*line;
 
-	while ((line = add_garbage(readline("> "))) != NULL)
+	while (1)
 	{
+		debug_print("HEREDOC GELDİ");
+
+		line = add_garbage(readline("> "));
+
+		if (!line)
+			break;
+
 		if (ft_strcmp(line, redirect->filename) == 0)
 			break ;
 		line = expand_with_heredoc(line, global);

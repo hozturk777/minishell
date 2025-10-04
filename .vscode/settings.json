@@ -6,6 +6,7 @@
 		"libft.h": "c",
 		"cstddef": "c",
 		"ioctl.h": "c",
-		"unistd.h": "c"
+		"unistd.h": "c",
+		"stdio.h": "c"
 	}
 }

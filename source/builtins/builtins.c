@@ -88,12 +88,15 @@ int	execute_builtin(t_command *cmd, t_global *global, int *originals)
 
     if (cmd->redirections)
     {
-        if(setup_redirections(cmd))
-		{
-			close(originals[1]);
-			close(originals[0]);
-			return (1);
-		}
+		execute_redirect_command(cmd, global, originals);
+        // if(setup_redirections(cmd))
+		// {
+		// 	close(originals[1]);
+		// 	close(originals[0]);
+		// 	return (1);
+		// }
+		// close(originals[1]);
+		// close(originals[0]);
     }
     result = execute_builtin_command(cmd, global);
     restore_file_descriptors(cmd, originals[1], originals[0]);

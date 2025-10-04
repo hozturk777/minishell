@@ -261,7 +261,7 @@ void			print_welcome_advanced(void);
 char			*ft_strjoin_char(char const *s1, char const s2);
 void			skip_whitespace_advanced(t_lexer_new *lexer);
 void			handle_multiple_heredocs(t_command *cmd);
-int				execute_redirect_command(t_command *cmd, t_global *global);
+int				execute_redirect_command(t_command *cmd, t_global *global, int *origin);
 int				check_quote_balance(char *input);
 int				preprocess_heredocs(t_command *commands, t_global *global);
 
