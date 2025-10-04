@@ -29,7 +29,9 @@ int	execute_single_command(t_command *cmd, t_global *global)
 
 	if ((!cmd || !cmd->args || !cmd->args[0]) && cmd->redirections)
 	{
-		return (execute_redirect_command(cmd, global, NULL));
+		global->in_child = 2;
+		execute_redirect_command(cmd, global, NULL);
+		return (1);
 	}
 	if (!cmd || !cmd->args || !cmd->args[0])
 		return (1);
@@ -43,18 +45,17 @@ int	execute_single_command(t_command *cmd, t_global *global)
 			close(originals[0]);
 			close(originals[1]);
 		}
-		return (execute_builtin(cmd, global, originals));
+		return (execute_builtin(cmd, global, originals, 1));
 	}
 	close(originals[0]);
 	close(originals[1]);
 	return (execute_external_command(cmd, global));
 }
 
-static void	handle_redirect_child_process(t_command *cmd, t_global *global)
+static void	handle_redirect_child_process(t_command *cmd)
 {
     setup_child_signals();
-    global->in_child = 2;
-    if(setup_redirections(cmd))
+	if(setup_redirections(cmd))
 	{
 		cleanup_and_exit();
 		exit(2);
@@ -63,7 +64,7 @@ static void	handle_redirect_child_process(t_command *cmd, t_global *global)
     exit(0);
 }
 
-static int	wait_for_redirect_process(pid_t pid)
+int	wait_for_redirect_process(pid_t pid)
 {
 	int	status;
 
@@ -81,7 +82,7 @@ static int	wait_for_redirect_process(pid_t pid)
     return (WEXITSTATUS(status));
 }
 
-int	execute_redirect_command(t_command *cmd, t_global *global, int *origin)
+void	execute_redirect_command(t_command *cmd, t_global *global, int *origin)
 {
 	pid_t	pid;
 
@@ -94,14 +95,11 @@ int	execute_redirect_command(t_command *cmd, t_global *global, int *origin)
 			close(origin[1]);
 		}
 		
-		handle_redirect_child_process(cmd, global);
+		handle_redirect_child_process(cmd);
 	}
 	else if (pid > 0)
 	{
 		global->in_child = 0;
-		return (wait_for_redirect_process(pid));
+		global->exit_status =  wait_for_redirect_process(pid);
 	}
-	global->in_child = 0;
-
-	return (1);
 }

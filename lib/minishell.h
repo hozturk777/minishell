@@ -205,7 +205,7 @@ int				count_non_empty_args(char **args);						/* Boş olmayan argüman sayısı
 
 // ========== BUILT-IN FONKSIYONLARI ==========
 int				is_builtin(char *command);								/* Built-in komut mu kontrol et */
-int				execute_builtin(t_command *cmd, t_global *global, int *originals);		/* Built-in komut çalıştır */
+int				execute_builtin(t_command *cmd, t_global *global, int *originals, int flag);		/* Built-in komut çalıştır */
 // int				builtin_pwd(void);										/* pwd built-in */
 int				builtin_pwd_global(t_global *global);					/* pwd built-in with global env */
 int				builtin_echo(char **args);								/* echo built-in */
@@ -261,9 +261,13 @@ void			print_welcome_advanced(void);
 char			*ft_strjoin_char(char const *s1, char const s2);
 void			skip_whitespace_advanced(t_lexer_new *lexer);
 void			handle_multiple_heredocs(t_command *cmd);
-int				execute_redirect_command(t_command *cmd, t_global *global, int *origin);
+void			execute_redirect_command(t_command *cmd, t_global *global, int *origin);
 int				check_quote_balance(char *input);
 int				preprocess_heredocs(t_command *commands, t_global *global);
+int				preprocess_handle_heredoc(t_redirect *redirect);
+
+int				wait_for_redirect_process(pid_t pid);
+
 
 
 

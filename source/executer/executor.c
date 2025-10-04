@@ -32,7 +32,7 @@ int	preprocess_heredocs(t_command *commands, t_global *global)
 				redirect = (t_redirect *)redirect_node->content;
 				if (redirect && redirect->type == T_HEREDOC)
 				{
-					redirect->fd = handle_heredoc(redirect);
+					redirect->fd = preprocess_handle_heredoc(redirect);
 					if (redirect->fd == -1)
 						return (-1);
 				}
@@ -157,7 +157,7 @@ pid_t	execute_pipeline_command_async(t_command *cmd, t_global *global, int prev_
 			}
 			else
 			{
-				execute_builtin(cmd, global, originals);
+				execute_builtin(cmd, global, originals, 0);
 				exit_num = global->exit_status;
 				cleanup_and_exit();
 				exit(exit_num);

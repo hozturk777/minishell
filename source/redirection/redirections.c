@@ -28,17 +28,12 @@ static int	process_heredoc_redirects(t_list *cur)
 		redirect = (t_redirect *)cur->content;
 		if (redirect && redirect->type == T_HEREDOC)
 		{
-			// Önceki heredoc FD'sini kapat (sadece en son geçerli)
 			if (last_heredoc_fd != -1 && last_heredoc_fd != redirect->fd)
 				close(last_heredoc_fd);
-			
-			// debug_print(ft_itoa(global->in_child));
-			// debug_print(ft_itoa(getpid()));
 			if (redirect->fd > 0)
 				last_heredoc_fd = redirect->fd;
 			else if (global->in_child == 2)
 				last_heredoc_fd = handle_heredoc(redirect);
-			// debug_print("hüye götten");
 		}
 		cur = cur->next;
 	}

@@ -18,7 +18,7 @@
 static void	handle_external_child_process(t_command *cmd, t_global *global, char *path)
 {
     setup_child_signals();
-    global->in_child = 1;
+    global->in_child = 2;
     if(setup_redirections(cmd))
 	{
 	    cleanup_and_exit();

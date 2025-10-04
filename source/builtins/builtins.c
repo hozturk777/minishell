@@ -78,7 +78,7 @@ static int	execute_builtin_command(t_command *cmd, t_global *global)
 }
 
 
-int	execute_builtin(t_command *cmd, t_global *global, int *originals)
+int	execute_builtin(t_command *cmd, t_global *global, int *originals, int flag)
 {
 
     int	result;
@@ -88,7 +88,10 @@ int	execute_builtin(t_command *cmd, t_global *global, int *originals)
 
     if (cmd->redirections)
     {
+		if (flag)
+			global->in_child = 2;
 		execute_redirect_command(cmd, global, originals);
+		global->in_child = 0;
         // if(setup_redirections(cmd))
 		// {
 		// 	close(originals[1]);
