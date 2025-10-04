@@ -79,7 +79,6 @@ static int  check_token_at_index(t_global *global, int index)
     if (current)
     {
         token = (t_token_new *)current->content;
-        printf("token type =%d\n", token->quote_type);
         if (token && (token->type == T_DOUBLE_QUOTE || token->type == T_SINGLE_QUOTE))
             return (1);
     }
@@ -97,7 +96,6 @@ static char *merge_quoted_args(char **args, int start_index, int *end_index, t_g
         return (NULL);
     i = start_index + 1;
     
-    // Sadece bir sonraki argümanı kontrol et ve birleştir
     if (args[i] && check_token_at_index(global, i))
     {
         temp = ft_strjoin(result, args[i]);
@@ -161,7 +159,8 @@ int builtin_export(char **args, t_global *global)
             equal_pos = ft_strchr(merged_arg, '=');
             if (!is_valid_key_char(merged_arg, equal_pos))
             {
-                printf("export: `%s': not a valid identifier\n", merged_arg);
+				// bash: export: -c: invalid option
+                printf("minishell: export: -%c: invalid option\n", merged_arg[1]);
                 return (2);
             }
             handle_single_assignment(merged_arg, global);
@@ -171,7 +170,7 @@ int builtin_export(char **args, t_global *global)
         {
             if (!is_valid_key_char(args[i], equal_pos))
             {
-                printf("export: `%s': not a valid identifier\n", args[i]);
+                printf("minishell: export: -%c: invalid option\n", args[i][1]);
                 return (2);
             }
             i = process_export_argument(args, i, global);
