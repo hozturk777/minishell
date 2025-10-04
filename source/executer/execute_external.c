@@ -25,7 +25,10 @@ static void	handle_external_child_process(t_command *cmd, t_global *global, char
 		exit(2);
 	}
 	if (!path)
+	{
+	    cleanup_and_exit();
 		exit(127);
+	}
     execve(path, cmd->args, env_list_to_array(global->env_list));
     perror("execve");
     cleanup_and_exit();
@@ -64,10 +67,13 @@ int	execute_external_command(t_command *cmd, t_global *global)
 	if (pid == 0)
 	{
 		handle_external_child_process(cmd, global, path);
+		cleanup_and_exit();
 		exit (127);
 	}
 	else if (pid > 0)
 	{
+		if (!path)
+			return (127);
 		return (wait_for_external_process(pid));
 	}
 	else

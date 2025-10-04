@@ -63,7 +63,7 @@ static t_token_new	*process_word_content(t_lexer_new *lexer, int start, t_token_
     return (extract_regular_word(lexer, start, types));
 }
 
-t_token_new	*handle_word_advanced(t_lexer_new *lexer, int *first_word_check)
+t_token_new	*handle_word_advanced(t_lexer_new *lexer)
 {
     int				start;
     t_token_types	types;
@@ -75,13 +75,13 @@ t_token_new	*handle_word_advanced(t_lexer_new *lexer, int *first_word_check)
     if (lexer->pos == 0 || lexer->t_cmd_flag == 1)
     {
         types = T_CMD;
-        *first_word_check = 0;
         lexer->t_cmd_flag = 0;
     }
     else
     {
         types = T_WORD;
-        *first_word_check = 1;
+		if (lexer->t_cmd_flag == 2)
+			lexer->t_cmd_flag = 1;
     }
     return (process_word_content(lexer, start, types));
 }

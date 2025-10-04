@@ -94,7 +94,6 @@ void	execute_redirect_command(t_command *cmd, t_global *global, int *origin)
 			close(origin[0]);
 			close(origin[1]);
 		}
-		
 		handle_redirect_child_process(cmd);
 	}
 	else if (pid > 0)

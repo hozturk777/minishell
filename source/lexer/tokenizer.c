@@ -24,7 +24,7 @@ static t_token_new	*create_token_by_type(t_lexer_new *lexer)
 	else if (lexer->current_char == '\'' || lexer->current_char == '"')
 		return (handle_quotes_advanced(lexer));
 	else
-		return (handle_word_advanced(lexer, &lexer->first_word_check));
+		return (handle_word_advanced(lexer));
 }
 
 static void	handle_post_token_processing(t_lexer_new *lexer, t_token_new *token)
@@ -45,7 +45,6 @@ static t_token_new	*get_next_token(t_lexer_new *lexer)
 	t_token_new	*token;
 
 	token = NULL;
-	lexer->first_word_check = 0;
 	if (lexer->current_char == '\0')
 		return (NULL);
 	token = create_token_by_type(lexer);

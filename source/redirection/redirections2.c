@@ -109,7 +109,6 @@ static void	preprocess_heredoc_lines(t_redirect *redirect, int fd,
 	int		pid;
 
 	pid	= fork();
-
 	if (pid == 0)
 	{
 		setup_child_signals();
@@ -152,6 +151,8 @@ int	preprocess_handle_heredoc(t_redirect *redirect)
 	if (!temp_filename)
 		return (-1);
 	redirect->fd = open(temp_filename, O_CREAT | O_WRONLY | O_TRUNC, 0600);
+	if (redirect->fd > 2)
+		register_heredoc_fd(redirect->fd);
 	if (redirect->fd == -1)
 		return (-1);
 	preprocess_heredoc_lines(redirect, redirect->fd, global);
@@ -159,8 +160,6 @@ int	preprocess_handle_heredoc(t_redirect *redirect)
 	redirect->fd = open(temp_filename, O_RDONLY);
 	unlink(temp_filename);
 	if (redirect->fd > 2)
-	{
 		register_heredoc_fd(redirect->fd);
-	}
 	return (redirect->fd);
 }
