@@ -64,7 +64,7 @@ int	check_syntax(t_list **token_node)
 				token_temp = token_temp->next;
 				token_test = (t_token_new *)token_temp->content;
 			}
-			if (token_test->type != T_WORD)
+			if (token_test->type != T_WORD && token_test->type != T_CMD)
 			{
 				printf("minishell: syntax error near unexpected token `%s'\n", token_test->value);
 				return (1);

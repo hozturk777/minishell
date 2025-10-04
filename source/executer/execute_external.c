@@ -24,6 +24,8 @@ static void	handle_external_child_process(t_command *cmd, t_global *global, char
 	    cleanup_and_exit();
 		exit(2);
 	}
+	if (!path)
+		exit(127);
     execve(path, cmd->args, env_list_to_array(global->env_list));
     perror("execve");
     cleanup_and_exit();
@@ -56,7 +58,7 @@ int	execute_external_command(t_command *cmd, t_global *global)
 	if (!path)
 	{
 		printf("minishell: %s: command not found\n", cmd->args[0]);
-		return (127);
+		// return (127);
 	}
 	pid = fork();
 	if (pid == 0)

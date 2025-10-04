@@ -53,7 +53,6 @@ static t_token_new	*get_next_token(t_lexer_new *lexer)
 	{
 		return (NULL);
 	}
-
 	handle_post_token_processing(lexer, token);
 	return (token);
 }
