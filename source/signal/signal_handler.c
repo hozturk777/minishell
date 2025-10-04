@@ -14,18 +14,6 @@
 #include <stdio.h>
 #include <signal.h>
 
-void	sigquit_handler(int sig)
-{
-	(void)sig;
-	t_global *g_global;
-	
-	g_global = get_global();
-	if (g_global && g_global->in_child)
-	{
-		cleanup_and_exit();
-		exit(131);
-	}
-}
 
 void	setup_signals(void)
 {
@@ -61,12 +49,6 @@ void	setup_child_signals(void)
 	sigemptyset(&sa_quit.sa_mask);
 	sa_quit.sa_flags = 0;
 	sigaction(SIGQUIT, &sa_quit, NULL);
-}
-
-void	restore_signals(void)
-{
-	signal(SIGINT, SIG_DFL);
-	signal(SIGQUIT, SIG_DFL);
 }
 
 void	handle_eof(void)

@@ -6,39 +6,39 @@
 /*   By: hasivaci <hasivaci@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/30 20:26:26 by hasivaci          #+#    #+#             */
-/*   Updated: 2025/10/02 21:24:54 by hasivaci         ###   ########.fr       */
+/*   Updated: 2025/10/04 19:13:41 by hasivaci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../lib/minishell.h"
 #include <stdio.h>
 
-static void	handle_single_assignment(char *arg, t_global *global)
+static void handle_single_assignment(char *arg, t_global *global)
 {
-	char	*equal_sign;
-	char	*key;
-	char	*value;
+    char    *equal_sign;
+    char    *key;
+    char    *value;
 
-	equal_sign = ft_strchr(arg, '=');
-	if (equal_sign)
-	{
-		*equal_sign = '\0';
-		key = arg;
-		value = equal_sign + 1;
-		set_env_var(global, key, value);
-		*equal_sign = '=';
-	}
-	else
-	{
-		key = arg;
-		set_env_var(global, key, NULL);
-	}
+    equal_sign = ft_strchr(arg, '=');
+    if (equal_sign)
+    {
+        *equal_sign = '\0';
+        key = arg;
+        value = equal_sign + 1;
+        set_env_var(global, key, value);
+        *equal_sign = '=';
+    }
+    else
+    {
+        key = arg;
+        set_env_var(global, key, NULL);
+    }
 }
 
-static void	handle_split_assignment(char **args, int i, t_global *global)
+static void handle_split_assignment(char **args, int i, t_global *global)
 {
-	char	*key;
-	int		key_len;
+    char    *key;
+    int     key_len;
 
     key_len = ft_strlen(args[i]) - 1;
     key = ft_substr(args[i], 0, key_len);
@@ -47,9 +47,9 @@ static void	handle_split_assignment(char **args, int i, t_global *global)
     set_env_var(global, key, "");
 }
 
-static int	is_valid_key_char(char *arg, char *equal_pos)
+static int  is_valid_key_char(char *arg, char *equal_pos)
 {
-    int	h;
+    int h;
 
     h = 0;
     while (arg[h] && (equal_pos == NULL || &arg[h] < equal_pos))
@@ -61,9 +61,63 @@ static int	is_valid_key_char(char *arg, char *equal_pos)
     return (1);
 }
 
-static int	process_export_argument(char **args, int i, t_global *global)
+static int  check_token_at_index(t_global *global, int index)
 {
-    int	arg_len;
+    t_list      *current;
+    t_token_new *token;
+    int         count;
+
+    if (!global || !global->tokens)
+        return (0);
+    current = global->tokens;
+    count = 0;
+    while (current && count < index)
+    {
+        current = current->next;
+        count++;
+    }
+    if (current)
+    {
+        token = (t_token_new *)current->content;
+        printf("token type =%d\n", token->quote_type);
+        if (token && (token->type == T_DOUBLE_QUOTE || token->type == T_SINGLE_QUOTE))
+            return (1);
+    }
+    return (0);
+}
+
+static char *merge_quoted_args(char **args, int start_index, int *end_index, t_global *global)
+{
+    char    *result;
+    char    *temp;
+    int     i;
+
+    result = ft_strdup(args[start_index]);
+    if (!result)
+        return (NULL);
+    i = start_index + 1;
+    
+    // Sadece bir sonraki argümanı kontrol et ve birleştir
+    if (args[i] && check_token_at_index(global, i))
+    {
+        temp = ft_strjoin(result, args[i]);
+        if (!temp)
+            return (NULL);
+        result = temp;
+        *end_index = i;
+    }
+    else
+    {
+        *end_index = start_index;
+    }
+    
+    return (result);
+}
+
+
+static int  process_export_argument(char **args, int i, t_global *global)
+{
+    int arg_len;
 
     arg_len = ft_strlen(args[i]);
     if (arg_len > 0 && args[i][arg_len - 1] == '=')
@@ -78,27 +132,50 @@ static int	process_export_argument(char **args, int i, t_global *global)
     }
 }
 
-
-int	builtin_export(char **args, t_global *global)
+int builtin_export(char **args, t_global *global)
 {
-	int i;
-	char *equal_pos;
+    int     i;
+    int     h;
+    int     end_index;
+    char    *equal_pos;
+    char    *merged_arg;
 
-	if (!args[1])
-	{
-		print_export_env(global->env_list);
-		return (0);
-	}
-	i = 1;
-	while (args[i])
-	{
-		equal_pos = ft_strchr(args[i], '=');
-        if (!is_valid_key_char(args[i], equal_pos))
+    h = 0;
+    if (!args[1])
+    {
+        print_export_env(global->env_list);
+        return (0);
+    }
+    while (args[h])
+        h++;
+    // printf("args = %d\n", h);
+    i = 1;
+    while (args[i])
+    {
+        equal_pos = ft_strchr(args[i], '=');
+        if (equal_pos && args[i + 1] && check_token_at_index(global, i + 1))
         {
-            printf("export: `%s': not a valid identifier\n", args[i]);
-            return (2);
+            merged_arg = merge_quoted_args(args, i, &end_index, global);
+            if (!merged_arg)
+                return (1);
+            equal_pos = ft_strchr(merged_arg, '=');
+            if (!is_valid_key_char(merged_arg, equal_pos))
+            {
+                printf("export: `%s': not a valid identifier\n", merged_arg);
+                return (2);
+            }
+            handle_single_assignment(merged_arg, global);
+            i = end_index + 1;
         }
-		i = process_export_argument(args, i, global);
-	}
-	return (0);
+        else
+        {
+            if (!is_valid_key_char(args[i], equal_pos))
+            {
+                printf("export: `%s': not a valid identifier\n", args[i]);
+                return (2);
+            }
+            i = process_export_argument(args, i, global);
+        }
+    }
+    return (0);
 }

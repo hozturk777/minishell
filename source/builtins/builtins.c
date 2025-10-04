@@ -57,6 +57,41 @@ static void	restore_file_descriptors(t_command *cmd, int original_stdout, int or
 	}
 }
 
+static int	builtin_pwd_global(t_global *global)
+{
+	t_command	*cmd;
+	char		*pwd_env;
+	char		*cwd;
+
+	cmd = global->commands;
+	while (cmd)
+	{
+		if (cmd->args && !ft_strcmp(cmd->args[0], "pwd")  && cmd->args[1])
+		{
+			if (cmd->args[1][0] && cmd->args[1][0] == '-' && cmd->args[1][1])
+			{
+				printf("minishell: pwd: -%c: invalid option\n", cmd->args[1][1]);
+				return (2);
+			}
+		}
+		cmd = cmd->next;
+	}
+	pwd_env = get_env_value(global->env_list, "PWD");
+	if (pwd_env)
+	{
+		printf("%s\n", pwd_env);
+		return (0);
+	}
+	cwd = add_garbage(getcwd(NULL, 0));
+	if (!cwd)
+	{
+		printf("pwd: error retrieving current directory: No such file or directory\n");
+		return (1);
+	}
+	printf("%s\n", cwd);
+	return (0);
+}
+
 static int	execute_builtin_command(t_command *cmd, t_global *global)
 {
     if (ft_strcmp(cmd->args[0], "pwd") == 0)
@@ -106,37 +141,4 @@ int	execute_builtin(t_command *cmd, t_global *global, int *originals, int flag)
     return (result);
 }
 
-int	builtin_pwd_global(t_global *global)
-{
-	t_command	*cmd;
-	char		*pwd_env;
-	char		*cwd;
 
-	cmd = global->commands;
-	while (cmd)
-	{
-		if (cmd->args && !ft_strcmp(cmd->args[0], "pwd")  && cmd->args[1])
-		{
-			if (cmd->args[1][0] && cmd->args[1][0] == '-' && cmd->args[1][1])
-			{
-				printf("minishell: pwd: -%c: invalid option\n", cmd->args[1][1]);
-				return (2);
-			}
-		}
-		cmd = cmd->next;
-	}
-	pwd_env = get_env_value(global->env_list, "PWD");
-	if (pwd_env)
-	{
-		printf("%s\n", pwd_env);
-		return (0);
-	}
-	cwd = add_garbage(getcwd(NULL, 0));
-	if (!cwd)
-	{
-		printf("pwd: error retrieving current directory: No such file or directory\n");
-		return (1);
-	}
-	printf("%s\n", cwd);
-	return (0);
-}

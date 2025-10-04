@@ -32,6 +32,14 @@ static char	*process_character(char *input, int *i, t_global *global, int *quote
     return (temp);
 }
 
+static void	update_quote_state(char c, int *quote_state)
+{
+	if (c == '\'' && !quote_state[1])
+		quote_state[0] = !quote_state[0];
+	else if (c == '"' && !quote_state[0])
+		quote_state[1] = !quote_state[1];
+}
+
 char	*expand_with_quotes(char *input, t_global *global)
 {
     char	*result;
@@ -81,15 +89,6 @@ char	*expand_with_heredoc(char *input, t_global *global)
 			return (NULL);
 	}
 	return (result);
-}
-
-
-void	update_quote_state(char c, int *quote_state)
-{
-	if (c == '\'' && !quote_state[1])
-		quote_state[0] = !quote_state[0];
-	else if (c == '"' && !quote_state[0])
-		quote_state[1] = !quote_state[1];
 }
 
 char	*remove_outer_quotes(char *input)

@@ -33,10 +33,6 @@ static char	*get_token_type_name(t_token_types type)
 		return ("SINGLE_QUOTE");
 	else if (type == T_DOUBLE_QUOTE)
 		return ("DOUBLE_QUOTE");
-	else if (type == T_ENV_VAR)
-		return ("ENV_VAR");
-	else if (type == T_EOF)
-		return ("EOF");
 	else if (type == T_WHITESPACE)
 		return ("T_WHITESPACE");
 	return ("UNKNOWN");
@@ -67,20 +63,3 @@ void	debug_print(char *msg)
 	printf(GREEN "[DEBUG] %s" RESET "\n", msg);
 }
 
-int	is_special_char(char c)
-{
-	if (c == '|' || c == '<' || c == '>' || c == '\'' || c == '"' || c == ' '
-		|| c == '\t' || c == '\n')
-		return (1);
-	return (0);
-}
-
-char	*expand_env_var(char *var_name, t_global *global)
-{
-	t_env	*env_node;
-
-	env_node = find_env_node(global->env_list, var_name);
-	if (env_node)
-		return (ft_strdup(env_node->value));
-	return (ft_strdup(""));
-}

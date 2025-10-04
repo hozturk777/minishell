@@ -7,6 +7,7 @@
 		"cstddef": "c",
 		"ioctl.h": "c",
 		"unistd.h": "c",
-		"stdio.h": "c"
+		"stdio.h": "c",
+		"fcntl.h": "c"
 	}
 }

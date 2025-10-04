@@ -37,11 +37,11 @@ MINISHELL_SRCS		= $(SRC_DIR)main.c \
 					  $(SIG_DIR)signal_handler.c \
 					  $(SIG_DIR)sigint.c \
 					  $(BUILD_DIR)builtins.c \
+					  $(BUILD_DIR)builtins_cd.c \
 					  $(BUILD_DIR)path_built.c \
 					  $(BUILD_DIR)builtin_export.c \
 					  $(BUILD_DIR)echo_builtin.c \
 					  $(BUILD_DIR)builtins_utils.c \
-					  $(BUILD_DIR)builtins2.c \
 					  $(EXEC_DIR)executor.c \
 					  $(EXEC_DIR)execute_external.c \
 					  $(EXEC_DIR)executor_utils.c \

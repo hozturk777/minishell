@@ -94,10 +94,7 @@ int	handle_heredoc(t_redirect *redirect)
 	redirect->fd = open(temp_filename, O_RDONLY);
 	unlink(temp_filename);
 	if (redirect->fd > 2)
-	{
 		register_heredoc_fd(redirect->fd);
-		printf("DEBUG: Registered heredoc FD %d\n", redirect->fd);
-	}
 	return (redirect->fd);
 }
 

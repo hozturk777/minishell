@@ -34,10 +34,8 @@ t_global	*init_global(char **envp, t_global *global)
 	global->env_list = init_env_from_envp(envp);
 	update_shlvl(global->env_list);
 	global->exit_status = 0;
-	global->pipe_count = 0;
 	global->heredoc_count = 0;
 	global->input_line = NULL;
-	global->interactive = 1;
 	global->in_child = 0;
 	global->should_exit = 0;
 	global->heredoc_fd_count = 0;
@@ -45,12 +43,6 @@ t_global	*init_global(char **envp, t_global *global)
 	while (i < MAX_HEREDOC_FDS)
 		global->heredoc_fds[i++] = -1;
 	return (global);
-}
-
-void	update_exit_status(t_global *global, int status)
-{
-	if (global)
-		global->exit_status = status;
 }
 
 void	register_heredoc_fd(int fd)
@@ -64,13 +56,9 @@ void	register_heredoc_fd(int fd)
 	{
 		global->heredoc_fds[global->heredoc_fd_count] = fd;
 		global->heredoc_fd_count++;
-		debug_print("Registered heredoc FD");
 	}
 	else
-	{
-		debug_print("WARNING: Max heredoc FDs reached, cannot register more");
 		close(fd);
-	}
 }
 
 void	close_all_heredoc_fds(void)

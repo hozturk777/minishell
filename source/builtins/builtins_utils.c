@@ -13,42 +13,6 @@
 #include "../../lib/minishell.h"
 #include <stdio.h>
 
-static char	*extract_inner_content(char *str, int len)
-{
-	char	*result;
-	int		i;
-	int		j;
-
-	result = halloc(len - 1);
-	if (!result)
-		return (NULL);
-	i = 1;
-	j = 0;
-	while (i < len - 1)
-	{
-		result[j] = str[i];
-		i++;
-		j++;
-	}
-	result[j] = '\0';
-	return (result);
-}
-
-char	*remove_quotes(char *str)
-{
-	int	len;
-
-	if (!str)
-		return (NULL);
-	len = ft_strlen(str);
-	if (len < 2)
-		return (ft_strdup(str));
-	if ((str[0] == '"' && str[len - 1] == '"') || (str[0] == '\'' && str[len
-			- 1] == '\''))
-		return (extract_inner_content(str, len));
-	return (ft_strdup(str));
-}
-
 int	builtin_exit(char **args)
 {
 	int	exit_code;

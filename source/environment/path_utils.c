@@ -13,6 +13,8 @@
 #include "../../lib/minishell.h"
 #include <unistd.h>
 
+static char	*build_full_path(char *dir, char *command);
+
 static char	*search_in_path_directories(char *path_env, char *command)
 {
 	char	**paths;
@@ -54,7 +56,7 @@ char	*find_command_path(char *command, t_env *env_list)
 	return (search_in_path_directories(path_env, command));
 }
 
-char	*build_full_path(char *dir, char *command)
+static char	*build_full_path(char *dir, char *command)
 {
 	char	*temp;
 	char	*full_path;

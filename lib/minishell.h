@@ -15,21 +15,11 @@
 # define PROMPT "minishell$ "
 # define GREEN "\033[1;92m"
 # define RESET "\033[0m"
-# define MAX_HEREDOC_FDS 32			/* Maximum heredoc file descriptors per command */
+# define MAX_HEREDOC_FDS 32
 
-// # include "token_enum.h"
 # include "../include/libft/libft.h"	/* Libft fonksiyonları */
-// # include <stdio.h>						/* printf, perror fonksiyonları */
 # include <stdlib.h>					/* halloc, free, exit fonksiyonları */
-
-// # include <unistd.h>					/* write, read, access, fork fonksiyonları */
-// # include <readline/readline.h>			/* readline fonksiyonu */
-// # include <readline/history.h>			/* add_history, rl_clear_history fonksiyonları */
-// # include <signal.h>					/* signal, sigaction, kill fonksiyonları */
-// # include <sys/wait.h>					/* wait, waitpid, wait3, wait4 fonksiyonları */
 # include <fcntl.h>						/* open, close fonksiyonları */
-// # include <errno.h>						/* Hata yönetimi */
-// # include <string.h>					/* String manipülasyon fonksiyonları */
 
 typedef struct s_global t_global;
 typedef enum e_token_types
@@ -43,9 +33,7 @@ typedef enum e_token_types
 	T_HEREDOC,
 	T_SINGLE_QUOTE,
 	T_DOUBLE_QUOTE,
-	T_ENV_VAR,
 	T_WHITESPACE,
-	T_EOF
 }	t_token_types;
 
 typedef struct s_token_new
@@ -88,8 +76,7 @@ typedef struct s_lexer_new
 	char		*input;			/* Tokenize edilecek girdi metni */
 	int			pos;			/* Girdi metnindeki mevcut pozisyon */
 	int			len;			/* Girdi metninin uzunluğu */
-	int			first_word_check;
-	int				t_cmd_flag;
+	int			t_cmd_flag;
 	char		current_char;	/* İşlenmekte olan mevcut karakter */
 	t_global	*global;		/* Global duruma referans */
 	
@@ -102,73 +89,53 @@ typedef struct s_global
 	t_command	*commands;		/* Ayrıştırılan komutlar listesi */
 	t_env		*env_list;		/* Çevre değişkenleri bağlı listesi */
 	int			exit_status;	/* Son komutun çıkış durumu */
-	int			pipe_count;		/* Mevcut komuttaki pipe sayısı */
 	int			heredoc_count;	/* Mevcut komuttaki heredoc sayısı */
 	char		*input_line;	/* İşlenmekte olan mevcut girdi satırı */
-	int			interactive;	/* Etkileşimli mod bayrağı (1=evet, 0=hayır) */
 	int			in_child;		/* Child process'te mi (1=evet, 0=hayır) */
 	int			should_exit;	/* Çıkış yapılması gerekiyor mu */
 	int			echo_flag;
 	int			heredoc_fds[MAX_HEREDOC_FDS];	/* Açık heredoc FD'leri */
 	int			heredoc_fd_count;	/* Açık heredoc FD sayısı */
-
 }	t_global;
-
-/* ************************************************************************** */
-/*                            FONKSIYON PROTOTIPLERI                         */
-/* ************************************************************************** */
 
 t_global *get_global(void);
 
 
-// ========== LEXER VE TOKENIZER FONKSIYONLARI ==========
+//		SİLİNECEK
+void			print_tokens_advanced(t_list *tokens);					/* Token'ları debug yazdır */
+void			print_commands(t_list *commands);						/* Komutları debug yazdır */
+void			debug_print(char *msg);									/* Debug mesajı yazdır */
+void			print_commands_debug(t_command *commands);				/* Komutları debug yazdır */
+
+
+
+
+
 t_list			*tokenize_advanced(char *input, t_global *global);		/* Ana tokenize fonksiyonu */
 t_token_new		*create_token_advanced(t_token_types type, char *value);	/* Yeni token oluştur */
-//void			free_token_advanced(void *token);						/* Tek token serbest bırak */
-//void			free_tokens_advanced(t_list **tokens);					/* Token listesini serbest bırak */
 t_lexer_new		*init_lexer_advanced(char *input, t_global *global);	/* Lexer başlat */
-// void			free_lexer_advanced(t_lexer_new *lexer);				/* Lexer serbest bırak */
 void			advance_lexer(t_lexer_new *lexer);						/* Sonraki karaktere geç */
 
-// ========== ÇEVRE DEĞIŞKENI FONKSIYONLARI ==========
 t_env			*create_env_node(char *key, char *value);	/* Çevre değişkeni düğümü oluştur */
 void			add_env_node(t_env **env_list, t_env *new_node);		/* Çevre düğümünü listeye ekle */
 t_env			*find_env_node(t_env *env_list, char *key);				/* Anahtar ile çevre değişkeni bul */
-// void			free_env_list(t_env *env_list);							/* Çevre listesini serbest bırak */
 t_env			*init_env_from_envp(char **envp);						/* Envp'den çevre başlat */
 
-// ========== TOKEN İŞLEYİCİ FONKSIYONLARI ==========
 t_token_new		*handle_pipe_advanced(t_lexer_new *lexer);				/* Pipe token'ını işle */
 t_token_new		*handle_redirect_advanced(t_lexer_new *lexer);			/* Yönlendirme token'larını işle */
 t_token_new		*handle_word_advanced(t_lexer_new *lexer);				/* Kelime token'larını işle */
 t_token_new		*handle_quotes_advanced(t_lexer_new *lexer);			/* Tırnaklı metinleri işle */
-t_token_new	*handle_whitespaces_advanced(t_lexer_new *lexer);
+t_token_new		*handle_whitespaces_advanced(t_lexer_new *lexer);
 
-
-// ========== KOMUT FONKSIYONLARI ==========
 t_command		*create_command(void);									/* Yeni komut yapısı oluştur */
-void			free_command(t_command *cmd);							/* Tek komut serbest bırak */
-void			free_commands(t_list **commands);						/* Komut listesini serbest bırak */
 t_command		*parse_tokens_to_commands(t_list *tokens, t_global *global);	/* Token'ları komutlara ayrıştır */
 
-// ========== GLOBAL DURUM FONKSIYONLARI ==========
 t_global		*init_global(char **envp, t_global *global);								/* Global durumu başlat */
-void			free_global(t_global *global);							/* Global durumu serbest bırak */
-void			update_exit_status(t_global *global, int status);		/* Çıkış durumunu güncelle */
 void			register_heredoc_fd(int fd);							/* Heredoc FD'yi kaydet */
 void			close_all_heredoc_fds(void);							/* Tüm heredoc FD'leri kapat */
 void			cleanup_and_exit(void);								/* Exit handler */
 
-// ========== YARDIMCI FONKSIYONLAR ==========
-void			print_tokens_advanced(t_list *tokens);					/* Token'ları debug yazdır */
-void			print_commands(t_list *commands);						/* Komutları debug yazdır */
-char			*expand_env_var(char *var_name, t_global *global);		/* Çevre değişkenini genişlet */
-int				is_special_char(char c);								/* Karakter özel mi kontrol et */
-void			debug_print(char *msg);									/* Debug mesajı yazdır */
-
-// ========== PARSER FONKSIYONLARI ==========
 t_command		*parse_single_command(t_list **token_node, t_global *global);
-// void			parse_redirection(t_command *cmd, t_list **token_node, t_global *global);
 int				is_command_start(t_list *token_node);
 int				is_pipe_token(t_list *token_node);
 int				is_redirect_token(t_list *token_node);
@@ -178,99 +145,61 @@ char			**convert_list_to_array(t_list *args_list);
 void			append_command_to_chain(t_command *head, t_command *new_cmd);
 void			add_redirect_to_command(t_command *cmd, t_redirect *redirect);
 
-// ========== DEBUG FONKSIYONLARI ==========
-void			print_commands_debug(t_command *commands);				/* Komutları debug yazdır */
-//void			free_commands_list(t_command *commands);				/* Komut listesini serbest bırak */
-
-// ========== VARIABLE EXPANSION FONKSIYONLARI ==========
-char			*expand_variables(char *input, t_global *global);		/* Değişken genişletme ana fonksiyon */
 char			*handle_dollar_expansion(char *input, int *i, t_global *global);	/* $VAR genişletme */
 char			*handle_regular_char(char *input, int *i);				/* Normal karakter işleme */
-// char			*join_and_free(char *s1, char *s2);					/* İki string birleştir ve bellekten serbest bırak */
 
-// ========== QUOTE & EXPANSION FONKSIYONLARI ==========
 char			*expand_with_quotes(char *input, t_global *global);		/* Tırnakla genişletme */
 char			*expand_with_heredoc(char *input, t_global *global);
-void			update_quote_state(char c, int *quote_state);			/* Tırnak durumunu güncelle */
 char			*remove_outer_quotes(char *input);						/* Dış tırnakları kaldır */
 int				needs_expansion(char *str);								/* Genişletme gerekli mi kontrol et */
 void			expand_command_args(t_command *cmd, t_global *global);	/* Komut argümanlarını genişlet */
-void			filter_empty_args(t_command *cmd);						/* Boş argümanları filtrele */
-int				count_non_empty_args(char **args);						/* Boş olmayan argüman sayısı */
 int				is_single_quoted_literal(char *str);					/* Tek tırnaklı literal mi kontrol et */
 int				is_double_quoted_literal(char *str);
 char			*extract_single_quote_content(char *str);				/* Tek tırnaklı içerik çıkart */
-void			filter_empty_args(t_command *cmd);						/* Boş argümanları filtrele */
-int				count_non_empty_args(char **args);						/* Boş olmayan argüman sayısı */
 
-// ========== BUILT-IN FONKSIYONLARI ==========
 int				is_builtin(char *command);								/* Built-in komut mu kontrol et */
 int				execute_builtin(t_command *cmd, t_global *global, int *originals, int flag);		/* Built-in komut çalıştır */
 // int				builtin_pwd(void);										/* pwd built-in */
-int				builtin_pwd_global(t_global *global);					/* pwd built-in with global env */
 int				builtin_echo(char **args);								/* echo built-in */
-char			*remove_quotes(char *str);								/* Remove surrounding quotes */
 int				builtin_env(t_env *env_list);							/* env built-in */
 int				builtin_exit(char **args);			/* exit built-in */
 int				builtin_cd(char **args, t_global *global);				/* cd built-in */
 int				builtin_export(char **args, t_global *global);			/* export built-in */
 int				builtin_unset(char **args, t_global *global);			/* unset built-in */
 
-// ========== ENVIRONMENT HELPER FONKSIYONLARI ==========
 void			update_pwd_env(t_global *global);						/* PWD çevre değişkenini güncelle */
 void			print_export_env(t_env *env_list);						/* Export formatında çevre değişkenlerini yazdır */
 void			set_env_var(t_global *global, char *key, char *value);	/* Çevre değişkeni ayarla */
 void			unset_env_var(t_global *global, char *key);			/* Çevre değişkeni sil */
 char			*resolve_logical_path(char *current_pwd, char *path);	/* Logical path çözümle */
 char			*find_existing_parent(char *path);					/* Var olan en yakın parent bul */
-char			*try_parent_fallback(char *failed_path);			/* Parent fallback helper */
 
-// ========== EXECUTOR FONKSIYONLARI ==========
 int				execute_commands(t_command *commands, t_global *global);	/* Ana execution fonksiyonu */
-int				execute_single_command(t_command *cmd, t_global *global);	/* Tek komut çalıştır */
 int				execute_external_command(t_command *cmd, t_global *global);	/* External komut çalıştır */
 int				execute_pipeline(t_command *commands, t_global *global);	/* Pipeline çalıştır */
 int				execute_pipeline_command(t_command *cmd, t_global *global, int prev_fd, int *pipe_fd);
 pid_t			execute_pipeline_command_async(t_command *cmd, t_global *global, int prev_fd, int *pipe_fd);
 
-// ========== PATH UTILITIES ==========
 char			*find_command_path(char *command, t_env *env_list);		/* Komut path'ini bul */
-char			*build_full_path(char *dir, char *command);			/* Tam path oluştur */
 char			*get_env_value(t_env *env_list, char *key);				/* Çevre değişkeni değerini al */
-void			free_string_array(char **array);						/* String array'ini serbest bırak */
 char			**env_list_to_array(t_env *env_list);					/* Çevre listesini array'e çevir */
 int				count_env_nodes(t_env *env_list);						/* Çevre düğümlerini say */
 
-// ========== REDIRECTION FONKSIYONLARI ==========
 int				setup_redirections(t_command *cmd);					/* Yönlendirmeleri ayarla */
-int				handle_single_redirection(t_redirect *redirect);		/* Tek yönlendirme işle */
 void			setup_pipeline_fds(t_command *cmd, int prev_fd, int *pipe_fd);	/* Pipeline fd ayarla */
-int	handle_heredoc(t_redirect *redirect);						/* Heredoc işle */
-char			*generate_temp_filename(void);							/* Geçici dosya adı oluştur */
+int				handle_heredoc(t_redirect *redirect);						/* Heredoc işle */
 
-// ========== SIGNAL HANDLING FONKSIYONLARI ==========
 void			setup_signals(void);									/* Sinyalleri ayarla */
 void			sigint_handler(int sig);								/* SIGINT (Ctrl+C) handler */
-void			sigquit_handler(int sig);								/* SIGQUIT (Ctrl+\) handler */
-void			sigpipe_handler(int sig);								/* SIGPIPE (broken pipe) handler */
-void			restore_signals(void);									/* Default sinyalleri geri yükle */
 void			setup_child_signals(void);								/* Child process sinyalleri */
 void			handle_eof(void);										/* EOF (Ctrl+D) işleme */
-
 void			print_welcome_advanced(void);
+
 char			*ft_strjoin_char(char const *s1, char const s2);
 void			skip_whitespace_advanced(t_lexer_new *lexer);
-void			handle_multiple_heredocs(t_command *cmd);
 void			execute_redirect_command(t_command *cmd, t_global *global, int *origin);
-int				check_quote_balance(char *input);
 int				preprocess_heredocs(t_command *commands, t_global *global);
 int				preprocess_handle_heredoc(t_redirect *redirect);
-
 int				wait_for_redirect_process(pid_t pid);
-
-
-
-
-
 
 #endif

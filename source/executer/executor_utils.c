@@ -14,6 +14,8 @@
 #include <unistd.h>
 #include <sys/wait.h>
 
+static int	execute_single_command(t_command *cmd, t_global *global);
+
 int	execute_commands(t_command *commands, t_global *global)
 {
 	if (!commands)
@@ -24,7 +26,7 @@ int	execute_commands(t_command *commands, t_global *global)
 		return (execute_single_command(commands, global));
 }
 
-int	execute_single_command(t_command *cmd, t_global *global)
+static int	execute_single_command(t_command *cmd, t_global *global)
 {
 
 	if ((!cmd || !cmd->args || !cmd->args[0]) && cmd->redirections)

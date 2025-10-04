@@ -94,8 +94,6 @@ t_global	*get_global(void)
 // argc sayısı check
 int	main(int argc, char **argv, char **envp)
 {
-	printf("\nDEBUG: Main process PID: %d\n", getpid());
-
 	t_global	*global;
 
 	(void)argc;
@@ -111,7 +109,6 @@ int	main(int argc, char **argv, char **envp)
 	setup_signals();
 	print_welcome_advanced();
 	run_shell_loop(global);
-	printf(GREEN "Goodbye!" RESET "\n");
 	cleanup_and_exit();
 	return (0);
 }

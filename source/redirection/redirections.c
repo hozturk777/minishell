@@ -15,6 +15,8 @@
 #include <unistd.h>
 #include <fcntl.h>	
 
+static int	handle_single_redirection(t_redirect *redirect);
+
 static int	process_heredoc_redirects(t_list *cur)
 {
 	t_redirect	*redirect;
@@ -40,7 +42,7 @@ static int	process_heredoc_redirects(t_list *cur)
 	return (last_heredoc_fd);
 }
 
-void	handle_multiple_heredocs(t_command *cmd)
+static void	handle_multiple_heredocs(t_command *cmd)
 {
 	int	fd;
 
@@ -93,7 +95,7 @@ static int	open_redirection_file(t_redirect *redirect)
 	return (fd);
 }
 
-int	handle_single_redirection(t_redirect *redirect)
+static int	handle_single_redirection(t_redirect *redirect)
 {
 	int	fd;
 

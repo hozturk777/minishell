@@ -13,6 +13,52 @@
 #include "../../lib/minishell.h"
 
 
+static int	count_non_empty_args(char **args)
+{
+	int	i;
+	int	count;
+
+	if (!args)
+		return (0);
+	i = 0;
+	count = 0;
+	while (args[i])
+	{
+		if (args[i][0] != '\0')
+			count++;
+		i++;
+	}
+	return (count);
+}
+
+static void	filter_empty_args(t_command *cmd)
+{
+	int		i;
+	int		j;
+	char	**new_args;
+	int		count;
+
+	if (!cmd || !cmd->args)
+		return ;
+	count = count_non_empty_args(cmd->args);
+	new_args = halloc(sizeof(char *) * (count + 1));
+	if (!new_args)
+		return ;
+	i = 0;
+	j = 0;
+	while (cmd->args[i])
+	{
+		if (cmd->args[i][0] != '\0')
+		{
+			new_args[j] = cmd->args[i];
+			cmd->args[i] = NULL;
+			j++;
+		}
+		i++;
+	}
+	new_args[j] = NULL;
+	cmd->args = new_args;
+}
 
 void	expand_command_args(t_command *cmd, t_global *global)
 {
@@ -53,49 +99,5 @@ void	expand_command_args(t_command *cmd, t_global *global)
 	filter_empty_args(cmd);
 }
 
-void	filter_empty_args(t_command *cmd)
-{
-	int		i;
-	int		j;
-	char	**new_args;
-	int		count;
 
-	if (!cmd || !cmd->args)
-		return ;
-	count = count_non_empty_args(cmd->args);
-	new_args = halloc(sizeof(char *) * (count + 1));
-	if (!new_args)
-		return ;
-	i = 0;
-	j = 0;
-	while (cmd->args[i])
-	{
-		if (cmd->args[i][0] != '\0')
-		{
-			new_args[j] = cmd->args[i];
-			cmd->args[i] = NULL;
-			j++;
-		}
-		i++;
-	}
-	new_args[j] = NULL;
-	cmd->args = new_args;
-}
 
-int	count_non_empty_args(char **args)
-{
-	int	i;
-	int	count;
-
-	if (!args)
-		return (0);
-	i = 0;
-	count = 0;
-	while (args[i])
-	{
-		if (args[i][0] != '\0')
-			count++;
-		i++;
-	}
-	return (count);
-}
