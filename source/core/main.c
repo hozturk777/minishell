@@ -32,9 +32,7 @@ static int	process_input(char *input, t_global *global)
 		global->exit_status = 2;
 		return (0);
 	}
-	
 	global->input_line = ft_strdup(input);
-	
 	tokens = tokenize_advanced(input, global);
 	if (!tokens)
 	{
@@ -49,7 +47,6 @@ static int	process_input(char *input, t_global *global)
 		global->exit_status = 2;
 		return (0);
 	}
-
 	// printf("\n=== TOKENS ===\n");
 	// print_tokens_advanced(tokens);
 	// printf("\n=== PARSED COMMANDS ===\n");

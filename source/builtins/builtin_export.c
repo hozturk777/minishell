@@ -13,168 +13,132 @@
 #include "../../lib/minishell.h"
 #include <stdio.h>
 
-static void handle_single_assignment(char *arg, t_global *global)
+static int	check_token_at_index(t_global *global, int index)
 {
-    char    *equal_sign;
-    char    *key;
-    char    *value;
+	t_list		*current;
+	t_token_new	*token;
+	int			count;
 
-    equal_sign = ft_strchr(arg, '=');
-    if (equal_sign)
-    {
-        *equal_sign = '\0';
-        key = arg;
-        value = equal_sign + 1;
-        set_env_var(global, key, value);
-        *equal_sign = '=';
-    }
-    else
-    {
-        key = arg;
-        set_env_var(global, key, NULL);
-    }
+	if (!global || !global->tokens)
+		return (0);
+	current = global->tokens;
+	count = 0;
+	while (current && count < index)
+	{
+		current = current->next;
+		count++;
+	}
+	if (current)
+	{
+		token = (t_token_new *)current->content;
+		if (token && (token->type == T_DOUBLE_QUOTE
+				|| token->type == T_SINGLE_QUOTE))
+			return (1);
+	}
+	return (0);
 }
 
-static void handle_split_assignment(char **args, int i, t_global *global)
+static char	*merge_quoted_args(char **args, int s_index,
+	int *e_index, t_global *global)
 {
-    char    *key;
-    int     key_len;
+	char	*result;
+	char	*temp;
+	int		i;
 
-    key_len = ft_strlen(args[i]) - 1;
-    key = ft_substr(args[i], 0, key_len);
-    if (!key)
-        return ;
-    set_env_var(global, key, "");
+	result = ft_strdup(args[s_index]);
+	if (!result)
+		return (NULL);
+	i = s_index + 1;
+	if (args[i] && check_token_at_index(global, i))
+	{
+		temp = ft_strjoin(result, args[i]);
+		if (!temp)
+			return (NULL);
+		result = temp;
+		*e_index = i;
+	}
+	else
+		*e_index = s_index;
+	return (result);
 }
 
-static int  is_valid_key_char(char *arg, char *equal_pos)
+static int	process_export_argument(char **args, int i, t_global *global)
 {
-    int h;
+	int	arg_len;
 
-    h = 0;
-    while (arg[h] && (equal_pos == NULL || &arg[h] < equal_pos))
-    {
-        if (arg[h] == '-')
-            return (0);
-        h++;
-    }
-    return (1);
+	arg_len = ft_strlen(args[i]);
+	if (arg_len > 0 && args[i][arg_len - 1] == '=')
+	{
+		handle_split_assignment(args, i, global);
+		return (i + 1);
+	}
+	else
+	{
+		handle_single_assignment(args[i], global);
+		return (i + 1);
+	}
+}
+static int		is_valid_export(char *args, char *equal_pos)
+{
+	if (!is_valid_key_char(args, equal_pos))
+	{
+		printf("minishell: export: -%c: invalid option\n", args[1]);
+		return (1);
+	}
+	return (0);
 }
 
-static int  check_token_at_index(t_global *global, int index)
+static int	is_equal_export(char *equal_pos, char *merged_arg, t_global *global)
 {
-    t_list      *current;
-    t_token_new *token;
-    int         count;
-
-    if (!global || !global->tokens)
-        return (0);
-    current = global->tokens;
-    count = 0;
-    while (current && count < index)
-    {
-        current = current->next;
-        count++;
-    }
-    if (current)
-    {
-        token = (t_token_new *)current->content;
-        if (token && (token->type == T_DOUBLE_QUOTE || token->type == T_SINGLE_QUOTE))
-            return (1);
-    }
-    return (0);
+	equal_pos = ft_strchr(merged_arg, '=');
+	if (!is_valid_key_char(merged_arg, equal_pos))
+	{
+		printf("export: -%c: invalid option\n", merged_arg[1]);
+		return (1);
+	}
+	handle_single_assignment(merged_arg, global);
+	return (0);
 }
 
-static char *merge_quoted_args(char **args, int start_index, int *end_index, t_global *global)
+static int	check_and_print_export(char *args, t_global *global)
 {
-    char    *result;
-    char    *temp;
-    int     i;
-
-    result = ft_strdup(args[start_index]);
-    if (!result)
-        return (NULL);
-    i = start_index + 1;
-    
-    if (args[i] && check_token_at_index(global, i))
-    {
-        temp = ft_strjoin(result, args[i]);
-        if (!temp)
-            return (NULL);
-        result = temp;
-        *end_index = i;
-    }
-    else
-    {
-        *end_index = start_index;
-    }
-    
-    return (result);
+	if (!args)
+	{
+		print_export_env(global->env_list);
+		return (1);
+	}
+	return (0);
 }
 
-
-static int  process_export_argument(char **args, int i, t_global *global)
+int	builtin_export(char **args, t_global *global)
 {
-    int arg_len;
+	int		i;
+	int		end_index;
+	char	*equal_pos;
+	char	*merged_arg;
 
-    arg_len = ft_strlen(args[i]);
-    if (arg_len > 0 && args[i][arg_len - 1] == '=')
-    {
-        handle_split_assignment(args, i, global);
-        return (i + 1);
-    }
-    else
-    {
-        handle_single_assignment(args[i], global);
-        return (i + 1);
-    }
+	i = 1;
+	if (check_and_print_export(args[1], global))
+		return (0);
+	while (args[i])
+	{
+		equal_pos = ft_strchr(args[i], '=');
+		if (equal_pos && args[i + 1] && check_token_at_index(global, i + 1))
+		{
+			merged_arg = merge_quoted_args(args, i, &end_index, global);
+			if (!merged_arg)
+				return (1);
+			if (is_equal_export(equal_pos, merged_arg, global))
+				return (2);
+			i = end_index + 1;
+		}
+		else
+		{
+			if (is_valid_export(args[i], equal_pos))
+				return (2);
+			i = process_export_argument(args, i, global);
+		}
+	}
+	return (0);
 }
 
-int builtin_export(char **args, t_global *global)
-{
-    int     i;
-    int     h;
-    int     end_index;
-    char    *equal_pos;
-    char    *merged_arg;
-
-    h = 0;
-    if (!args[1])
-    {
-        print_export_env(global->env_list);
-        return (0);
-    }
-    while (args[h])
-        h++;
-    // printf("args = %d\n", h);
-    i = 1;
-    while (args[i])
-    {
-        equal_pos = ft_strchr(args[i], '=');
-        if (equal_pos && args[i + 1] && check_token_at_index(global, i + 1))
-        {
-            merged_arg = merge_quoted_args(args, i, &end_index, global);
-            if (!merged_arg)
-                return (1);
-            equal_pos = ft_strchr(merged_arg, '=');
-            if (!is_valid_key_char(merged_arg, equal_pos))
-            {
-				// bash: export: -c: invalid option
-                printf("minishell: export: -%c: invalid option\n", merged_arg[1]);
-                return (2);
-            }
-            handle_single_assignment(merged_arg, global);
-            i = end_index + 1;
-        }
-        else
-        {
-            if (!is_valid_key_char(args[i], equal_pos))
-            {
-                printf("minishell: export: -%c: invalid option\n", args[i][1]);
-                return (2);
-            }
-            i = process_export_argument(args, i, global);
-        }
-    }
-    return (0);
-}

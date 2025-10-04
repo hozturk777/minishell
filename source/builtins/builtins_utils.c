@@ -13,26 +13,31 @@
 #include "../../lib/minishell.h"
 #include <stdio.h>
 
+static void	digit_check(char *args, char c)
+{
+	if (!ft_isdigit(c))
+	{
+		printf("minishell: exit: %s: numeric argument required\n", args);
+		cleanup_and_exit();
+		exit(2);
+	}
+}
+
 int	builtin_exit(char **args)
 {
 	int	exit_code;
+	int	i;
 
 	exit_code = 0;
 	printf("exit\n");
-	int i;
 	i = 0;
 	if (args[1])
 	{
-		while(args[1][i])
+		while (args[1][i])
 		{
 			while (args[1][i] == '+' || args[1][i] == '-')
 				i++;
-			if (!ft_isdigit(args[1][i]))
-			{
-				printf("minishell: exit: %s: numeric argument required\n", args[1]);
-				cleanup_and_exit();
-				exit(2);
-			}
+			digit_check(args[1], args[1][i]);
 			i++;
 		}
 		exit_code = ft_atoi(args[1]);
@@ -60,8 +65,9 @@ int	builtin_env(t_env *env_list)
 	}
 	else if (global->commands->args[1])
 	{
-		printf("env: '%s': No such file or directory\n", global->commands->args[1]);	
-		return (127);	
+		printf("env: '%s': ", global->commands->args[1]);
+		printf("No such file or directory\n");
+		return (127);
 	}
 	while (current)
 	{

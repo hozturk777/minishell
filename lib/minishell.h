@@ -202,4 +202,9 @@ int				preprocess_heredocs(t_command *commands, t_global *global);
 int				preprocess_handle_heredoc(t_redirect *redirect);
 int				wait_for_redirect_process(pid_t pid);
 
+void			handle_single_assignment(char *arg, t_global *global);
+void			handle_split_assignment(char **args, int i, t_global *global);
+int				is_valid_key_char(char *arg, char *equal_pos);
+void			print_error(void);
+
 #endif
