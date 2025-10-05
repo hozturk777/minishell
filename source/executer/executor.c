@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abakirca <abakirca@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hasivaci <hasivaci@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/24 12:00:00 by huozturk          #+#    #+#             */
-/*   Updated: 2025/10/01 18:45:21 by abakirca         ###   ########.fr       */
+/*   Updated: 2025/10/05 20:53:21 by hasivaci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ int	redirect_check(t_command *command)
 	return (0);
 }
 
-int	heredoc_check(t_command	*command)
+int	heredoc_check(t_command *command)
 {
 	t_command	*command_temp;
 	t_redirect	*redirect;
@@ -97,11 +97,11 @@ int	heredoc_check(t_command	*command)
 }
 
 pid_t	execute_pipeline_command_async(t_command *cmd, t_global *global,
-	int prev_fd, int *pipe_fd)
+		int prev_fd, int *pipe_fd)
 {
-	pid_t		pid;
-	int			exit_num;
-	int			originals[2];
+	pid_t	pid;
+	int		exit_num;
+	int		originals[2];
 
 	pid = fork();
 	exit_num = 0;

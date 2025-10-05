@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   executor_utils.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abakirca <abakirca@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hasivaci <hasivaci@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/30 20:47:26 by hasivaci          #+#    #+#             */
-/*   Updated: 2025/10/01 18:32:10 by abakirca         ###   ########.fr       */
+/*   Updated: 2025/10/05 20:53:16 by hasivaci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../lib/minishell.h"
-#include <unistd.h>
-#include <sys/wait.h>
 #include <signal.h>
+#include <sys/wait.h>
+#include <unistd.h>
 
 static int	execute_single_command(t_command *cmd, t_global *global);
 

@@ -1,19 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   quote_expansion.c                                  :+:      :+:    :+:   */
+/*   variable_expansion.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hasivaci <hasivaci@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/22 12:00:00 by hsyn              #+#    #+#             */
-/*   Updated: 2025/09/29 20:28:32 by hasivaci         ###   ########.fr       */
+/*   Created: 2025/10/05 20:56:01 by hasivaci          #+#    #+#             */
+/*   Updated: 2025/10/05 20:56:09 by hasivaci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../lib/minishell.h"
 
-static char	*try_partial_matches(char *var_name,
-	int *i, int start, t_global *global)
+static char	*try_partial_matches(char *var_name, int *i, int start,
+		t_global *global)
 {
 	int		len;
 	int		j;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abakirca <abakirca@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hasivaci <hasivaci@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/28 17:39:03 by hasivaci          #+#    #+#             */
-/*   Updated: 2025/10/01 18:47:18 by abakirca         ###   ########.fr       */
+/*   Updated: 2025/10/05 20:53:11 by hasivaci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,8 @@ static int	pwd_check(t_command *cmd)
 		{
 			if (cmd->args[1][0] && cmd->args[1][0] == '-' && cmd->args[1][1])
 			{
-				printf("minishell: pwd: -%c: invalid option\n", cmd->args[1][1]);
+				printf("minishell: pwd: -%c: invalid option\n",
+					cmd->args[1][1]);
 				return (1);
 			}
 		}

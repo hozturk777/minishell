@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: hasivaci <hasivaci@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/22 02:50:00 by hsyn              #+#    #+#             */
-/*   Updated: 2025/09/28 00:10:48 by hasivaci         ###   ########.fr       */
+/*   Created: 2025/10/05 20:55:47 by hasivaci          #+#    #+#             */
+/*   Updated: 2025/10/05 20:57:33 by hasivaci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,9 +72,9 @@ static int	check_syntax(t_list **token_node)
 
 static void	parse_redirection(t_command *cmd, t_list **token_node)
 {
-	t_redirect		*redirect;
-	t_token_new		*token;
-	t_token_new		*file_token;
+	t_redirect	*redirect;
+	t_token_new	*token;
+	t_token_new	*file_token;
 
 	token = (t_token_new *)(*token_node)->content;
 	redirect = halloc(sizeof(t_redirect));
