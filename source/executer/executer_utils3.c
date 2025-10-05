@@ -36,6 +36,7 @@ void	child_run_execve(t_command *cmd, int *originals)
 	path = find_command_path(cmd->args[0], global->env_list);
 	if (!path)
 		check_path(cmd, node, originals);
+	setup_child_signals_sigdfl();
 	execve(path, cmd->args, env_list_to_array(global->env_list));
 	perror("execve");
 	cleanup_and_close(originals);

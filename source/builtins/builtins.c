@@ -110,6 +110,7 @@ int	execute_builtin(t_command *cmd, t_global *global, int *originals, int flag)
 		if (flag)
 			global->in_child = 2;
 		execute_redirect_command(cmd, global, originals);
+		global->in_child = 0;
 		if (setup_redirections(cmd))
 		{
 			close(originals[1]);

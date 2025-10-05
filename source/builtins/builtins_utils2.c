@@ -11,8 +11,6 @@
 /* ************************************************************************** */
 
 #include "../../lib/minishell.h"
-// #include <stdio.h>
-// #include <unistd.h>
 
 int	is_builtin(char *command)
 {

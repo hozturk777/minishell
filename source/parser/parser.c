@@ -13,6 +13,8 @@
 #include "../../lib/minishell.h"
 #include <stdio.h>
 
+static void	collect_command_arg(t_list **args_list, t_list *token_node);
+
 t_command	*parse_tokens_to_commands(t_list *tokens, t_global *global)
 {
 	t_command	*head;
@@ -40,7 +42,7 @@ t_command	*parse_tokens_to_commands(t_list *tokens, t_global *global)
 	return (head);
 }
 
-int	check_syntax(t_list **token_node)
+static int	check_syntax(t_list **token_node)
 {
 	t_list		*token_temp;
 	t_token_new	*token_test;
@@ -123,7 +125,7 @@ t_command	*parse_single_command(t_list **token_node, t_global *global)
 	return (cmd);
 }
 
-void	collect_command_arg(t_list **args_list, t_list *token_node)
+static void	collect_command_arg(t_list **args_list, t_list *token_node)
 {
 	t_token_new	*token;
 	char		*arg_copy;

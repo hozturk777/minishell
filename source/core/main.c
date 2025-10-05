@@ -13,51 +13,55 @@
 #include "../../lib/minishell.h"
 #include <readline/history.h>
 #include <readline/readline.h>
-#include <unistd.h>
+
+static int	process_input_utils(char **input, t_list **tokens)
+{
+	t_global	*global;
+	int			len;
+
+	global = get_global();
+	if (!(*input) || ft_strlen((*input)) == 0)
+		return (0);
+	add_history((*input));
+	(*input) = ft_strtrim((*input), " \t\n");
+	if (!(*input)[0])
+		return (0);
+	len = ft_strlen((*input));
+	if ((*input)[0] == '|' || (*input)[len - 1] == '|')
+	{
+		printf("minishell: syntax error near unexpected token `|'\n");
+		global->exit_status = 2;
+		return (0);
+	}
+	global->input_line = ft_strdup((*input));
+	(*tokens) = tokenize_advanced((*input), global);
+	if (!(*tokens))
+	{
+		global->exit_status = 2;
+		return (0);
+	}
+	return (1);
+}
 
 static int	process_input(char *input, t_global *global)
 {
 	t_list		*tokens;
 	t_command	*commands;
 
-	if (!input || ft_strlen(input) == 0)
+	if (!process_input_utils(&input, &tokens))
 		return (0);
-	add_history(input);
-	input = ft_strtrim(input, " \t\n");
-	if (!input[0])
-		return (0);
-	if (input[0] == '|' || input[ft_strlen(input) - 1] == '|')
-	{
-		printf("minishell: syntax error near unexpected token `|'\n");
-		global->exit_status = 2;
-		return (0);
-	}
-	global->input_line = ft_strdup(input);
-	tokens = tokenize_advanced(input, global);
-	if (!tokens)
-	{
-		global->exit_status = 2;
-		return (0);
-	}
-	// printf("\n=== TOKENS ===\n");
-	// print_tokens_advanced(tokens);
 	commands = parse_tokens_to_commands(tokens, global);
 	if (!commands)
 	{
 		global->exit_status = 2;
 		return (0);
 	}
-	// printf("\n=== TOKENS ===\n");
-	// print_tokens_advanced(tokens);
-	// printf("\n=== PARSED COMMANDS ===\n");
-	// print_commands_debug(commands);
-	// printf("\n==================\n\n");
 	global->tokens = tokens;
 	global->commands = commands;
 	if (commands)
 		global->exit_status = execute_commands(commands, global);
 	if (global->input_line)
-		global->input_line = NULL;	
+		global->input_line = NULL;
 	return (0);
 }
 
@@ -69,6 +73,7 @@ static void	run_shell_loop(t_global *global)
 	should_exit = 0;
 	while (!should_exit && !global->should_exit)
 	{
+		rl_replace_line("", 0);
 		input = readline(PROMPT);
 		if (!input)
 		{
@@ -88,7 +93,6 @@ t_global	*get_global(void)
 	return (&minishell);
 }
 
-// argc sayısı check
 int	main(int argc, char **argv, char **envp)
 {
 	t_global	*global;

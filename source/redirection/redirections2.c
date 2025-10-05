@@ -13,7 +13,6 @@
 #include "../../lib/minishell.h"
 #include <readline/readline.h>
 #include <unistd.h>
-#include <fcntl.h>	
 
 static char	*create_temp_filename(int heredoc_count)
 {

@@ -14,44 +14,53 @@
 #include <stdio.h>
 #include <unistd.h>
 
+static	void	print_welcome(void)
+{
+	printf("|       ||   | |  _    ||   |");
+	usleep(20000);
+	printf(" |_____  ||       ||    ___||   |___ |   |___\n");
+	usleep(20000);
+	printf("| ||_|| ||   | | | |   ||");
+	usleep(20000);
+	printf("   |  _____| ||   _   ||   |___ |       ||       |\n");
+	usleep(20000);
+	printf("|_|   |_||___| |_|  |__||___|");
+	usleep(20000);
+	printf(" |_______||__| |__||_______||_______||_______|\n" RESET);
+	usleep(20000);
+	printf(BLACK "\nCREATED BY:\n");
+	usleep(20000);
+	printf("\t\t _____________________");
+	usleep(20000);
+	printf("\n\t\t/\t\t      \\\n\t       ");
+	usleep(20000);
+	printf("|  hasivaci & huozturk  |\n");
+	usleep(20000);
+	printf("\t\t\\_____________________/\n");
+	usleep(20000);
+	printf("\n\n" RESET);
+	usleep(20000);
+}
+
 void	print_welcome_advanced(void)
 {
-	printf("\033[2J\033[H"); // Ekranı temizle
-    printf("\033[1;36m"); // Cyan bold
-    printf("╔═══════════════════════════════════════════════════════════════════════════════════════════╗\n");
+	printf(GREEN "\033[H\033[J");
 	usleep(20000);
-    printf("║                                                                                           ║\n");
+	printf(" __   __  ___   __    _  ___   _______");
 	usleep(20000);
-    printf("║             \033[1;35m███╗   ███╗██╗███╗   ██╗██╗███████╗██╗  ██╗███████╗██╗     ██╗\033[1;36m                ║\n");
+	printf("  __   __  _______  ___      ___ \n");
 	usleep(20000);
-    printf("║             \033[1;35m████╗ ████║██║████╗  ██║██║██╔════╝██║  ██║██╔════╝██║     ██║\033[1;36m                ║\n");
+	printf("|  |_|  ||   | |  |  | ||   | |       |");
 	usleep(20000);
-    printf("║             \033[1;35m██╔████╔██║██║██╔██╗ ██║██║███████╗███████║█████╗  ██║     ██║\033[1;36m                ║\n");
+	printf("|  | |  ||       ||   |    |   |  \n");
 	usleep(20000);
-    printf("║             \033[1;35m██║╚██╔╝██║██║██║╚██╗██║██║╚════██║██╔══██║██╔══╝  ██║     ██║\033[1;36m                ║\n");
+	printf("|       ||   | |   |_| ||   |");
 	usleep(20000);
-    printf("║             \033[1;35m██║ ╚═╝ ██║██║██║ ╚████║██║███████║██║  ██║███████╗███████╗███████╗\033[1;36m           ║\n");
+	printf(" |  _____||  |_|  ||    ___||   |    |   |    \n");
 	usleep(20000);
-    printf("║             \033[1;35m╚═╝     ╚═╝╚═╝╚═╝  ╚═══╝╚═╝╚══════╝╚═╝  ╚═╝╚══════╝╚══════╝╚══════╝\033[1;36m           ║\n");
+	printf("|       ||   | |       ||   | |");
 	usleep(20000);
-    printf("║                                                                                           ║\n");
+	printf(" |_____ |       ||   |___ |   |    |   |    \n");
 	usleep(20000);
-    printf("║                             \033[1;33mCreated by: hasivaci && huozturk\033[1;36m                              ║\n");
-	usleep(20000);
-    printf("║                                     \033[1;32m42 School Project\033[1;36m                                     ║\n");
-	usleep(20000);
-    printf("║                                                                                           ║\n");
-	usleep(20000);
-    printf("║                                   \033[1;31m🚀 SelamunAleyküm! 🚀\033[1;36m                                   ║\n");
-	usleep(20000);
-    printf("║                                                                                           ║\n");
-	usleep(20000);
-    printf("╚═══════════════════════════════════════════════════════════════════════════════════════════╝\033[0m\n");
-	usleep(20000);
-    printf("\n");
-	usleep(20000);
-    printf("\033[1;32mType 'exit' to quit the shell.\033[0m\n");
-	usleep(20000);
-    printf("\033[1;34mEnjoy coding! 💻\033[0m\n\n");
-	usleep(20000);
+	print_welcome();
 }

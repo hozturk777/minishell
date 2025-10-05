@@ -13,7 +13,6 @@
 #include "../../lib/minishell.h"
 #include <readline/readline.h>
 #include <unistd.h>
-#include <fcntl.h>
 
 static void	write_heredoc(char *line, t_global *global, int fd)
 {

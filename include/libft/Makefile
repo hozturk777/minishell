@@ -50,7 +50,6 @@ all: $(NAME)
 $(NAME): $(OBJ)
 	@ar rcs $(NAME) $(OBJ)
 
-# obj klasörü yoksa oluştur, .o dosyalarını oraya koy
 $(OBJDIR)/%.o: %.c libft.h | $(OBJDIR)
 	@$(CC) $(CFLAGS) -c $< -o $@
 

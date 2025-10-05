@@ -39,6 +39,7 @@ void	sigint_handler(int sig)
 	{
 		if (g_global->commands)
 			sigint_handler_child_cleanup(g_global->commands);
+		rl_replace_line("", 0);
 		cleanup_and_exit();
 		exit(130);
 	}

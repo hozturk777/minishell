@@ -23,6 +23,7 @@ static int	get_process_exit_status(int status)
 	if (WIFSIGNALED(status))
 	{
 		signal_num = WTERMSIG(status);
+		print_signal_message(signal_num);
 		if (signal_num == SIGINT)
 			return (130);
 		else if (signal_num == SIGQUIT)

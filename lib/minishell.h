@@ -12,14 +12,15 @@
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
-# define PROMPT "minishell$ "
-# define GREEN "\033[1;92m"
-# define RESET "\033[0m"
+# define PROMPT	"minishell$ "
+# define BLACK	"\033[1;90m"
+# define GREEN	"\033[1;92m"
+# define RESET	"\033[0m"
 # define MAX_HEREDOC_FDS 32
 
-# include "../include/libft/libft.h"	/* Libft fonksiyonları */
-# include <stdlib.h>					/* halloc, free, exit fonksiyonları */
-# include <fcntl.h>						/* open, close fonksiyonları */
+# include "../include/libft/libft.h"
+# include <stdlib.h>
+# include <fcntl.h>
 
 typedef struct s_global	t_global;
 typedef enum e_token_types
@@ -125,7 +126,6 @@ int				is_command_start(t_list *token_node);
 int				is_pipe_token(t_list *token_node);
 int				is_redirect_token(t_list *token_node);
 int				is_word_token(t_list *token_node);
-void			collect_command_arg(t_list **args_list, t_list *token_node);
 char			**convert_list_to_array(t_list *args_list);
 void			append_command_to_chain(t_command *head, t_command *new_cmd);
 void			add_redirect_to_command(t_command *cmd, t_redirect *redirect);
@@ -215,11 +215,8 @@ int				check_syntax_redirect(t_list **token_temp,
 					t_token_new **token_test);
 int				check_syntax_heredoc(t_list **token_temp,
 					t_token_new **token_test);
-
-					//		SİLİNECEK
-void			print_tokens_advanced(t_list *tokens);					/* Token'ları debug yazdır */
-void			print_commands(t_list *commands);						/* Komutları debug yazdır */
-void			debug_print(char *msg);									/* Debug mesajı yazdır */
-void			print_commands_debug(t_command *commands);				/* Komutları debug yazdır */
+void			setup_child_signals_sigdfl(void);
+int				wait_for_external_process(pid_t pid);
+void			print_signal_message(int signal_num);
 
 #endif

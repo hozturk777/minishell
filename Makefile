@@ -13,7 +13,7 @@ SRC_DIR				= source/core/
 LIBFT_DIR			= include/libft/
 LRDR				= -lreadline
 CC					= @cc
-CFLAGS				= -Wall -Wextra -Werror -g
+CFLAGS				= -Wall -Wextra -Werror
 RM					= rm -rf
 OBJ_DIR				= objects/
 
@@ -28,7 +28,6 @@ MINISHELL_SRCS		= $(SRC_DIR)main.c \
 					  $(ENV_DIR)env_utils.c \
 					  $(ENV_DIR)env_utils2.c \
 					  $(ENV_DIR)path_utils.c \
-					  $(UTL_DIR)debug.c \
 					  $(UTL_DIR)debug_utils.c \
 					  $(EXPA_DIR)variable_expansion.c \
 					  $(EXPA_DIR)quote_expansion.c \
@@ -81,18 +80,6 @@ VPATH = $(SRC_DIR):$(UTL_DIR):$(LXR_DIR):$(EXEC_DIR)::$(EXPA_DIR):$(PAR_DIR):$(B
 $(OBJ_DIR)%.o: %.c
 					@mkdir -p $(OBJ_DIR)
 					@$(CC) $(CFLAGS) -c $< -o $@
-
-#$(OBJ_DIR)%.o: $(UTL_DIR)%.c
-#					@mkdir -p $(OBJ_DIR)
-#					@$(CC) $(CFLAGS) -c $< -o $@
-
-#$(OBJ_DIR)%.o: loop_dir/%.c
-#					@mkdir -p $(OBJ_DIR)
-#					@$(CC) $(CFLAGS) -c $< -o $@
-
-#$(OBJ_DIR)%.o: $(EXEC_DIR)%.c
-#					@mkdir -p $(OBJ_DIR)
-#					@$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
 					@$(RM) $(OBJ_DIR)

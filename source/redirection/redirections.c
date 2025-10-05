@@ -13,7 +13,6 @@
 #include "../../lib/minishell.h"
 #include <stdio.h>
 #include <unistd.h>
-#include <fcntl.h>	
 
 static int	handle_single_redirection(t_redirect *redirect);
 

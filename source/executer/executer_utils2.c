@@ -89,7 +89,6 @@ void	check_path(t_command *cmd, t_list *node, int *originals)
 		redirect = (t_redirect *)node->content;
 		if (redirect->type == T_HEREDOC)
 		{
-			printf("minishell: %s: command not found\n", cmd->args[0]);
 			cleanup_and_close(originals);
 			exit(0);
 		}

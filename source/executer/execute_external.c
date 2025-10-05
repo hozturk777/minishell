@@ -30,13 +30,22 @@ static void	external_child_process(t_command *cmd, t_global *global, char *path)
 		cleanup_and_exit();
 		exit(127);
 	}
+	setup_child_signals_sigdfl();
 	execve(path, cmd->args, env_list_to_array(global->env_list));
 	perror("execve");
 	cleanup_and_exit();
 	exit(127);
 }
 
-static int	wait_for_external_process(pid_t pid)
+void	print_signal_message(int signal_num)
+{
+	if (signal_num == SIGQUIT)
+		write(STDOUT_FILENO, "Quit (core dumped)\n", 19);
+	else if (signal_num == SIGINT)
+		write(STDOUT_FILENO, "\n", 1);
+}
+
+int	wait_for_external_process(pid_t pid)
 {
 	int	status;
 	int	signal_num;
@@ -45,6 +54,7 @@ static int	wait_for_external_process(pid_t pid)
 	if (WIFSIGNALED(status))
 	{
 		signal_num = WTERMSIG(status);
+		print_signal_message(signal_num);
 		if (signal_num == SIGINT)
 			return (130);
 		else if (signal_num == SIGQUIT)
