@@ -51,6 +51,7 @@ int	wait_for_external_process(pid_t pid)
 	int	signal_num;
 
 	waitpid(pid, &status, 0);
+	signal(SIGINT, sigint_handler);
 	if (WIFSIGNALED(status))
 	{
 		signal_num = WTERMSIG(status);
@@ -78,6 +79,7 @@ int	execute_external_command(t_command *cmd, t_global *global)
 	pid_t	pid;
 
 	path = find_command_path(cmd->args[0], global->env_list);
+	signal(SIGINT, SIG_IGN);
 	pid = fork();
 	if (pid == 0)
 		external_child(cmd, global, path);
@@ -91,12 +93,8 @@ int	execute_external_command(t_command *cmd, t_global *global)
 		}
 		return (global->exit_status);
 	}
-	else
-	{
-		perror("fork");
-		free(path);
-		clear_garbage();
-		return (1);
-	}
-	return (0);
+	perror("fork");
+	free(path);
+	clear_garbage();
+	return (1);
 }

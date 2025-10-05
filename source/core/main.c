@@ -73,7 +73,6 @@ static void	run_shell_loop(t_global *global)
 	should_exit = 0;
 	while (!should_exit && !global->should_exit)
 	{
-		rl_replace_line("", 0);
 		input = readline(PROMPT);
 		if (!input)
 		{
