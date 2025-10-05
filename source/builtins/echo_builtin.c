@@ -13,10 +13,10 @@
 #include "../../lib/minishell.h"
 #include <stdio.h>
 
-static void process_escape_sequences(char *str)
+static void	process_escape_sequences(char *str)
 {
-	int i;
-	int j;
+	int	i;
+	int	j;
 
 	i = 0;
 	j = 0;
@@ -28,14 +28,11 @@ static void process_escape_sequences(char *str)
 			{
 				str[i] = '\\';
 				str[j] = str[i];
-
 			}
 			else
-			{
-				str[j] = str[i+1];
-			}
+				str[j] = str[i + 1];
 			i++;
-		}       
+		}
 		else
 			str[j] = str[i];
 		j++;
@@ -44,9 +41,9 @@ static void process_escape_sequences(char *str)
 	str[j] = '\0';
 }
 
-int is_n_flag(char *str)
+static int	is_n_flag(char *str)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	if (!str || str[0] != '-' || str[1] == '\0')
@@ -55,37 +52,26 @@ int is_n_flag(char *str)
 	while (str[i])
 	{
 		if (str[i] != 'n')
-			return(0);
+			return (0);
 		i++;
 	}
-	return(1);
+	return (1);
 }
 
-int builtin_echo(char **args)
+int	echo_flag(char	**args, int	*newline, int	*enable_escape)
 {
-	int     i;
-	int     j;
-	int     b;
-	int     newline;
-	int     enable_escape;
-	char    *processed_arg;
+	int		b;
+	int		i;
+	int		j;
 
 	i = 1;
-	j = 1;
-	b = 0;
-	newline = 1;
-	enable_escape = 0;
-	
-
-
 	while (args[i] && is_n_flag(args[i]))
 	{
-		newline = 0;
+		*newline = 0;
 		i++;
 		if (args[i] && !ft_strcmp(args[i], " "))
 			i++;
 	}
-
 	j = i;
 	while (args[j])
 	{
@@ -93,35 +79,46 @@ int builtin_echo(char **args)
 		while (args[j][b])
 		{
 			if (args[j][b] == '\\')
-				enable_escape = 1;
+				*enable_escape = 1;
 			b++;
 		}
 		j++;
 	}
-	
-	j = i;
+	return (i);
+}
+
+static void	echo_whitespaces(int *j, char *processed_arg, char **args)
+{
+	while (processed_arg && !ft_strcmp(processed_arg, " "))
+	{
+		if (!ft_strcmp(args[*j + 1], " "))
+		{
+			*j = *j + 1;
+			processed_arg = args[*j];
+		}
+		else
+			break ;
+	}
+}
+
+int	builtin_echo(char **args)
+{
+	int		j;
+	int		newline;
+	int		enable_escape;
+	char	*processed_arg;
+
+	newline = 1;
+	enable_escape = 0;
+	j = echo_flag(args, &newline, &enable_escape);
 	while (args[j])
 	{
 		processed_arg = args[j];
 		if (processed_arg)
 		{
 			if (enable_escape)
-			{
 				process_escape_sequences(processed_arg);
-				enable_escape = 0;
-			}
-			while (processed_arg && !ft_strcmp(processed_arg, " "))
-			{
-				if (!ft_strcmp(args[j + 1], " "))
-				{
-					j++;
-					processed_arg = args[j];
-				}
-				else
-				{
-					break;
-				}
-			}
+			echo_whitespaces(&j, processed_arg, args);
 			printf("%s", processed_arg);
 		}
 		j++;
@@ -130,4 +127,3 @@ int builtin_echo(char **args)
 		printf("\n");
 	return (0);
 }
-

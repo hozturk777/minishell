@@ -10,10 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-// mallloc ve strdup olan heryer galloc kontrol edilcecek;
-// galloc hata durumda herşeyi freelicek
-
-// halloc içinde heryere galloc yazıp galloc içinde hata durumları ve hata çıktıları kontorl edilirse 2 satır if bloğuna greek olmadan heryeri buradan freeleyip çıkarız;
 #include "libft.h"
 #include <stdlib.h>
 
@@ -23,17 +19,12 @@ static void	*get_garbage(void)
 
 	return (&garbage);
 }
+
 void	*halloc(size_t size)
 {
 	void	*adress;
 
 	adress = add_garbage(malloc(size));
-	// if (!adress)
-	// {
-	//     burada hata var yazıverecek clear garbage a gidip hepsini freleyip çıkıcak ;
-	//     exit
-	//      exit status 1;
-	// }
 	return (adress);
 }
 
@@ -44,10 +35,6 @@ void	*add_garbage(void *adress)
 
 	if (!adress)
 		return (0);
-	// if (!GARBAGE_COLLECTOR) .h daki yeri 0 yaparsam çalışmayacak ve leaklere bakabilecem
-	// {
-	//     return(adress);
-	// }
 	collector = get_garbage();
 	tmp = malloc(sizeof(t_list));
 	if (!tmp)
@@ -66,14 +53,13 @@ void	*add_garbage(void *adress)
 
 void	clear_garbage(void)
 {
-	t_list **collector;
-	t_list *total;
-	t_list *tmp;
+	t_list	**collector;
+	t_list	*total;
+	t_list	*tmp;
 
 	collector = get_garbage();
 	if (!collector || !*collector)
-		return;
-		
+		return ;
 	total = *collector;
 	while (total)
 	{
@@ -81,10 +67,10 @@ void	clear_garbage(void)
 		if (total->content)
 		{
 			free(total->content);
-			total->content = NULL;  // Güvenlik için NULL yap
+			total->content = NULL;
 		}
 		free(total);
 		total = tmp;
 	}
-	*collector = NULL;  // ÖNEMLİ: Collector'ı NULL yap
+	*collector = NULL;
 }

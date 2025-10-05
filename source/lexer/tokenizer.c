@@ -61,7 +61,7 @@ static int	process_token(t_list **tokens, t_token_new *token)
 	if (!token)
 	{
 		printf("Token Error\n");
-		return (0);		
+		return (0);
 	}
 	else if (token->value)
 	{

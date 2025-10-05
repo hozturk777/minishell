@@ -33,7 +33,6 @@ void	child_run_execve(t_command *cmd, int *originals)
 
 	global = get_global();
 	node = cmd->redirections;
-
 	path = find_command_path(cmd->args[0], global->env_list);
 	if (!path)
 		check_path(cmd, node, originals);
@@ -41,4 +40,16 @@ void	child_run_execve(t_command *cmd, int *originals)
 	perror("execve");
 	cleanup_and_close(originals);
 	exit(127);
+}
+
+void	pipeline_close_helper(int *prev_fd, t_command **current, int *pipe_fd)
+{
+	if (*prev_fd != 0)
+		close(*prev_fd);
+	if ((*current)->next)
+	{
+		close(pipe_fd[1]);
+		*prev_fd = pipe_fd[0];
+	}
+	*current = (*current)->next;
 }

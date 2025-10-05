@@ -34,6 +34,7 @@ MINISHELL_SRCS		= $(SRC_DIR)main.c \
 					  $(EXPA_DIR)quote_expansion.c \
 					  $(EXPA_DIR)expansion_utils.c \
 					  $(EXPA_DIR)argument_processor.c \
+					  $(EXPA_DIR)expand_utils.c \
 					  $(SIG_DIR)signal_handler.c \
 					  $(SIG_DIR)sigint.c \
 					  $(BUILD_DIR)builtins.c \
@@ -52,7 +53,9 @@ MINISHELL_SRCS		= $(SRC_DIR)main.c \
 					  $(EXEC_DIR)pipeline_execution.c \
 					  $(REDIRECT_DIR)redirections.c \
 					  $(REDIRECT_DIR)redirections2.c \
+					  $(REDIRECT_DIR)redirections_utils.c \
 					  $(PAR_DIR)parser.c \
+					  $(PAR_DIR)parser_utils.c \
 					  $(PAR_DIR)command_utils.c \
 					  $(PAR_DIR)parser_is.c \
 

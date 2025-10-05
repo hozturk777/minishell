@@ -18,7 +18,8 @@ t_token_new	*handle_pipe_advanced(t_lexer_new *lexer)
 	return (create_token_advanced(T_PIPE, "|"));
 }
 
-static t_token_new	*extract_regular_word(t_lexer_new *lexer, int start, t_token_types types)
+static t_token_new	*extract_regular_word(t_lexer_new *lexer,
+	int start, t_token_types types)
 {
 	int		len;
 	char	*word;
@@ -41,47 +42,48 @@ static t_token_new	*extract_regular_word(t_lexer_new *lexer, int start, t_token_
 	return (create_token_advanced(types, word));
 }
 
-static t_token_new	*process_word_content(t_lexer_new *lexer, int start, t_token_types types)
+static t_token_new	*process_word_content(t_lexer_new *lexer,
+	int start, t_token_types types)
 {
-    int		len;
-    char	*word;
+	int		len;
+	char	*word;
 
-    if (lexer->current_char == '$' && lexer->input[lexer->pos + 1] == '"')
-    {
-        advance_lexer(lexer);
-        advance_lexer(lexer);
-        while (lexer->current_char != '\0' && lexer->current_char != '"')
-            advance_lexer(lexer);
-        if (lexer->current_char == '"')
-            advance_lexer(lexer);
-        len = lexer->pos - start;
-        word = ft_substr(lexer->input, start + 2, len - 3);
-        if (!word)
-            return (NULL);
-        return (create_token_advanced(types, word));
-    }
-    return (extract_regular_word(lexer, start, types));
+	if (lexer->current_char == '$' && lexer->input[lexer->pos + 1] == '"')
+	{
+		advance_lexer(lexer);
+		advance_lexer(lexer);
+		while (lexer->current_char != '\0' && lexer->current_char != '"')
+			advance_lexer(lexer);
+		if (lexer->current_char == '"')
+			advance_lexer(lexer);
+		len = lexer->pos - start;
+		word = ft_substr(lexer->input, start + 2, len - 3);
+		if (!word)
+			return (NULL);
+		return (create_token_advanced(types, word));
+	}
+	return (extract_regular_word(lexer, start, types));
 }
 
 t_token_new	*handle_word_advanced(t_lexer_new *lexer)
 {
-    int				start;
-    t_token_types	types;
+	int				start;
+	t_token_types	types;
 
-    start = lexer->pos;
-    types = T_WORD;
-    if (!lexer || !lexer->input || lexer->pos >= lexer->len)
-        return (NULL);
-    if (lexer->pos == 0 || lexer->t_cmd_flag == 1)
-    {
-        types = T_CMD;
-        lexer->t_cmd_flag = 0;
-    }
-    else
-    {
-        types = T_WORD;
+	start = lexer->pos;
+	types = T_WORD;
+	if (!lexer || !lexer->input || lexer->pos >= lexer->len)
+		return (NULL);
+	if (lexer->pos == 0 || lexer->t_cmd_flag == 1)
+	{
+		types = T_CMD;
+		lexer->t_cmd_flag = 0;
+	}
+	else
+	{
+		types = T_WORD;
 		if (lexer->t_cmd_flag == 2)
 			lexer->t_cmd_flag = 1;
-    }
-    return (process_word_content(lexer, start, types));
+	}
+	return (process_word_content(lexer, start, types));
 }

@@ -71,15 +71,15 @@ static long long	ft_lllennum(long long n)
 	}
 	return (i);
 }
+
 char	*ft_lltoa(long long n)
 {
-	char				*result;
-	long long 	num;
+	char		*result;
+	long long	num;
 	long long	lennum;
 
 	num = n;
 	lennum = ft_lllennum(n);
-
 	result = (char *)halloc((lennum + 1) * sizeof(char));
 	if (!result)
 		return (NULL);

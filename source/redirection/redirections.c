@@ -21,7 +21,7 @@ static int	process_heredoc_redirects(t_list *cur)
 {
 	t_redirect	*redirect;
 	int			last_heredoc_fd;
-	t_global 	*global;
+	t_global	*global;
 
 	last_heredoc_fd = -1;
 	global = get_global();
@@ -64,13 +64,13 @@ int	setup_redirections(t_command *cmd)
 	if (!cmd || !cmd->redirections)
 		return (0);
 	handle_multiple_heredocs(cmd);
-	current = cmd->redirections; 
+	current = cmd->redirections;
 	while (current)
 	{
 		redirect = (t_redirect *)current->content;
 		if (redirect && redirect->type != T_HEREDOC)
 		{
-			if(handle_single_redirection(redirect))
+			if (handle_single_redirection(redirect))
 				return (1);
 		}
 		current = current->next;
@@ -99,7 +99,7 @@ static int	handle_single_redirection(t_redirect *redirect)
 {
 	int	fd;
 
-	fd = open_redirection_file(redirect);	
+	fd = open_redirection_file(redirect);
 	if (fd == -1)
 		return (1);
 	if (redirect->type == T_REDIRECT_IN)

@@ -23,8 +23,8 @@ t_lexer_new	*init_lexer_advanced(char *input, t_global *global)
 	lexer->pos = 0;
 	lexer->len = ft_strlen(input);
 	lexer->global = global;
-	lexer->current_char = '\0';  
-    lexer->t_cmd_flag = 0;      
+	lexer->current_char = '\0';
+	lexer->t_cmd_flag = 0;
 	if (lexer->len > 0)
 		lexer->current_char = input[0];
 	else
@@ -50,7 +50,6 @@ t_token_new	*create_token_advanced(t_token_types type, char *value)
 		return (NULL);
 	token->type = type;
 	token->value = ft_strdup(value);
-	
 	if (!token->value)
 	{
 		return (NULL);
@@ -60,6 +59,7 @@ t_token_new	*create_token_advanced(t_token_types type, char *value)
 	token->expanded = 0;
 	return (token);
 }
+
 void	skip_whitespace_advanced(t_lexer_new *lexer)
 {
 	while (lexer->current_char == ' ' || lexer->current_char == '\t'

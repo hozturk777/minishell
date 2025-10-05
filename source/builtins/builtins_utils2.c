@@ -34,3 +34,16 @@ int	is_builtin(char *command)
 		return (1);
 	return (0);
 }
+
+int	handle_quoted_export(char **args, int i,
+	t_global *global, int *end_index)
+{
+	char	*merged_arg;
+
+	merged_arg = merge_quoted_args(args, i, end_index, global);
+	if (!merged_arg)
+		return (1);
+	if (is_equal_export(ft_strchr(args[i], '='), merged_arg, global))
+		return (2);
+	return (0);
+}

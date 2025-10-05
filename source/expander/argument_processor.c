@@ -12,7 +12,6 @@
 
 #include "../../lib/minishell.h"
 
-
 static int	count_non_empty_args(char **args)
 {
 	int	i;
@@ -64,7 +63,6 @@ void	expand_command_args(t_command *cmd, t_global *global)
 {
 	int		i;
 	char	*expanded;
-	char	*clean_str;
 
 	if (!cmd || !cmd->args)
 		return ;
@@ -72,22 +70,11 @@ void	expand_command_args(t_command *cmd, t_global *global)
 	while (cmd->args[i])
 	{
 		if (is_double_quoted_literal(cmd->args[i]))
-		{
-			expanded = expand_with_quotes(cmd->args[i], global);
-			if (expanded)
-				cmd->args[i] = expanded;
-		}
+			expand_double_quotes(cmd, global, &i);
 		else if (is_single_quoted_literal(cmd->args[i]))
-		{
-			clean_str = extract_single_quote_content(cmd->args[i]);
-			cmd->args[i] = clean_str;
-		}
+			expand_single_quotes(cmd, &i);
 		else if (needs_expansion(cmd->args[i]))
-		{
-			expanded = expand_with_quotes(cmd->args[i], global);
-			if (expanded)
-				cmd->args[i] = expanded;
-		}
+			need_expansion_utils(cmd, global, &i);
 		else
 		{
 			expanded = remove_outer_quotes(cmd->args[i]);
@@ -98,6 +85,3 @@ void	expand_command_args(t_command *cmd, t_global *global)
 	}
 	filter_empty_args(cmd);
 }
-
-
-

@@ -13,55 +13,6 @@
 #include "../../lib/minishell.h"
 #include <stdio.h>
 
-static int	check_token_at_index(t_global *global, int index)
-{
-	t_list		*current;
-	t_token_new	*token;
-	int			count;
-
-	if (!global || !global->tokens)
-		return (0);
-	current = global->tokens;
-	count = 0;
-	while (current && count < index)
-	{
-		current = current->next;
-		count++;
-	}
-	if (current)
-	{
-		token = (t_token_new *)current->content;
-		if (token && (token->type == T_DOUBLE_QUOTE
-				|| token->type == T_SINGLE_QUOTE))
-			return (1);
-	}
-	return (0);
-}
-
-static char	*merge_quoted_args(char **args, int s_index,
-	int *e_index, t_global *global)
-{
-	char	*result;
-	char	*temp;
-	int		i;
-
-	result = ft_strdup(args[s_index]);
-	if (!result)
-		return (NULL);
-	i = s_index + 1;
-	if (args[i] && check_token_at_index(global, i))
-	{
-		temp = ft_strjoin(result, args[i]);
-		if (!temp)
-			return (NULL);
-		result = temp;
-		*e_index = i;
-	}
-	else
-		*e_index = s_index;
-	return (result);
-}
-
 static int	process_export_argument(char **args, int i, t_global *global)
 {
 	int	arg_len;
@@ -78,7 +29,8 @@ static int	process_export_argument(char **args, int i, t_global *global)
 		return (i + 1);
 	}
 }
-static int		is_valid_export(char *args, char *equal_pos)
+
+static int	is_valid_export(char *args, char *equal_pos)
 {
 	if (!is_valid_key_char(args, equal_pos))
 	{
@@ -88,7 +40,7 @@ static int		is_valid_export(char *args, char *equal_pos)
 	return (0);
 }
 
-static int	is_equal_export(char *equal_pos, char *merged_arg, t_global *global)
+int	is_equal_export(char *equal_pos, char *merged_arg, t_global *global)
 {
 	equal_pos = ft_strchr(merged_arg, '=');
 	if (!is_valid_key_char(merged_arg, equal_pos))
@@ -100,8 +52,9 @@ static int	is_equal_export(char *equal_pos, char *merged_arg, t_global *global)
 	return (0);
 }
 
-static int	check_and_print_export(char *args, t_global *global)
+static int	check_and_print_export(char *args, t_global *global, int *i)
 {
+	*i = 1;
 	if (!args)
 	{
 		print_export_env(global->env_list);
@@ -115,21 +68,18 @@ int	builtin_export(char **args, t_global *global)
 	int		i;
 	int		end_index;
 	char	*equal_pos;
-	char	*merged_arg;
+	int		result;
 
-	i = 1;
-	if (check_and_print_export(args[1], global))
+	if (check_and_print_export(args[1], global, &i))
 		return (0);
 	while (args[i])
 	{
 		equal_pos = ft_strchr(args[i], '=');
 		if (equal_pos && args[i + 1] && check_token_at_index(global, i + 1))
 		{
-			merged_arg = merge_quoted_args(args, i, &end_index, global);
-			if (!merged_arg)
-				return (1);
-			if (is_equal_export(equal_pos, merged_arg, global))
-				return (2);
+			result = handle_quoted_export(args, i, global, &end_index);
+			if (result != 0)
+				return (result);
 			i = end_index + 1;
 		}
 		else
@@ -141,4 +91,3 @@ int	builtin_export(char **args, t_global *global)
 	}
 	return (0);
 }
-

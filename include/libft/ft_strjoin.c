@@ -26,9 +26,8 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	str = halloc(j + i + 1);
 	if (!str)
 	{
-        clear_garbage();
+		clear_garbage();
 		exit(1);
-		// return (NULL);
 	}
 	ft_memcpy(str, s1, i);
 	ft_memcpy(str + i, s2, j);

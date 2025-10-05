@@ -69,7 +69,6 @@ void	close_all_heredoc_fds(void)
 	global = get_global();
 	if (!global)
 		return ;
-	
 	i = 0;
 	while (i < global->heredoc_fd_count)
 	{

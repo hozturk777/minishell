@@ -10,7 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-
 #include "../../lib/minishell.h"
 
 int	needs_expansion(char *str)
@@ -58,17 +57,13 @@ char	*extract_single_quote_content(char *str)
 
 	if (!str)
 		return (NULL);
-	
 	start = ft_strnstr(str, "\'", ft_strlen(str));
 	if (!start)
 		return (ft_strdup(str));
-	
 	start += ft_strlen("\'");
-	
 	end = ft_strnstr(start, "\'", ft_strlen(start));
 	if (!end)
 		return (ft_strdup(start));
-	
 	content_len = end - start;
 	result = ft_substr(start, 0, content_len);
 	return (result);
@@ -85,7 +80,7 @@ char	*ft_strjoin_char(char const *s1, char const s2)
 	str = halloc(i + 2);
 	if (!str)
 	{
-        clear_garbage();
+		clear_garbage();
 		exit(1);
 	}
 	ft_memcpy(str, s1, i);

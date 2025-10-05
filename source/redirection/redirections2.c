@@ -10,7 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-
 #include "../../lib/minishell.h"
 #include <readline/readline.h>
 #include <unistd.h>
@@ -18,14 +17,12 @@
 
 static char	*create_temp_filename(int heredoc_count)
 {
-	static	long long temp_filename = 1;
-	char	*count_str;
-	char	*temp1;
-	char	*temp2;
-	char	*result;
+	static long long	temp_filename = 1;
+	char				*count_str;
+	char				*temp1;
+	char				*temp2;
+	char				*result;
 
-	// pid_str = ft_itoa(getpid()); // KALDIRILCAK
-	// temp_filename = 1;
 	count_str = ft_itoa(heredoc_count);
 	if (!count_str)
 	{
@@ -53,7 +50,6 @@ void	setup_pipeline_fds(t_command *cmd, int prev_fd, int *pipe_fd)
 	}
 }
 
-
 static void	process_heredoc_lines(t_redirect *redirect, int fd,
 		t_global *global)
 {
@@ -62,10 +58,8 @@ static void	process_heredoc_lines(t_redirect *redirect, int fd,
 	while (1)
 	{
 		line = add_garbage(readline("> "));
-
 		if (!line)
-			break;
-
+			break ;
 		if (ft_strcmp(line, redirect->filename) == 0)
 			break ;
 		line = expand_with_heredoc(line, global);
@@ -96,43 +90,6 @@ int	handle_heredoc(t_redirect *redirect)
 	if (redirect->fd > 2)
 		register_heredoc_fd(redirect->fd);
 	return (redirect->fd);
-}
-
-
-static void	preprocess_heredoc_lines(t_redirect *redirect, int fd,
-		t_global *global)
-{
-	char	*line;
-	int		pid;
-
-	pid	= fork();
-	if (pid == 0)
-	{
-		setup_child_signals();
-		global->in_child = 1;
-		while (1)
-		{
-			line = add_garbage(readline("> "));
-	
-			if (!line)
-				break;
-	
-			if (ft_strcmp(line, redirect->filename) == 0)
-				break ;
-			line = expand_with_heredoc(line, global);
-			write(fd, line, ft_strlen(line));
-			write(fd, "\n", 1);
-		}
-		close(redirect->fd);
-		cleanup_and_exit();
-		exit (0);
-	}
-	else if (pid > 0)
-	{
-		global->exit_status = wait_for_redirect_process(pid);
-	}
-	
-
 }
 
 int	preprocess_handle_heredoc(t_redirect *redirect)

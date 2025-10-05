@@ -26,8 +26,8 @@ char	*ft_strdup(const char *s1)
 	str = (char *)halloc(slen + 1);
 	if (!str)
 	{
-		clear_garbage();   // tüm garbage’ı serbest bırak
-		exit(1);           // güvenli çıkış
+		clear_garbage();
+		exit(1);
 	}
 	while (s1[i] != '\0')
 	{

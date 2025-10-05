@@ -15,32 +15,31 @@
 
 t_command	*parse_tokens_to_commands(t_list *tokens, t_global *global)
 {
-    t_command	*head;
-    t_command	*current;
-    t_list		*token_node;
+	t_command	*head;
+	t_command	*current;
+	t_list		*token_node;
 
-    head = NULL;
-    current = NULL;
-    token_node = tokens;
-	
-    while (token_node)
-    {
-        if (is_command_start(token_node))
-        {
-            current = parse_single_command(&token_node, global);
+	head = NULL;
+	current = NULL;
+	token_node = tokens;
+	while (token_node)
+	{
+		if (is_command_start(token_node))
+		{
+			current = parse_single_command(&token_node, global);
 			if (!current)
 				return (NULL);
-            if (!head)
-                head = current;
-            else
-                append_command_to_chain(head, current);
-        }
-        else
-            token_node = token_node->next;
-    }
-		
-    return (head);
+			if (!head)
+				head = current;
+			else
+				append_command_to_chain(head, current);
+		}
+		else
+			token_node = token_node->next;
+	}
+	return (head);
 }
+
 int	check_syntax(t_list **token_node)
 {
 	t_list		*token_temp;
@@ -49,45 +48,21 @@ int	check_syntax(t_list **token_node)
 	token_temp = *token_node;
 	while (token_temp)
 	{
-	    token_test = (t_token_new *)token_temp->content;
-		if (token_test->type == T_REDIRECT_IN || token_test->type == T_REDIRECT_OUT || token_test->type == T_APPEND)
+		token_test = (t_token_new *)token_temp->content;
+		if (token_test->type == T_REDIRECT_IN
+			|| token_test->type == T_REDIRECT_OUT
+			|| token_test->type == T_APPEND)
 		{
-			token_temp = token_temp->next;
-			if (!token_temp)
-			{
-				printf("minishell: syntax error near unexpected token `newline'\n");
+			if (check_syntax_redirect(&token_temp, &token_test))
 				return (1);
-			}
-			token_test = (t_token_new *)token_temp->content;
-			if (token_test->type == T_WHITESPACE)
-			{
-				token_temp = token_temp->next;
-				token_test = (t_token_new *)token_temp->content;
-			}
-			if (token_test->type != T_WORD && token_test->type != T_CMD)
-			{
-				printf("minishell: syntax error near unexpected token `%s'\n", token_test->value);
-				return (1);
-			}
-			continue;
+			continue ;
 		}
 		else if (token_test->type == T_HEREDOC)
 		{
-			token_temp = token_temp->next;
-			if (!token_temp)
-			{
-				printf("minishell: syntax error near unexpected token `newline'\n");
+			if (check_syntax_heredoc(&token_temp, &token_test))
 				return (1);
-			}
-			token_test = (t_token_new *)token_temp->content;
-			if (token_test->type != T_WORD && token_test->type != T_CMD)
-			{
-				printf("minishell: syntax error near unexpected token `%s'\n", token_test->value);
-				return (1);
-			}
-			continue;
+			continue ;
 		}
-		
 		token_temp = token_temp->next;
 	}
 	return (0);
@@ -95,81 +70,77 @@ int	check_syntax(t_list **token_node)
 
 static void	parse_redirection(t_command *cmd, t_list **token_node)
 {
-    t_redirect		*redirect;
-    t_token_new		*token;
-    t_token_new		*file_token;
+	t_redirect		*redirect;
+	t_token_new		*token;
+	t_token_new		*file_token;
 
-    token = (t_token_new *)(*token_node)->content;
-    redirect = halloc(sizeof(t_redirect));
-    if (!redirect)
-        return ;
-    redirect->type = token->type;
-    redirect->fd = -1;
-    redirect->next = NULL;
-    *token_node = (*token_node)->next;
-    if (*token_node)
-    {
-        file_token = (t_token_new *)(*token_node)->content;
+	token = (t_token_new *)(*token_node)->content;
+	redirect = halloc(sizeof(t_redirect));
+	if (!redirect)
+		return ;
+	redirect->type = token->type;
+	redirect->fd = -1;
+	redirect->next = NULL;
+	*token_node = (*token_node)->next;
+	if (*token_node)
+	{
+		file_token = (t_token_new *)(*token_node)->content;
 		if (file_token->type == T_WHITESPACE)
 		{
 			*token_node = (*token_node)->next;
-	        file_token = (t_token_new *)(*token_node)->content;
+			file_token = (t_token_new *)(*token_node)->content;
 		}
-        redirect->filename = ft_strdup(file_token->value);
-    }
-    add_redirect_to_command(cmd, redirect);
+		redirect->filename = ft_strdup(file_token->value);
+	}
+	add_redirect_to_command(cmd, redirect);
 }
 
 t_command	*parse_single_command(t_list **token_node, t_global *global)
 {
-    t_command	*cmd;
-    t_list		*args_list;
-    t_list		*current;
+	t_command	*cmd;
+	t_list		*args_list;
+	t_list		*current;
 
-    cmd = create_command();
-    if (!cmd)
-        return (NULL);
-    args_list = NULL;
-    current = *token_node;
-	if (check_syntax(token_node))
-	{
+	cmd = create_command();
+	if (!cmd)
 		return (NULL);
-	}
-    while (current && !is_pipe_token(current))
-    {
-        if (is_redirect_token(current))
-            parse_redirection(cmd, &current);
-        else if (is_word_token(current))
-            collect_command_arg(&args_list, current);
+	args_list = NULL;
+	current = *token_node;
+	if (check_syntax(token_node))
+		return (NULL);
+	while (current && !is_pipe_token(current))
+	{
+		if (is_redirect_token(current))
+			parse_redirection(cmd, &current);
+		else if (is_word_token(current))
+			collect_command_arg(&args_list, current);
 		current = current->next;
-    }
-    cmd->args = convert_list_to_array(args_list);
-    *token_node = current;
-    ft_lstclear(&args_list, free);
-    expand_command_args(cmd, global);
-    
-    return (cmd);
+	}
+	cmd->args = convert_list_to_array(args_list);
+	*token_node = current;
+	ft_lstclear(&args_list, free);
+	expand_command_args(cmd, global);
+	return (cmd);
 }
-
 
 void	collect_command_arg(t_list **args_list, t_list *token_node)
 {
-    t_token_new	*token;
-    char		*arg_copy;
-    char		*temp;
+	t_token_new	*token;
+	char		*arg_copy;
+	char		*temp;
 
-    token = (t_token_new *)token_node->content;
-    if (token->type == T_SINGLE_QUOTE)
-    {
-        temp = ft_strjoin("\'", token->value);
-        arg_copy = ft_strjoin(temp, "\'");
-    }
-    else if (token->type == T_DOUBLE_QUOTE)
-    {
-        temp = ft_strjoin("\"", token->value);
-        arg_copy = ft_strjoin(temp, "\"");
-    }
-    else
-        arg_copy = ft_strdup(token->value);
-    ft_lstadd_back(args_list, ft_lstnew(arg_copy));
+	token = (t_token_new *)token_node->content;
+	if (token->type == T_SINGLE_QUOTE)
+	{
+		temp = ft_strjoin("\'", token->value);
+		arg_copy = ft_strjoin(temp, "\'");
+	}
+	else if (token->type == T_DOUBLE_QUOTE)
+	{
+		temp = ft_strjoin("\"", token->value);
+		arg_copy = ft_strjoin(temp, "\"");
+	}
+	else
+		arg_copy = ft_strdup(token->value);
+	ft_lstadd_back(args_list, ft_lstnew(arg_copy));
 }

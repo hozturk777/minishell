@@ -60,3 +60,51 @@ int	is_valid_key_char(char *arg, char *equal_pos)
 	return (1);
 }
 
+int	check_token_at_index(t_global *global, int index)
+{
+	t_list		*current;
+	t_token_new	*token;
+	int			count;
+
+	if (!global || !global->tokens)
+		return (0);
+	current = global->tokens;
+	count = 0;
+	while (current && count < index)
+	{
+		current = current->next;
+		count++;
+	}
+	if (current)
+	{
+		token = (t_token_new *)current->content;
+		if (token && (token->type == T_DOUBLE_QUOTE
+				|| token->type == T_SINGLE_QUOTE))
+			return (1);
+	}
+	return (0);
+}
+
+char	*merge_quoted_args(char **args, int s_index,
+	int *e_index, t_global *global)
+{
+	char	*result;
+	char	*temp;
+	int		i;
+
+	result = ft_strdup(args[s_index]);
+	if (!result)
+		return (NULL);
+	i = s_index + 1;
+	if (args[i] && check_token_at_index(global, i))
+	{
+		temp = ft_strjoin(result, args[i]);
+		if (!temp)
+			return (NULL);
+		result = temp;
+		*e_index = i;
+	}
+	else
+		*e_index = s_index;
+	return (result);
+}

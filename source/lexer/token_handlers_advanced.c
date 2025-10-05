@@ -12,7 +12,6 @@
 
 #include "../../lib/minishell.h"
 
-
 static t_token_new	*handle_input_redirect(t_lexer_new *lexer)
 {
 	advance_lexer(lexer);
@@ -41,13 +40,12 @@ static t_token_new	*handle_output_redirect(t_lexer_new *lexer)
 
 t_token_new	*handle_redirect_advanced(t_lexer_new *lexer)
 {
-    if (lexer->current_char == '<')
-        return (handle_input_redirect(lexer));
-    else if (lexer->current_char == '>')
-        return (handle_output_redirect(lexer));
-    return (NULL);
+	if (lexer->current_char == '<')
+		return (handle_input_redirect(lexer));
+	else if (lexer->current_char == '>')
+		return (handle_output_redirect(lexer));
+	return (NULL);
 }
-
 
 t_token_new	*handle_quotes_advanced(t_lexer_new *lexer)
 {
@@ -56,7 +54,7 @@ t_token_new	*handle_quotes_advanced(t_lexer_new *lexer)
 	int		len;
 	char	*quoted_str;
 
-	quote_char = lexer->current_char; 
+	quote_char = lexer->current_char;
 	advance_lexer(lexer);
 	start = lexer->pos;
 	while (lexer->current_char != '\0' && lexer->current_char != quote_char)
@@ -67,7 +65,7 @@ t_token_new	*handle_quotes_advanced(t_lexer_new *lexer)
 		quoted_str = ft_substr(lexer->input, start, len);
 		advance_lexer(lexer);
 		if (len == 0)
-			return(create_token_advanced(T_SINGLE_QUOTE, ft_strdup("")));
+			return (create_token_advanced(T_SINGLE_QUOTE, ft_strdup("")));
 		if (quote_char == '\'')
 			return (create_token_advanced(T_SINGLE_QUOTE, quoted_str));
 		else
@@ -83,13 +81,13 @@ t_token_new	*handle_whitespaces_advanced(t_lexer_new *lexer)
 	char	*whitepaces;
 
 	start = lexer->pos;
-
-	
-	while (lexer->current_char != '\0' &&(lexer->current_char == ' ' || lexer->current_char == '\t'))
+	while (lexer->current_char != '\0'
+		&& (lexer->current_char == ' '
+			|| lexer->current_char == '\t'))
 	{
 		advance_lexer(lexer);
 	}
 	len = lexer->pos - start;
 	whitepaces = " ";
-	return(create_token_advanced(T_WHITESPACE, whitepaces));
+	return (create_token_advanced(T_WHITESPACE, whitepaces));
 }

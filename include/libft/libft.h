@@ -51,7 +51,6 @@ void	ft_putstr_fd(char *s, int fd);
 void	ft_putendl_fd(char *s, int fd);
 void	ft_putnbr_fd(int n, int fd);
 
-// t_list structure and functions
 typedef struct s_list
 {
 	void			*content;
@@ -71,9 +70,8 @@ t_list	*ft_lstmap(t_list *lst, void *(*f)(void *), void (*del)(void *));
 size_t	ft_strlen(const char *s);
 size_t	ft_strlcpy(char *dest, const char *src, size_t n);
 size_t	ft_strlcat(char *dest, const char *src, size_t n);
-void    clear_garbage(void);
-void    *halloc (size_t size);
+void	clear_garbage(void);
+void	*halloc(size_t size);
 void	*add_garbage(void *adress);
-
 
 #endif
