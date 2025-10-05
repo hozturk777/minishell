@@ -47,6 +47,8 @@ MINISHELL_SRCS		= $(SRC_DIR)main.c \
 					  $(EXEC_DIR)executor.c \
 					  $(EXEC_DIR)execute_external.c \
 					  $(EXEC_DIR)executor_utils.c \
+					  $(EXEC_DIR)executer_utils2.c \
+					  $(EXEC_DIR)executer_utils3.c \
 					  $(EXEC_DIR)pipeline_execution.c \
 					  $(REDIRECT_DIR)redirections.c \
 					  $(REDIRECT_DIR)redirections2.c \

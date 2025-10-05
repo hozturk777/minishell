@@ -84,7 +84,6 @@ char	*get_env_value(t_env *env_list, char *key)
 	return (NULL);
 }
 
-
 char	**env_list_to_array(t_env *env_list)
 {
 	t_env	*current;

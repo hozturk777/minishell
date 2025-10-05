@@ -198,7 +198,7 @@ void			print_welcome_advanced(void);
 char			*ft_strjoin_char(char const *s1, char const s2);
 void			skip_whitespace_advanced(t_lexer_new *lexer);
 void			execute_redirect_command(t_command *cmd, t_global *global, int *origin);
-int				preprocess_heredocs(t_command *commands, t_global *global);
+int				preprocess_heredocs(t_command *commands);
 int				preprocess_handle_heredoc(t_redirect *redirect);
 int				wait_for_redirect_process(pid_t pid);
 
@@ -206,5 +206,20 @@ void			handle_single_assignment(char *arg, t_global *global);
 void			handle_split_assignment(char **args, int i, t_global *global);
 int				is_valid_key_char(char *arg, char *equal_pos);
 void			print_error(void);
+int				preprocess_heredocs_utils(t_command *current);
+void			setup_redirections_check(t_command *cmd, int *originals);
+void			cleanup_and_close(int *originals);
+void			is_builtin_check(t_command *cmd, t_global *global, int *originals, int *exit_num);
+void			close_unused_heredoc_fds(t_command *cmd);
+int				redirect_check(t_command *command);
+int				heredoc_check(t_command	*command);
+void			check_path(t_command *cmd, t_list *node, int *originals);
+int				heredoc_check_utils(t_redirect *redirect);
+void			child_run_execve(t_command *cmd, int *originals);
+
+
+
+
+
 
 #endif

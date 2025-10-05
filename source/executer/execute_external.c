@@ -14,67 +14,72 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <sys/wait.h>
+#include <signal.h>
 
-static void	handle_external_child_process(t_command *cmd, t_global *global, char *path)
+static void	external_child_process(t_command *cmd, t_global *global, char *path)
 {
-    setup_child_signals();
-    global->in_child = 2;
-    if(setup_redirections(cmd))
+	setup_child_signals();
+	global->in_child = 2;
+	if (setup_redirections(cmd))
 	{
-	    cleanup_and_exit();
+		cleanup_and_exit();
 		exit(2);
 	}
 	if (!path)
 	{
-	    cleanup_and_exit();
+		cleanup_and_exit();
 		exit(127);
 	}
-    execve(path, cmd->args, env_list_to_array(global->env_list));
-    perror("execve");
-    cleanup_and_exit();
-    exit(127);
+	execve(path, cmd->args, env_list_to_array(global->env_list));
+	perror("execve");
+	cleanup_and_exit();
+	exit(127);
 }
 
 static int	wait_for_external_process(pid_t pid)
 {
 	int	status;
+	int	signal_num;
 
-    waitpid(pid, &status, 0);
-    if (WIFSIGNALED(status))
-    {
-        int signal_num = WTERMSIG(status);
-        if (signal_num == SIGINT)
-		return (130);
-        else if (signal_num == SIGQUIT)
-		return (131);
-        else
-		return (128 + signal_num);
-    }
-    return (WEXITSTATUS(status));
+	waitpid(pid, &status, 0);
+	if (WIFSIGNALED(status))
+	{
+		signal_num = WTERMSIG(status);
+		if (signal_num == SIGINT)
+			return (130);
+		else if (signal_num == SIGQUIT)
+			return (131);
+		else
+			return (128 + signal_num);
+	}
+	return (WEXITSTATUS(status));
 }
+
+static void	external_child(t_command *cmd, t_global *global, char *path)
+{
+	external_child_process(cmd, global, path);
+	cleanup_and_exit();
+	exit (127);
+}
+
 int	execute_external_command(t_command *cmd, t_global *global)
 {
 	char	*path;
 	pid_t	pid;
 
 	path = find_command_path(cmd->args[0], global->env_list);
-	if (!path)
-	{
-		printf("minishell: %s: command not found\n", cmd->args[0]);
-		// return (127);
-	}
 	pid = fork();
 	if (pid == 0)
-	{
-		handle_external_child_process(cmd, global, path);
-		cleanup_and_exit();
-		exit (127);
-	}
+		external_child(cmd, global, path);
 	else if (pid > 0)
 	{
+		global->exit_status = wait_for_external_process(pid);
 		if (!path)
+		{
+			printf("minishell: %s: command not found\n", cmd->args[0]);
 			return (127);
-		return (wait_for_external_process(pid));
+		}
+		return (global->exit_status);
 	}
 	else
 	{
@@ -83,4 +88,5 @@ int	execute_external_command(t_command *cmd, t_global *global)
 		clear_garbage();
 		return (1);
 	}
+	return (0);
 }

@@ -52,15 +52,12 @@ static t_env	*create_minimal_env(void)
 		if (new_node)
 			add_env_node(&env_list, new_node);
 	}
-
 	new_node = create_env_node("SHLVL", "0");
 	if (new_node)
 		add_env_node(&env_list, new_node);
-
 	new_node = create_env_node("_", "./minishell");
 	if (new_node)
 		add_env_node(&env_list, new_node);
-
 	return (env_list);
 }
 

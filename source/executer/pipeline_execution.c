@@ -110,7 +110,7 @@ int	execute_pipeline(t_command *commands, t_global *global)
     int		cmd_count;
     int		last_status;
 
-    if (preprocess_heredocs(commands, global) == -1)
+    if (preprocess_heredocs(commands) == -1)
         return (1);
     cmd_count = count_pipeline_commands(commands);
     pids = halloc(sizeof(pid_t) * cmd_count);

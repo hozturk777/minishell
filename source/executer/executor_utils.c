@@ -13,6 +13,7 @@
 #include "../../lib/minishell.h"
 #include <unistd.h>
 #include <sys/wait.h>
+#include <signal.h>
 
 static int	execute_single_command(t_command *cmd, t_global *global);
 
@@ -28,6 +29,7 @@ int	execute_commands(t_command *commands, t_global *global)
 
 static int	execute_single_command(t_command *cmd, t_global *global)
 {
+	int	originals[2];
 
 	if ((!cmd || !cmd->args || !cmd->args[0]) && cmd->redirections)
 	{
@@ -37,7 +39,6 @@ static int	execute_single_command(t_command *cmd, t_global *global)
 	}
 	if (!cmd || !cmd->args || !cmd->args[0])
 		return (1);
-	int originals[2];
 	originals[0] = dup(STDIN_FILENO);
 	originals[1] = dup(STDOUT_FILENO);
 	if (is_builtin(cmd->args[0]))
@@ -56,32 +57,33 @@ static int	execute_single_command(t_command *cmd, t_global *global)
 
 static void	handle_redirect_child_process(t_command *cmd)
 {
-    setup_child_signals();
-	if(setup_redirections(cmd))
+	setup_child_signals();
+	if (setup_redirections(cmd))
 	{
 		cleanup_and_exit();
 		exit(2);
 	}
 	cleanup_and_exit();
-    exit(0);
+	exit(0);
 }
 
 int	wait_for_redirect_process(pid_t pid)
 {
 	int	status;
+	int	signal_num;
 
-    waitpid(pid, &status, 0);
-    if (WIFSIGNALED(status))
-    {
-		int signal_num = WTERMSIG(status);
-        if (signal_num == SIGINT)
+	waitpid(pid, &status, 0);
+	if (WIFSIGNALED(status))
+	{
+		signal_num = WTERMSIG(status);
+		if (signal_num == SIGINT)
 			return (130);
-        else if (signal_num == SIGQUIT)
+		else if (signal_num == SIGQUIT)
 			return (131);
-        else
+		else
 			return (128 + signal_num);
-    }
-    return (WEXITSTATUS(status));
+	}
+	return (WEXITSTATUS(status));
 }
 
 void	execute_redirect_command(t_command *cmd, t_global *global, int *origin)
@@ -101,6 +103,6 @@ void	execute_redirect_command(t_command *cmd, t_global *global, int *origin)
 	else if (pid > 0)
 	{
 		global->in_child = 0;
-		global->exit_status =  wait_for_redirect_process(pid);
+		global->exit_status = wait_for_redirect_process(pid);
 	}
 }
