@@ -423,9 +423,7 @@ Bu projeyi tamamlayarak şu konularda derinlemesine bilgi sahibi olursunuz:
 ## 👥 Katkıda Bulunanlar
 
 - **@huozturk** - Lead Developer
-- **@hasivaci** - Co-Developer
+- **@hasivaci** - Lead Developer
 
 ---
 
-**42 School - Level 3 Project**  
-*"Bu shell, büyük işlerin nasıl küçük parçalarla başladığını gösterir."*
